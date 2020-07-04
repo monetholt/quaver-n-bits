@@ -33,6 +33,5 @@ Features:
     
 __________________________________________________________________________________________________________________
 
-High-Level Architecture (3-Tiered)
 
 ![HLA](https://github.com/monetholt/quaver-n-bits/blob/master/images/High-Level_Architecture.png)

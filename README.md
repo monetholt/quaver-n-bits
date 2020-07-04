@@ -30,3 +30,8 @@ Features:
 - No search functionality, no ability to look at other profiles.
 - Come up with 15 user stores - split each one of those into five per sprint.
      - Example: Setting up database can be a user story.
+    
+__________________________________________________________________________________________________________________
+
+High-Level Architecture (3-Tiered)
+

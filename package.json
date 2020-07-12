@@ -1,0 +1,23 @@
+{
+  "name": "quaver-n-bits",
+  "version": "1.0.0",
+  "description": "Musician Finder App",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monetholt/quaver-n-bits.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/monetholt/quaver-n-bits/issues"
+  },
+  "homepage": "https://github.com/monetholt/quaver-n-bits#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.0.0"
+  }
+}

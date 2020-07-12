@@ -1,0 +1,1 @@
+Directory for basic layouts that are used for many pages

@@ -69,7 +69,7 @@ $global-font-size: 100%;
 $global-width: rem-calc(1200);
 $global-lineheight: 1.5;
 $foundation-palette: (
-  primary: #1779ba,
+  primary: #3ef669,
   secondary: #767676,
   success: #3adb76,
   warning: #ffae00,
@@ -89,7 +89,7 @@ $global-padding: 1rem;
 $global-position: 1rem;
 $global-weight-normal: normal;
 $global-weight-bold: bold;
-$global-radius: 0;
+$global-radius: 20px;
 $global-menu-padding: 0.7rem 1rem;
 $global-menu-nested-margin: 1rem;
 $global-text-direction: ltr;
@@ -298,12 +298,12 @@ $button-padding: 0.85em 1em;
 $button-margin: 0 0 $global-margin 0;
 $button-fill: solid;
 $button-background: $primary-color;
-$button-background-hover: scale-color($button-background, $lightness: -15%);
+$button-background-hover: scale-color($button-background, $lightness: 15%);
 $button-color: $white;
 $button-color-alt: $black;
 $button-radius: $global-radius;
 $button-border: 1px solid transparent;
-$button-hollow-border-width: 1px;
+$button-hollow-border-width: 2px;
 $button-sizes: (
   tiny: 0.6rem,
   small: 0.75rem,
@@ -312,8 +312,8 @@ $button-sizes: (
 );
 $button-palette: $foundation-palette;
 $button-opacity-disabled: 0.25;
-$button-background-hover-lightness: -20%;
-$button-hollow-hover-lightness: -50%;
+$button-background-hover-lightness: 20%;
+$button-hollow-hover-lightness: 50%;
 $button-transition: background-color 0.25s ease-out, color 0.25s ease-out;
 $button-responsive-expanded: false;
 

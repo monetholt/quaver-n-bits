@@ -17,6 +17,9 @@ app.engine('handlebars', handlebars({
 // set up file location for static files
 app.use('/static', express.static(path.join(__dirname, 'static')));
 
+// routes
+app.get('/', (req, res) => res.render('landing'));
+
 // start app
 app.listen(port, function(){
     console.log('Express started on port ' + port + '; press Ctrl-C to terminate.')

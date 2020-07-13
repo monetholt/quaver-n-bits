@@ -69,7 +69,7 @@ $global-font-size: 100%;
 $global-width: rem-calc(1200);
 $global-lineheight: 1.5;
 $foundation-palette: (
-  primary: #3ef669,
+  primary: #aaf0d1,
   secondary: #767676,
   success: #3adb76,
   warning: #ffae00,
@@ -138,7 +138,7 @@ $block-grid-max: 8;
 // 4. Base Typography
 // ------------------
 
-$header-font-family: $body-font-family;
+$header-font-family: inherit;
 $header-font-weight: $global-weight-normal;
 $header-font-style: normal;
 $font-family-monospace: Consolas, 'Liberation Mono', Courier, monospace;
@@ -297,10 +297,10 @@ $button-font-weight: null;
 $button-padding: 0.85em 1em;
 $button-margin: 0 0 $global-margin 0;
 $button-fill: solid;
-$button-background: $primary-color;
-$button-background-hover: scale-color($button-background, $lightness: 15%);
-$button-color: $white;
-$button-color-alt: $black;
+$button-background: scale-color($primary-color, $lightness: -30%);
+$button-background-hover: $primary-color;
+$button-color: $black;
+$button-color-alt: $white;
 $button-radius: $global-radius;
 $button-border: 1px solid transparent;
 $button-hollow-border-width: 2px;

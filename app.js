@@ -8,7 +8,6 @@ const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
 
-// constants
 const port = 3000;
 const app = express();
 

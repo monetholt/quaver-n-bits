@@ -2,7 +2,6 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const path = require('path');
 
-// constants
 const port = 3000;
 const app = express();
 

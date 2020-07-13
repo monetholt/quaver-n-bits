@@ -1,0 +1,11 @@
+@import "base/_settings";
+@import '../foundation/scss/foundation';
+
+// Foundation
+@include foundation-everything;
+
+// Fonts
+@import "base/_fonts";
+
+// Views
+@import "views/_landing";

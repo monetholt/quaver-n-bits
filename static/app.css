@@ -2254,11 +2254,11 @@ ul.no-bullet, ol.no-bullet {
     background-color: #bbf3da;
     color: #0a0a0a; }
   .button.secondary, .button.secondary.disabled, .button.secondary[disabled], .button.secondary.disabled:hover, .button.secondary[disabled]:hover, .button.secondary.disabled:focus, .button.secondary[disabled]:focus {
-    background-color: #767676;
-    color: #fefefe; }
+    background-color: #fffab0;
+    color: #0a0a0a; }
   .button.secondary:hover, .button.secondary:focus {
-    background-color: #919191;
-    color: #fefefe; }
+    background-color: #fffbc0;
+    color: #0a0a0a; }
   .button.success, .button.success.disabled, .button.success[disabled], .button.success.disabled:hover, .button.success[disabled]:hover, .button.success.disabled:focus, .button.success[disabled]:focus {
     background-color: #3adb76;
     color: #0a0a0a; }
@@ -2292,11 +2292,11 @@ ul.no-bullet, ol.no-bullet {
     border-color: #d5f8e8;
     color: #d5f8e8; }
   .button.hollow.secondary, .button.hollow.secondary.disabled, .button.hollow.secondary[disabled], .button.hollow.secondary.disabled:hover, .button.hollow.secondary[disabled]:hover, .button.hollow.secondary.disabled:focus, .button.hollow.secondary[disabled]:focus {
-    border: 2px solid #767676;
-    color: #767676; }
+    border: 2px solid #fffab0;
+    color: #fffab0; }
   .button.hollow.secondary:hover, .button.hollow.secondary:focus {
-    border-color: #bbbbbb;
-    color: #bbbbbb; }
+    border-color: #fffdd8;
+    color: #fffdd8; }
   .button.hollow.success, .button.hollow.success.disabled, .button.hollow.success[disabled], .button.hollow.success.disabled:hover, .button.hollow.success[disabled]:hover, .button.hollow.success.disabled:focus, .button.hollow.success[disabled]:focus {
     border: 2px solid #3adb76;
     color: #3adb76; }
@@ -2327,9 +2327,9 @@ ul.no-bullet, ol.no-bullet {
   .button.clear.primary:hover, .button.clear.primary:focus {
     color: #d5f8e8; }
   .button.clear.secondary, .button.clear.secondary.disabled, .button.clear.secondary[disabled], .button.clear.secondary.disabled:hover, .button.clear.secondary[disabled]:hover, .button.clear.secondary.disabled:focus, .button.clear.secondary[disabled]:focus {
-    color: #767676; }
+    color: #fffab0; }
   .button.clear.secondary:hover, .button.clear.secondary:focus {
-    color: #bbbbbb; }
+    color: #fffdd8; }
   .button.clear.success, .button.clear.success.disabled, .button.clear.success[disabled], .button.clear.success.disabled:hover, .button.clear.success[disabled]:hover, .button.clear.success.disabled:focus, .button.clear.success[disabled]:focus {
     color: #3adb76; }
   .button.clear.success:hover, .button.clear.success:focus {
@@ -2364,7 +2364,7 @@ ul.no-bullet, ol.no-bullet {
   .button.dropdown.hollow.primary::after, .button.dropdown.clear.primary::after {
     border-top-color: #aaf0d1; }
   .button.dropdown.hollow.secondary::after, .button.dropdown.clear.secondary::after {
-    border-top-color: #767676; }
+    border-top-color: #fffab0; }
   .button.dropdown.hollow.success::after, .button.dropdown.clear.success::after {
     border-top-color: #3adb76; }
   .button.dropdown.hollow.warning::after, .button.dropdown.clear.warning::after {
@@ -2418,11 +2418,11 @@ a.button:hover, a.button:focus {
     background-color: #bbf3da;
     color: #0a0a0a; }
   .button-group.secondary .button, .button-group.secondary .button.disabled, .button-group.secondary .button[disabled], .button-group.secondary .button.disabled:hover, .button-group.secondary .button[disabled]:hover, .button-group.secondary .button.disabled:focus, .button-group.secondary .button[disabled]:focus {
-    background-color: #767676;
-    color: #fefefe; }
+    background-color: #fffab0;
+    color: #0a0a0a; }
   .button-group.secondary .button:hover, .button-group.secondary .button:focus {
-    background-color: #919191;
-    color: #fefefe; }
+    background-color: #fffbc0;
+    color: #0a0a0a; }
   .button-group.success .button, .button-group.success .button.disabled, .button-group.success .button[disabled], .button-group.success .button.disabled:hover, .button-group.success .button[disabled]:hover, .button-group.success .button.disabled:focus, .button-group.success .button[disabled]:focus {
     background-color: #3adb76;
     color: #0a0a0a; }
@@ -2456,11 +2456,11 @@ a.button:hover, a.button:focus {
     border-color: #d5f8e8;
     color: #d5f8e8; }
   .button-group.hollow.secondary .button, .button-group.hollow.secondary .button.disabled, .button-group.hollow.secondary .button[disabled], .button-group.hollow.secondary .button.disabled:hover, .button-group.hollow.secondary .button[disabled]:hover, .button-group.hollow.secondary .button.disabled:focus, .button-group.hollow.secondary .button[disabled]:focus, .button-group.hollow .button.secondary, .button-group.hollow .button.secondary.disabled, .button-group.hollow .button.secondary[disabled], .button-group.hollow .button.secondary.disabled:hover, .button-group.hollow .button.secondary[disabled]:hover, .button-group.hollow .button.secondary.disabled:focus, .button-group.hollow .button.secondary[disabled]:focus {
-    border: 2px solid #767676;
-    color: #767676; }
+    border: 2px solid #fffab0;
+    color: #fffab0; }
   .button-group.hollow.secondary .button:hover, .button-group.hollow.secondary .button:focus, .button-group.hollow .button.secondary:hover, .button-group.hollow .button.secondary:focus {
-    border-color: #bbbbbb;
-    color: #bbbbbb; }
+    border-color: #fffdd8;
+    color: #fffdd8; }
   .button-group.hollow.success .button, .button-group.hollow.success .button.disabled, .button-group.hollow.success .button[disabled], .button-group.hollow.success .button.disabled:hover, .button-group.hollow.success .button[disabled]:hover, .button-group.hollow.success .button.disabled:focus, .button-group.hollow.success .button[disabled]:focus, .button-group.hollow .button.success, .button-group.hollow .button.success.disabled, .button-group.hollow .button.success[disabled], .button-group.hollow .button.success.disabled:hover, .button-group.hollow .button.success[disabled]:hover, .button-group.hollow .button.success.disabled:focus, .button-group.hollow .button.success[disabled]:focus {
     border: 2px solid #3adb76;
     color: #3adb76; }
@@ -2491,9 +2491,9 @@ a.button:hover, a.button:focus {
   .button-group.clear.primary .button:hover, .button-group.clear.primary .button:focus, .button-group.clear .button.primary:hover, .button-group.clear .button.primary:focus {
     color: #d5f8e8; }
   .button-group.clear.secondary .button, .button-group.clear.secondary .button.disabled, .button-group.clear.secondary .button[disabled], .button-group.clear.secondary .button.disabled:hover, .button-group.clear.secondary .button[disabled]:hover, .button-group.clear.secondary .button.disabled:focus, .button-group.clear.secondary .button[disabled]:focus, .button-group.clear .button.secondary, .button-group.clear .button.secondary.disabled, .button-group.clear .button.secondary[disabled], .button-group.clear .button.secondary.disabled:hover, .button-group.clear .button.secondary[disabled]:hover, .button-group.clear .button.secondary.disabled:focus, .button-group.clear .button.secondary[disabled]:focus {
-    color: #767676; }
+    color: #fffab0; }
   .button-group.clear.secondary .button:hover, .button-group.clear.secondary .button:focus, .button-group.clear .button.secondary:hover, .button-group.clear .button.secondary:focus {
-    color: #bbbbbb; }
+    color: #fffdd8; }
   .button-group.clear.success .button, .button-group.clear.success .button.disabled, .button-group.clear.success .button[disabled], .button-group.clear.success .button.disabled:hover, .button-group.clear.success .button[disabled]:hover, .button-group.clear.success .button.disabled:focus, .button-group.clear.success .button[disabled]:focus, .button-group.clear .button.success, .button-group.clear .button.success.disabled, .button-group.clear .button.success[disabled], .button-group.clear .button.success.disabled:hover, .button-group.clear .button.success[disabled]:hover, .button-group.clear .button.success.disabled:focus, .button-group.clear .button.success[disabled]:focus {
     color: #3adb76; }
   .button-group.clear.success .button:hover, .button-group.clear.success .button:focus, .button-group.clear .button.success:hover, .button-group.clear .button.success:focus {
@@ -2574,8 +2574,8 @@ a.button:hover, a.button:focus {
     background: #aaf0d1;
     color: #0a0a0a; }
   .label.secondary {
-    background: #767676;
-    color: #fefefe; }
+    background: #fffab0;
+    color: #0a0a0a; }
   .label.success {
     background: #3adb76;
     color: #0a0a0a; }
@@ -2594,7 +2594,7 @@ a.button:hover, a.button:focus {
   .progress.primary .progress-meter {
     background-color: #aaf0d1; }
   .progress.secondary .progress-meter {
-    background-color: #767676; }
+    background-color: #fffab0; }
   .progress.success .progress-meter {
     background-color: #3adb76; }
   .progress.warning .progress-meter {
@@ -2882,8 +2882,8 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     background: #aaf0d1;
     color: #0a0a0a; }
   .badge.secondary {
-    background: #767676;
-    color: #fefefe; }
+    background: #fffab0;
+    color: #0a0a0a; }
   .badge.success {
     background: #3adb76;
     color: #0a0a0a; }
@@ -2940,7 +2940,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
     background-color: #f2fdf8;
     color: #0a0a0a; }
   .callout.secondary {
-    background-color: #eaeaea;
+    background-color: #fffef3;
     color: #0a0a0a; }
   .callout.success {
     background-color: #e1faea;
@@ -4765,7 +4765,7 @@ html.is-reveal-open {
 
 body {
   background: #eee;
-  font-family: "Baloo Da 2", cursive !important;
+  font-family: "Baloo Da 2", cursive;
   margin: 0; }
 
 .full-page {
@@ -4795,21 +4795,21 @@ body {
     z-index: 10;
     text-align: center;
     text-shadow: 4px 5px 6px rgba(25, 25, 25, 0.91);
-    background-image: -webkit-linear-gradient(to right, rgba(241, 45, 45, 0.7), rgba(76, 0, 148, 0.7));
+    background-image: -webkit-linear-gradient(to right, rgba(175, 45, 241, 0.5), rgba(45, 60, 241, 0.5));
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to right, rgba(241, 45, 45, 0.7), rgba(76, 0, 148, 0.7));
+    background-image: -moz-linear-gradient(to right, rgba(175, 45, 241, 0.5), rgba(45, 60, 241, 0.5));
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to right, rgba(241, 45, 45, 0.7), rgba(76, 0, 148, 0.7));
+    background-image: -o-linear-gradient(to right, rgba(175, 45, 241, 0.5), rgba(45, 60, 241, 0.5));
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to right, rgba(241, 45, 45, 0.7), rgba(76, 0, 148, 0.7));
+    background-image: linear-gradient(to right, rgba(175, 45, 241, 0.5), rgba(45, 60, 241, 0.5));
     /* Standard syntax; must be last */ }
     .full-page .overlay .login {
       position: absolute;
-      top: 1vh;
-      right: 1vw;
+      top: 3vh;
+      right: 3vw;
       text-shadow: none; }
       @media (-webkit-min-device-pixel-ratio: 0) {
-        .full-page .overlay .login a, .full-page .overlay .login nav a:visited, .full-page .overlay .login nav a:active, .full-page .overlay .login nav a:hover {
+        .full-page .overlay .login a, .full-page .overlay .login a:visited, .full-page .overlay .login a:active, .full-page .overlay .login a:hover {
           letter-spacing: 2px;
           color: white;
           border-bottom: 2px solid transparent;
@@ -4856,3 +4856,80 @@ body {
       padding: 5vh 0;
       width: 50vw;
       margin-top: 3vh; }
+    .full-page .overlay .learn-more {
+      position: absolute;
+      bottom: 3vh;
+      left: 50%;
+      margin: 0 auto;
+      color: #fefefe;
+      -webkit-transform: translate(-50%, -50%);
+      -moz-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      -webkit-transition: 0.3s ease;
+      -moz-transition: 0.3s ease;
+      -ms-transition: 0.3s ease;
+      -o-transition: 0.3s ease;
+      transition: 0.3s ease; }
+      .full-page .overlay .learn-more a, .full-page .overlay .learn-more a:visited, .full-page .overlay .learn-more a:active {
+        color: #fefefe;
+        -webkit-transition: 0.3s ease-in-out;
+        -moz-transition: 0.3s ease-in-out;
+        -ms-transition: 0.3s ease-in-out;
+        -o-transition: 0.3s ease-in-out;
+        transition: 0.3s ease-in-out; }
+      .full-page .overlay .learn-more a:hover {
+        color: #fffab0; }
+      .full-page .overlay .learn-more .text {
+        opacity: 0;
+        display: block;
+        font-size: 1.5vw;
+        -webkit-transform: translateY(30px);
+        -moz-transform: translateY(30px);
+        -ms-transform: translateY(30px);
+        transform: translateY(30px);
+        -webkit-transition: 0.3s ease;
+        -moz-transition: 0.3s ease;
+        -ms-transition: 0.3s ease;
+        -o-transition: 0.3s ease;
+        transition: 0.3s ease; }
+      .full-page .overlay .learn-more .arrow {
+        display: block;
+        font-size: 5vh;
+        -webkit-transform: translateY(-30px);
+        -moz-transform: translateY(-30px);
+        -ms-transform: translateY(-30px);
+        transform: translateY(-30px);
+        -webkit-transition: 0.3s ease;
+        -moz-transition: 0.3s ease;
+        -ms-transition: 0.3s ease;
+        -o-transition: 0.3s ease;
+        transition: 0.3s ease; }
+    .full-page .overlay .learn-more:hover {
+      color: #fffab0;
+      -webkit-transition: 0.3s ease;
+      -moz-transition: 0.3s ease;
+      -ms-transition: 0.3s ease;
+      -o-transition: 0.3s ease;
+      transition: 0.3s ease; }
+      .full-page .overlay .learn-more:hover .text {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0);
+        -webkit-transition: 0.3s ease;
+        -moz-transition: 0.3s ease;
+        -ms-transition: 0.3s ease;
+        -o-transition: 0.3s ease;
+        transition: 0.3s ease; }
+      .full-page .overlay .learn-more:hover .arrow {
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0);
+        -webkit-transition: 0.3s ease;
+        -moz-transition: 0.3s ease;
+        -ms-transition: 0.3s ease;
+        -o-transition: 0.3s ease;
+        transition: 0.3s ease; }

@@ -2,8 +2,8 @@ $title-font-color: white;
 $title-font-size: 8vw;
 $subtitle-font-color: #e8e8e8;
 $subtitle-font-size: 3vw;
-$overlay-gradient-color-1: rgba(241, 45, 45, 0.7);
-$overlay-gradient-color-2: rgba(76, 0, 148, 0.7);
+$overlay-gradient-color-1: rgba(175, 45, 241, 0.5);
+$overlay-gradient-color-2: rgba(45, 60, 241, 0.5);
 
 .full-page {
   width: 100vw;
@@ -41,8 +41,8 @@ $overlay-gradient-color-2: rgba(76, 0, 148, 0.7);
 
     .login{
       position: absolute;
-      top: 1vh;
-      right: 1vw;
+      top: 3vh;
+      right: 3vw;
       text-shadow: none;
       @include fancylinks(white, $primary-color)
     }
@@ -65,6 +65,48 @@ $overlay-gradient-color-2: rgba(76, 0, 148, 0.7);
       padding: 5vh 0;
       width: 50vw;
       margin-top: 3vh;
+    }
+
+    .learn-more {
+      position: absolute;
+      bottom: 3vh;
+      left: 50%;
+      margin: 0 auto;
+      color: $white;
+      @include transform(translate(-50%, -50%));
+      @include transition(0.3s ease);
+      @include basic-links($white, $secondary-color);
+
+      .text {
+        opacity: 0;
+        display: block;
+        font-size: 1.5vw;
+        @include transform(translateY(30px));
+        @include transition(0.3s ease);
+      }
+
+      .arrow {
+        display: block;
+        font-size: 5vh;
+        @include transform(translateY(-30px));
+        @include transition(0.3s ease);
+      }
+    }
+
+    .learn-more:hover {
+      color: $secondary-color;
+      @include transition(0.3s ease);
+
+      .text {
+        opacity: 1;
+        @include transform(translateY(0));
+        @include transition(0.3s ease);
+      }
+
+      .arrow {
+        @include transform(translateY(0));
+        @include transition(0.3s ease);
+      }
     }
   }
 }

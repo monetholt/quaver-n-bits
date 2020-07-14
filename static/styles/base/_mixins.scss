@@ -1,7 +1,7 @@
 // Fancy link underlining
 @mixin fancylinks($link-color, $hover-color) {
   @media (-webkit-min-device-pixel-ratio:0) {
-    a, nav a:visited, nav a:active, nav a:hover {
+    a, a:visited, a:active, a:hover {
       letter-spacing: 2px;
       color: $link-color;
       border-bottom: 2px solid transparent;
@@ -25,6 +25,17 @@
       opacity: 1;
       @include transform(scaleX(1));
     }
+  }
+}
+
+@mixin basic-links($link-color, $hover-color) {
+  a, a:visited, a:active {
+    color: $link-color;
+    @include transition(.3s ease-in-out);
+  }
+
+  a:hover {
+    color: $hover-color;
   }
 }
 

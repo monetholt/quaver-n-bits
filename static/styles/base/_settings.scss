@@ -77,7 +77,7 @@ $foundation-palette: (
 );
 $light-gray: #e6e6e6;
 $medium-gray: #cacaca;
-$dark-gray: #8a8a8a;
+$dark-gray: #212121;
 $black: #0a0a0a;
 $white: #fefefe;
 $yellow: #f1f1af;
@@ -298,7 +298,7 @@ $button-font-weight: null;
 $button-padding: 0.85em 1em;
 $button-margin: 0 0 $global-margin 0;
 $button-fill: solid;
-$button-background: scale-color($primary-color, $lightness: -30%);
+$button-background: scale-color($primary-color, $lightness: -40%);
 $button-background-hover: $primary-color;
 $button-color: $black;
 $button-color-alt: $white;
@@ -313,8 +313,8 @@ $button-sizes: (
 );
 $button-palette: $foundation-palette;
 $button-opacity-disabled: 0.25;
-$button-background-hover-lightness: 20%;
-$button-hollow-hover-lightness: 50%;
+$button-background-hover-lightness: 40%;
+$button-hollow-hover-lightness: -50%;
 $button-transition: background-color 0.25s ease-out, color 0.25s ease-out;
 $button-responsive-expanded: false;
 

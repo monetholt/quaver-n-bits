@@ -4,10 +4,20 @@ $subtitle-font-color: #e8e8e8;
 $subtitle-font-size: 3vw;
 $overlay-gradient-color-1: rgba(175, 45, 241, 0.5);
 $overlay-gradient-color-2: rgba(45, 60, 241, 0.5);
+$card-grid-bg-gradient-color-1: #41de98bb;
+$card-grid-bg-gradient-color-2: #41ded0bb;
+
+//$step-1-color: #2196F3;
+//$step-2-color: #009688;
+//$step-3-color: #4CAF50;
+//$step-colors: $step-1-color, $step-2-color, $step-3-color;
 
 .full-page {
   width: 100vw;
   height: 100vh;
+}
+
+#top {
   text-align: center;
   overflow: hidden;
 
@@ -37,7 +47,7 @@ $overlay-gradient-color-2: rgba(45, 60, 241, 0.5);
     z-index: 10;
     text-align: center;
     text-shadow: 4px 5px 6px rgba(25, 25, 25, 0.91);
-    @include gradient(to right,$overlay-gradient-color-1, $overlay-gradient-color-2);
+    @include gradient(to right, $overlay-gradient-color-1, $overlay-gradient-color-2);
 
     .login{
       position: absolute;
@@ -106,6 +116,81 @@ $overlay-gradient-color-2: rgba(45, 60, 241, 0.5);
       .arrow {
         @include transform(translateY(0));
         @include transition(0.3s ease);
+      }
+    }
+  }
+}
+
+#discover {
+  background-image: linear-gradient(to right, rgba(33, 33, 33, 0.07), rgba(33, 33, 33, 0)), url(../../img/discover_bg.png);
+
+  .discover-header {
+    padding: 5vh 5vw;
+    height: 30vh;
+
+    p {
+      padding: 2vh 10vw 0;
+    }
+
+    h1 {
+      font-family: $header-font;
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+
+  .discover-body {
+    height: 70vh;
+    @include gradient(to right, $card-grid-bg-gradient-color-1, $card-grid-bg-gradient-color-2);
+
+    #card-grid {
+      padding: 2vh 5vw;
+
+      //@for $i from 1 through length($step-colors) {
+      //  :nth-child(#{$i}) i {
+      //    color: nth($step-colors, $i);
+      //    border: 5px solid nth($step-colors, $i);
+      //  }
+      //}
+
+      .card {
+        background: transparent;
+        border: none;
+
+        .card-divider {
+          justify-content: center;
+          background: transparent;
+
+          i {
+            text-shadow: 4px 5px 6px rgba(25, 25, 25, 0.25);
+            font-size: 10vh;
+            color: $white;
+          }
+        }
+
+        .card-section {
+          color: $white;
+          text-shadow: 2px 2px 5px rgba(25, 25, 25, 0.25);
+
+          h4 {
+            font-family: $header-font;
+            font-weight: bold;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    .create-profile {
+      margin: 2vh 10vw;
+    }
+
+    .orbit {
+      margin: 0 20vh;
+
+      .docs-example-orbit-slide {
+        padding: 2rem 4rem;
+        color: $white;
       }
     }
   }

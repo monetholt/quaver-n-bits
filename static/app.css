@@ -3300,15 +3300,15 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
   [data-whatinput='mouse'] .orbit-bullets {
     outline: 0; }
   .orbit-bullets button {
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 0.8rem;
+    height: 0.8rem;
     margin: 0.1rem;
     border-radius: 50%;
-    background-color: #cacaca; }
+    background-color: #fefefe; }
     .orbit-bullets button:hover {
-      background-color: #8a8a8a; }
+      background-color: #f1f1af; }
     .orbit-bullets button.is-active {
-      background-color: #8a8a8a; }
+      background-color: #f1f1af; }
 
 .responsive-embed,
 .flex-video {
@@ -4770,19 +4770,21 @@ body {
 
 .full-page {
   width: 100vw;
-  height: 100vh;
+  height: 100vh; }
+
+#top {
   text-align: center;
   overflow: hidden; }
-  .full-page #videobg {
+  #top #videobg {
     width: inherit;
     height: inherit;
     filter: blur(10px);
     object-fit: cover;
     transform: scale(1.1); }
-  .full-page .underlay {
+  #top .underlay {
     position: relative;
     z-index: 0; }
-  .full-page .overlay {
+  #top .overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -4803,13 +4805,13 @@ body {
     /* For old Opera 11.1+ */
     background-image: linear-gradient(to right, rgba(175, 45, 241, 0.5), rgba(45, 60, 241, 0.5));
     /* Standard syntax; must be last */ }
-    .full-page .overlay .login {
+    #top .overlay .login {
       position: absolute;
       top: 3vh;
       right: 3vw;
       text-shadow: none; }
       @media (-webkit-min-device-pixel-ratio: 0) {
-        .full-page .overlay .login a, .full-page .overlay .login a:visited, .full-page .overlay .login a:active, .full-page .overlay .login a:hover {
+        #top .overlay .login a, #top .overlay .login a:visited, #top .overlay .login a:active, #top .overlay .login a:hover {
           letter-spacing: 2px;
           color: white;
           border-bottom: 2px solid transparent;
@@ -4818,7 +4820,7 @@ body {
           -ms-transition: 0.3s ease-in-out;
           -o-transition: 0.3s ease-in-out;
           transition: 0.3s ease-in-out; }
-        .full-page .overlay .login a:before {
+        #top .overlay .login a:before {
           content: "";
           position: absolute;
           width: 100%;
@@ -4836,27 +4838,27 @@ body {
           -ms-transition: 0.3s ease-in-out;
           -o-transition: 0.3s ease-in-out;
           transition: 0.3s ease-in-out; }
-        .full-page .overlay .login a:hover:before {
+        #top .overlay .login a:hover:before {
           opacity: 1;
           -webkit-transform: scaleX(1);
           -moz-transform: scaleX(1);
           -ms-transform: scaleX(1);
           transform: scaleX(1); } }
-    .full-page .overlay .title {
+    #top .overlay .title {
       font-size: 8vw;
       font-family: "Faster One", cursive;
       color: white; }
-    .full-page .overlay .subtitle {
+    #top .overlay .subtitle {
       font-size: 3vw;
       font-family: "Maven Pro", sans-serif;
       color: #e8e8e8; }
-    .full-page .overlay .get-started {
+    #top .overlay .get-started {
       font-size: 4vw;
       font-family: "Maven Pro", sans-serif;
       padding: 5vh 0;
       width: 50vw;
       margin-top: 3vh; }
-    .full-page .overlay .learn-more {
+    #top .overlay .learn-more {
       position: absolute;
       bottom: 3vh;
       left: 50%;
@@ -4871,16 +4873,16 @@ body {
       -ms-transition: 0.3s ease;
       -o-transition: 0.3s ease;
       transition: 0.3s ease; }
-      .full-page .overlay .learn-more a, .full-page .overlay .learn-more a:visited, .full-page .overlay .learn-more a:active {
+      #top .overlay .learn-more a, #top .overlay .learn-more a:visited, #top .overlay .learn-more a:active {
         color: #fefefe;
         -webkit-transition: 0.3s ease-in-out;
         -moz-transition: 0.3s ease-in-out;
         -ms-transition: 0.3s ease-in-out;
         -o-transition: 0.3s ease-in-out;
         transition: 0.3s ease-in-out; }
-      .full-page .overlay .learn-more a:hover {
+      #top .overlay .learn-more a:hover {
         color: #fffab0; }
-      .full-page .overlay .learn-more .text {
+      #top .overlay .learn-more .text {
         opacity: 0;
         display: block;
         font-size: 1.5vw;
@@ -4893,7 +4895,7 @@ body {
         -ms-transition: 0.3s ease;
         -o-transition: 0.3s ease;
         transition: 0.3s ease; }
-      .full-page .overlay .learn-more .arrow {
+      #top .overlay .learn-more .arrow {
         display: block;
         font-size: 5vh;
         -webkit-transform: translateY(-30px);
@@ -4905,14 +4907,14 @@ body {
         -ms-transition: 0.3s ease;
         -o-transition: 0.3s ease;
         transition: 0.3s ease; }
-    .full-page .overlay .learn-more:hover {
+    #top .overlay .learn-more:hover {
       color: #fffab0;
       -webkit-transition: 0.3s ease;
       -moz-transition: 0.3s ease;
       -ms-transition: 0.3s ease;
       -o-transition: 0.3s ease;
       transition: 0.3s ease; }
-      .full-page .overlay .learn-more:hover .text {
+      #top .overlay .learn-more:hover .text {
         opacity: 1;
         -webkit-transform: translateY(0);
         -moz-transform: translateY(0);
@@ -4923,7 +4925,7 @@ body {
         -ms-transition: 0.3s ease;
         -o-transition: 0.3s ease;
         transition: 0.3s ease; }
-      .full-page .overlay .learn-more:hover .arrow {
+      #top .overlay .learn-more:hover .arrow {
         -webkit-transform: translateY(0);
         -moz-transform: translateY(0);
         -ms-transform: translateY(0);
@@ -4933,3 +4935,51 @@ body {
         -ms-transition: 0.3s ease;
         -o-transition: 0.3s ease;
         transition: 0.3s ease; }
+
+#discover {
+  background-image: linear-gradient(to right, rgba(33, 33, 33, 0.07), rgba(33, 33, 33, 0)), url(../../img/discover_bg.png); }
+  #discover .discover-header {
+    padding: 5vh 5vw;
+    height: 30vh; }
+    #discover .discover-header p {
+      padding: 2vh 10vw 0; }
+    #discover .discover-header h1 {
+      font-family: "Maven Pro", sans-serif;
+      font-weight: bold;
+      text-align: center; }
+  #discover .discover-body {
+    height: 70vh;
+    background-image: -webkit-linear-gradient(to right, #41de98bb, #41ded0bb);
+    /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
+    background-image: -moz-linear-gradient(to right, #41de98bb, #41ded0bb);
+    /* For Firefox 3.6+ */
+    background-image: -o-linear-gradient(to right, #41de98bb, #41ded0bb);
+    /* For old Opera 11.1+ */
+    background-image: linear-gradient(to right, #41de98bb, #41ded0bb);
+    /* Standard syntax; must be last */ }
+    #discover .discover-body #card-grid {
+      padding: 2vh 5vw; }
+      #discover .discover-body #card-grid .card {
+        background: transparent;
+        border: none; }
+        #discover .discover-body #card-grid .card .card-divider {
+          justify-content: center;
+          background: transparent; }
+          #discover .discover-body #card-grid .card .card-divider i {
+            text-shadow: 4px 5px 6px rgba(25, 25, 25, 0.25);
+            font-size: 10vh;
+            color: #fefefe; }
+        #discover .discover-body #card-grid .card .card-section {
+          color: #fefefe;
+          text-shadow: 2px 2px 5px rgba(25, 25, 25, 0.25); }
+          #discover .discover-body #card-grid .card .card-section h4 {
+            font-family: "Maven Pro", sans-serif;
+            font-weight: bold;
+            text-align: center; }
+    #discover .discover-body .create-profile {
+      margin: 2vh 10vw; }
+    #discover .discover-body .orbit {
+      margin: 0 20vh; }
+      #discover .discover-body .orbit .docs-example-orbit-slide {
+        padding: 2rem 4rem;
+        color: #fefefe; }

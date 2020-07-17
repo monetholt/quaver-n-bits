@@ -21,9 +21,9 @@ app.use(express.static(path.join(__dirname, 'static')));
 // routes
 app.get('/', (req, res) => res.render('landing'));
 
-app.get('/profile',/*checkAuthenticated,*/function(req,res,next){
+app.get('/profile',/*checkAuthenticated,*/(req,res,next) => {
     try {
-        mysql.pool.query('CALL GetProfile(?)', [/*req.user.UserKey*/2], function(err, rows, fields) {
+        mysql.pool.query('CALL GetProfile(?)', [/*req.user.UserKey*/2], function(err, rows) {
            if(err) {
                throw(err);
            } else if(rows.length > 0) {
@@ -33,10 +33,11 @@ app.get('/profile',/*checkAuthenticated,*/function(req,res,next){
                    workSamples: rows[2]
                };
                res.render('profile', context);
+           } else {
+               throw(new ReferenceError("No profile found"));
            }
         });
     } catch(err) {
-        console.log(err);
         res.redirect('/profile?message=An unexpected error occurred retrieving your profile');
     }
 });

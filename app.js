@@ -1,7 +1,9 @@
 const express = require('express');
 const handlebars = require('express-handlebars');
 const path = require('path');
+var mysql = require('./dbcon.js');
 
+// constants
 const port = 3000;
 const app = express();
 
@@ -14,11 +16,30 @@ app.engine('handlebars', handlebars({
 }));
 
 // set up file location for static files
-app.use(express.static(path.join(__dirname, 'static')))
-app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'static')));
 
 // routes
 app.get('/', (req, res) => res.render('landing'));
+
+app.get('/profile',/*checkAuthenticated,*/function(req,res,next){
+    try {
+        mysql.pool.query('CALL GetProfile(?)', [/*req.user.UserKey*/2], function(err, rows, fields) {
+           if(err) {
+               throw(err);
+           } else if(rows.length > 0) {
+               let context = {
+                   profile: rows[0][0],
+                   instruments: rows[1],
+                   workSamples: rows[2]
+               };
+               res.render('profile', context);
+           }
+        });
+    } catch(err) {
+        console.log(err);
+        res.redirect('/profile?message=An unexpected error occurred retrieving your profile');
+    }
+});
 
 // start app
 app.listen(port, function(){

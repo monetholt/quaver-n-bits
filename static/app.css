@@ -4885,7 +4885,7 @@ body {
       #top .overlay .learn-more .text {
         opacity: 0;
         display: block;
-        font-size: 1.5vw;
+        font-size: 1rem;
         -webkit-transform: translateY(30px);
         -moz-transform: translateY(30px);
         -ms-transform: translateY(30px);

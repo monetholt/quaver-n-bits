@@ -2,8 +2,3 @@ node_modules
 package-lock.json
 dbcon.js
 .idea/
-/.vs
-/bin
-/obj/Debug
-/QuaverNBits.njsproj.user
-/QuaverNBits.njsproj

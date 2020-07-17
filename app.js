@@ -35,14 +35,12 @@ initializePassport(
             mysql.pool.query('SELECT * FROM Users WHERE Email = ? LIMIT 1', [email],
                 function (err, rows, fields) {
                     if (err) {
-                        console.log("An unexpected error has occurred trying to find user by email."); //an issue with our query or some other db problem
+                        //an issue with our query or some other db problem
                         reject(new Error('An unexpected error has occurred trying to find user by email.'));
-                    } else if (rows.length == 0) {
-                        console.log("User not found.");
+                    } else if (rows.length == 0) { //user not found
                         resolve( null );
                     } else {
-                        console.log("Found user by email: ", rows[0]);
-                        resolve( rows[0] );
+                        resolve( rows[0] ); //found user. send back to passport to authenticate
                     }
                 }
             );
@@ -54,14 +52,12 @@ initializePassport(
             mysql.pool.query('SELECT * FROM Users WHERE UserKey = ? LIMIT 1', [id],
                 function (err, rows, fields) {
                     if (err) {
-                        console.log("An unexpected error has occurred trying to find user by id."); //an issue with our query or some other db problem
+                        //an issue with our query or some other db problem
                         reject(new Error('An unexpected error has occurred trying to find user by id.'));
-                    } else if (rows.length == 0) {
-                        console.log("User not found.");
+                    } else if (rows.length == 0) { //user not found
                         resolve(null);
                     } else {
-                        console.log("Found user by ID: ", rows[0]);
-                        resolve(rows[0]);
+                        resolve(rows[0]);  //found user. User record will be available in session
                     }
                 }
             );
@@ -79,31 +75,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
+
 //any page requiring authentication needs to run checkAuthenticated first
-app.get('/', checkAuthenticated, function (req, res, next) {
-    console.log('sess; ',req.user);
+//PLACEHOLDER for landing page. 
+app.get('/index', checkAuthenticated, function (req, res, next) {
     res.render('index', { user: req.user });
 });
 
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
-app.get('/login', checkNotAuthenticated, function (req, res, next) {
-    res.render('login');
+//landing page does not need authentication, in fact we do not allow logged in users to access
+app.get('/', checkNotAuthenticated, function (req, res, next) {
+    res.render('landing', { successRegistration: req.flash('successRegistration'), errorRegistration: req.flash('errorRegistration')});
 });
 
 //passport.js will handle login page
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
+    successRedirect: '/index',
+    failureRedirect: '/',
     failureFlash: true
 }));
-
-//don't allow authenticated users to access register page
-app.get('/register', checkNotAuthenticated, function (req, res, next) {
-    var context = {};
-    context.message = req.body.msg; //an issue with our query or some other db problem
-
-    res.render('register', context);
-});
 
 app.post('/register', checkNotAuthenticated, async function (req, res) {
     try {
@@ -114,18 +104,22 @@ app.post('/register', checkNotAuthenticated, async function (req, res) {
 
             if (err) {
                 //an issue with our query or some other db problem
-                res.redirect('/register?message=An unexpected error has occurred');
+                req.flash('errorRegistration', 'An unexpected error has occurred');
+                res.redirect('/');
             } else if (rows.length > 0) {
-                res.redirect('/register?message=A user with this email already exists.');
+                req.flash('errorRegistration', 'A user with this email already exists');
+                res.redirect('/');
             } else {
                 mysql.pool.query("INSERT INTO `Users` (`FirstName`, `LastName`, `Email`, `Password`) VALUES (?, ?, ?, ?)",
                     [req.body.firstname, req.body.lastname, req.body.email, hashedPassword],
 
                     function (err, result) {
                         if (err) {
-                            res.redirect('/register?An unexpected error occurred adding user');
+                            req.flash('errorRegistration', 'An unexpected error occurred while creating new user account');
+                            res.redirect('/');
                         } else {
-                            res.redirect('/login'); //Successfully added user redirect to login
+                            req.flash('successRegistration', 'Registration successful! Please login to continue');
+                            res.redirect('/'); //Successfully added user. redirect back to landing page with success msg
                         }
                     })
             }
@@ -137,20 +131,23 @@ app.post('/register', checkNotAuthenticated, async function (req, res) {
 
 app.delete('/logout', (req, res) => {
     req.logOut();
-    res.redirect('/login');
+    res.redirect('/'); //on logout, redirect to landing page
 });
 
+//for pages accessible by authenticated users only
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
+        //TODO add check to see if user has created profile. If not direct them to create a profile
         return next();
     }
 
-    res.redirect('/login');
+    res.redirect('/'); //if not authenticated, bump to landing page
 }
 
+//for pages accessible by non-authenticated users only
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        return res.redirect('/');
+        return res.redirect('/index'); //if authenticated, bump to dashboard page
     }
     next();
 }

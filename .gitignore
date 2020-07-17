@@ -2,3 +2,11 @@ node_modules
 package-lock.json
 dbcon.js
 .idea/
+/.vs/quaver-n-bits/config/applicationhost.config
+/.vs/quaver-n-bits/v16
+/.vs
+/bin
+/obj/Debug
+*.njsproj
+*.user
+*.sln

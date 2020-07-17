@@ -23,8 +23,8 @@
                     </tr>
                     {{#each instruments}}
                         <tr>
-                            <td>{{Instrument}}</td>
-                            <td>{{Level}}</td>
+                            <td>{{InstrumentKey}} - {{Instrument}}</td>
+                            <td>{{LevelKey}} - {{Level}}</td>
                         </tr>
                     {{/each}}
                 </table>
@@ -40,7 +40,7 @@
                     </tr>
                     {{#each workSamples}}
                         <tr>
-                            <td>{{SampleLocation}}</td>
+                            <td>{{SampleKey}} - {{SampleLocation}}</td>
                         </tr>
                     {{/each}}
                 </table>

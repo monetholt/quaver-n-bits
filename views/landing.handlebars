@@ -5,9 +5,9 @@
             Sorry, your browser does not support HTML5 video.
         </video>
     </div>
-    <div class="overlay" data-open="registrationModal">
+    <div class="overlay">
         <div class="login">
-            <a href="#">Log In</a>
+            <a href="#" data-open="registrationModal">Log In</a>
         </div>
         <div class="learn-more">
             <a href="#discover" data-smooth-scroll data-animation-duration="1000" data-threshold="0" data-animation-easing="swing">
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="create-profile">
-            <button class="button secondary hollow large expanded" href="#">Create Your Profile</button>
+            <button class="button secondary hollow large expanded" href="#" data-open="registrationModal">Create Your Profile</button>
         </div>
         <div class="orbit" role="region" aria-label="Musician Finder Reviews" data-orbit>
             <ul class="orbit-container">
@@ -145,12 +145,12 @@
 <!--                <button data-slide="2"><span class="show-for-sr">Third slide details.</span></button>-->
 <!--                <button data-slide="3"><span class="show-for-sr">Fourth slide details.</span></button>-->
 <!--            </nav>-->
-        </div>
+        {{!-- </div>
         <div class="create-profile">
             <button class="button secondary hollow large expanded" href="#" data-open="registrationModal">Create Your Profile</button>
         </div>
     </div>
-</div>
+</div> --}}
 
 {{! This div handles the modal for registration/login }}
 <div class="reveal large" id="registrationModal" data-reveal> 

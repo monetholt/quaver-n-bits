@@ -88,7 +88,7 @@ $star-yellow: #ffeb3b;
       .text {
         opacity: 0;
         display: block;
-        font-size: 1.5vw;
+        font-size: 1rem;
         @include transform(translateY(30px));
         @include transition(0.3s ease);
       }

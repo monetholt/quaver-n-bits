@@ -4983,3 +4983,193 @@ body {
       #discover .discover-body .orbit .docs-example-orbit-slide {
         padding: 2rem 4rem;
         color: #fefefe; }
+
+.login-box {
+  box-shadow: 0 2px 4px rgba(10, 10, 10, 0.4);
+  background: #fefefe;
+  border-radius: 20px;
+  overflow: hidden; }
+  .login-box .or {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    min-width: 2.1em;
+    padding: 0.3em;
+    border-radius: 50%;
+    font-size: 0.6rem;
+    text-align: center;
+    font-size: 1.275rem;
+    background: #cacaca;
+    box-shadow: 0 2px 4px rgba(10, 10, 10, 0.4); }
+    @media print, screen and (max-width: 39.99875em) {
+      .login-box .or {
+        top: 85%; } }
+
+.login-box-title {
+  font-weight: 300;
+  font-size: 1.875rem;
+  margin-bottom: 1.25rem; }
+
+.login-box-form-section,
+.login-box-social-section-inner {
+  padding: 2.5rem; }
+
+.login-box-social-section {
+  background: url(../../img/login_photo_blur2.png);
+  background-size: cover;
+  background-position: center; }
+
+.login-box-input {
+  margin-bottom: 1.25rem;
+  height: 2rem;
+  border: 0;
+  padding-left: 0;
+  box-shadow: none;
+  border-bottom: 1px solid #aaf0d1;
+  font-weight: 400; }
+
+.login-box-input:focus {
+  color: #aaf0d1;
+  transition: 0.2s ease-in-out;
+  box-shadow: none;
+  border: 0;
+  border-bottom: 2px solid #aaf0d1; }
+
+.login-box-submit-button {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 1rem 0;
+  padding: 0.85em 1em;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  transition: background-color 0.25s ease-out, color 0.25s ease-out;
+  font-family: inherit;
+  font-size: 0.9rem;
+  -webkit-appearance: none;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+  border-radius: 20px;
+  text-transform: uppercase;
+  margin-bottom: 0; }
+  [data-whatinput='mouse'] .login-box-submit-button {
+    outline: 0; }
+  .login-box-submit-button, .login-box-submit-button.disabled, .login-box-submit-button[disabled], .login-box-submit-button.disabled:hover, .login-box-submit-button[disabled]:hover, .login-box-submit-button.disabled:focus, .login-box-submit-button[disabled]:focus {
+    background-color: #aaf0d1;
+    color: #0a0a0a; }
+  .login-box-submit-button:hover, .login-box-submit-button:focus {
+    background-color: #bbf3da;
+    color: #0a0a0a; }
+
+.login-box-submit-button:hover, .login-box-submit-button:focus {
+  box-shadow: 0 2px 4px rgba(10, 10, 10, 0.4); }
+
+.login-box-submit-button:active {
+  box-shadow: 0 1px 2px rgba(10, 10, 10, 0.4); }
+
+.login-box-social-button-facebook {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 1rem 0;
+  padding: 0.85em 1em;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  transition: background-color 0.25s ease-out, color 0.25s ease-out;
+  font-family: inherit;
+  font-size: 0.9rem;
+  -webkit-appearance: none;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase; }
+  [data-whatinput='mouse'] .login-box-social-button-facebook {
+    outline: 0; }
+  .login-box-social-button-facebook, .login-box-social-button-facebook.disabled, .login-box-social-button-facebook[disabled], .login-box-social-button-facebook.disabled:hover, .login-box-social-button-facebook[disabled]:hover, .login-box-social-button-facebook.disabled:focus, .login-box-social-button-facebook[disabled]:focus {
+    background-color: #3b5998;
+    color: #fefefe; }
+  .login-box-social-button-facebook:hover, .login-box-social-button-facebook:focus {
+    background-color: #5375bc;
+    color: #fefefe; }
+
+.login-box-social-button-twitter {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 1rem 0;
+  padding: 0.85em 1em;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  transition: background-color 0.25s ease-out, color 0.25s ease-out;
+  font-family: inherit;
+  font-size: 0.9rem;
+  -webkit-appearance: none;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase; }
+  [data-whatinput='mouse'] .login-box-social-button-twitter {
+    outline: 0; }
+  .login-box-social-button-twitter, .login-box-social-button-twitter.disabled, .login-box-social-button-twitter[disabled], .login-box-social-button-twitter.disabled:hover, .login-box-social-button-twitter[disabled]:hover, .login-box-social-button-twitter.disabled:focus, .login-box-social-button-twitter[disabled]:focus {
+    background-color: #55acee;
+    color: #fefefe; }
+  .login-box-social-button-twitter:hover, .login-box-social-button-twitter:focus {
+    background-color: #77bdf1;
+    color: #fefefe; }
+
+.login-box-social-button-google {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0 1rem 0;
+  padding: 0.85em 1em;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  transition: background-color 0.25s ease-out, color 0.25s ease-out;
+  font-family: inherit;
+  font-size: 0.9rem;
+  -webkit-appearance: none;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase; }
+  [data-whatinput='mouse'] .login-box-social-button-google {
+    outline: 0; }
+  .login-box-social-button-google, .login-box-social-button-google.disabled, .login-box-social-button-google[disabled], .login-box-social-button-google.disabled:hover, .login-box-social-button-google[disabled]:hover, .login-box-social-button-google.disabled:focus, .login-box-social-button-google[disabled]:focus {
+    background-color: #dd4b39;
+    color: #fefefe; }
+  .login-box-social-button-google:hover, .login-box-social-button-google:focus {
+    background-color: #e46f61;
+    color: #fefefe; }
+
+[class*="login-box-social-button-"]:hover,
+[class*="login-box-social-button-"]:focus {
+  box-shadow: 0 2px 4px rgba(10, 10, 10, 0.4); }
+
+.login-box-social-headline {
+  display: block;
+  margin-bottom: 2.5rem;
+  font-size: 1.875rem;
+  color: #fefefe;
+  text-align: center; }

@@ -5,7 +5,7 @@
             Sorry, your browser does not support HTML5 video.
         </video>
     </div>
-    <div class="overlay">
+    <div class="overlay" data-open="registrationModal">
         <div class="login">
             <a href="#">Log In</a>
         </div>
@@ -22,7 +22,7 @@
             Connect with musicians. Jam. Repeat.
         </div>
         <div class="get-started">
-            <button class="button large expanded" href="#">Get Started</button>
+            <button class="button large expanded" data-open="registrationModal">Get Started</button>
         </div>
     </div>
 </div>
@@ -101,7 +101,45 @@
 <!--            </nav>-->
         </div>
         <div class="create-profile">
-            <button class="button secondary hollow large expanded" href="#">Create Your Profile</button>
+            <button class="button secondary hollow large expanded" href="#" data-open="registrationModal">Create Your Profile</button>
         </div>
     </div>
 </div>
+
+{{! This div handles the modal for registration/login }}
+<div class="reveal large" id="registrationModal" data-reveal> 
+    <div class="row">
+    <div class="login-box">
+        <div class="row collapse expanded">
+        <div class="small-12 medium-6 column small-order-2 medium-order-1">
+            <div class="login-box-form-section">
+            <h1 class="login-box-title">Sign up</h1>
+            <input class="login-box-input" type="text" name="username" placeholder="Username" />
+            <input class="login-box-input" type="email" name="email" placeholder="E-mail" />
+            <input class="login-box-input" type="password" name="password" placeholder="Password" />
+            <input class="login-box-input" type="password" name="password2" placeholder="Retype password" />
+            <input class="login-box-submit-button" type="submit" name="signup_submit" value="Sign me up" />
+            </div>
+        </div>
+        <div class="small-12 medium-6 column small-order-1 medium-order-2 login-box-social-section">
+            <div class="login-box-social-section-inner">
+                <span class="login-box-social-headline">Sign in with your social network</span>
+                <a class="login-box-social-button-facebook">Log in with facebook</a>
+                <a class="login-box-social-button-twitter">Log in with Twitter</a>
+                <a class="login-box-social-button-google">Log in with Google+</a>
+                <div class="login-box-form-section">
+                    <span class="or">OR</span>
+                    <input class="login-box-input" type="email" name="email" placeholder="E-mail" />
+                    <input class="login-box-input" type="password" name="password" placeholder="Password" />
+                    <input class="login-box-submit-button" type="submit" name="signin_submit" value="Sign in" />
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+    <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{{! End of registration div }}

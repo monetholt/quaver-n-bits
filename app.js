@@ -2,7 +2,6 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const path = require('path');
 
-// constants
 const port = 3000;
 const app = express();
 
@@ -15,7 +14,11 @@ app.engine('handlebars', handlebars({
 }));
 
 // set up file location for static files
+app.use(express.static(path.join(__dirname, 'static')))
 app.use('/static', express.static(path.join(__dirname, 'static')));
+
+// routes
+app.get('/', (req, res) => res.render('landing'));
 
 // start app
 app.listen(port, function(){

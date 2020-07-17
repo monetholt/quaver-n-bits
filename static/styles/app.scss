@@ -1,0 +1,16 @@
+@import "base/_settings";
+@import '../foundation/scss/foundation';
+
+// Foundation
+@include foundation-everything;
+
+// Fonts
+@import "base/_fonts";
+
+// Mixins
+@import "base/_mixins";
+
+// Views
+@import "_main";
+@import "views/_landing";
+@import "views/_registration";

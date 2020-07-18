@@ -4768,11 +4768,8 @@ body {
   font-family: "Baloo Da 2", cursive;
   margin: 0; }
 
-span {
-  outline: none; }
-
-button {
-  outline: none; }
+span, button, input {
+  outline: none !important; }
 
 .full-page {
   width: 100vw;
@@ -5052,6 +5049,8 @@ button {
   box-shadow: none;
   border-bottom: 1px solid #aaf0d1;
   font-weight: 400; }
+  .login-box-input::placeholder {
+    padding-left: 20px; }
 
 .login-box-input:focus {
   color: #aaf0d1;

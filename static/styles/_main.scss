@@ -6,10 +6,9 @@ body {
   margin: 0;
 }
 
-span {
-  outline: none;
+span, button, input {
+  outline: none !important;
 }
 
-button {
-  outline: none;
-}
+
+

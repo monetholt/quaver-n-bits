@@ -62,6 +62,10 @@ $social-brand-tumblr: #32506d;
   box-shadow: none;
   border-bottom: 1px solid $primary-color;
   font-weight: 400;
+
+  &::placeholder {
+    padding-left: 20px;
+  }
 }
 
 .login-box-input:focus {

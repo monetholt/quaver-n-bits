@@ -75,6 +75,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
+// TEMPORARY: Setting up basic route to view/edit easily.
+app.get('/create-profile', (req, res) => {
+    res.render('create-profile');
+});
 
 //any page requiring authentication needs to run checkAuthenticated first
 //PLACEHOLDER for landing page. 

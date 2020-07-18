@@ -1,0 +1,52 @@
+$nav-height: 60px;
+$logo-size: 46px;
+$avatar-size: 44px;
+$avatar-icon-size: 36px;
+$nav-color-1: rgba(0,0,0,1);
+$nav-color-2: rgba(10,10,10,0.95);
+$logo-gradient-1: #97ec9d;
+$logo-gradient-2: #7accde;
+$logo-text-border: 0.3px rgba(151, 236, 157, 0.1);
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: $nav-height;
+  @include gradient($nav-color-1, $nav-color-2);
+  @include boxshadow(2px 2px 5px 1px rgba(0, 0, 0, 0.5));
+
+  .logo {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+    font-family: $title-font;
+    color: $white;
+    height: $nav-height;
+
+    h3 {
+      margin-bottom: 0;
+      @include gradient(to right, $logo-gradient-1, $logo-gradient-2);
+      @include backgroundClip(text);
+      -webkit-text-fill-color: transparent;
+      @supports (-webkit-text-stroke: $logo-text-border) {
+          -webkit-text-stroke: $logo-text-border;
+      }
+    }
+  }
+
+  .avatar {
+    position: absolute;
+    top: ($nav-height - $avatar-size) / 2;
+    right: ($nav-height - $avatar-size) / 2;
+    height: $avatar-size;
+    width: $avatar-size;
+    font-size: $avatar-icon-size;
+    text-align: center;
+    color: $white;
+    border: 2px solid $white;
+    border-radius: 25px;
+    overflow: hidden;
+  }
+}

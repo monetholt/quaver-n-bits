@@ -79,6 +79,12 @@
   background:         linear-gradient($args); /* Standard syntax */
 }
 
+@mixin backgroundClip($item) {
+  -webkit-background-clip: $item;
+  -moz-background-clip: $item;
+  background-clip: $item;
+}
+
 @mixin radialgradientBG($args...){
   background: -webkit-radial-gradient($args); /* For Safari 5.1 to 6.0 */
   background: -o-radial-gradient($args); /* For Opera 11.1 to 12.0 */

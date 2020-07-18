@@ -4771,6 +4771,9 @@ body {
 span, button, input {
   outline: none !important; }
 
+main {
+  margin-top: 60px; }
+
 .full-page {
   width: 100vw;
   height: 100vh; }
@@ -5195,3 +5198,57 @@ span, button, input {
   font-size: 1.875rem;
   color: #fefefe;
   text-align: center; }
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 60px;
+  background-image: -webkit-linear-gradient(black, rgba(10, 10, 10, 0.95));
+  /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
+  background-image: -moz-linear-gradient(black, rgba(10, 10, 10, 0.95));
+  /* For Firefox 3.6+ */
+  background-image: -o-linear-gradient(black, rgba(10, 10, 10, 0.95));
+  /* For old Opera 11.1+ */
+  background-image: linear-gradient(black, rgba(10, 10, 10, 0.95));
+  /* Standard syntax; must be last */
+  -webkit-box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5); }
+  nav .logo {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+    font-family: "Faster One", cursive;
+    color: #fefefe;
+    height: 60px; }
+    nav .logo h3 {
+      margin-bottom: 0;
+      background-image: -webkit-linear-gradient(to right, #97ec9d, #7accde);
+      /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
+      background-image: -moz-linear-gradient(to right, #97ec9d, #7accde);
+      /* For Firefox 3.6+ */
+      background-image: -o-linear-gradient(to right, #97ec9d, #7accde);
+      /* For old Opera 11.1+ */
+      background-image: linear-gradient(to right, #97ec9d, #7accde);
+      /* Standard syntax; must be last */
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent; }
+      @supports (-webkit-text-stroke: 0.3px rgba(151, 236, 157, 0.1)) {
+        nav .logo h3 {
+          -webkit-text-stroke: 0.3px rgba(151, 236, 157, 0.1); } }
+  nav .avatar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    height: 44px;
+    width: 44px;
+    font-size: 36px;
+    text-align: center;
+    color: #fefefe;
+    border: 2px solid #fefefe;
+    border-radius: 25px;
+    overflow: hidden; }

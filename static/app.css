@@ -4768,6 +4768,9 @@ body {
   font-family: "Baloo Da 2", cursive;
   margin: 0; }
 
+span, button, input {
+  outline: none !important; }
+
 .full-page {
   width: 100vw;
   height: 100vh; }
@@ -4814,6 +4817,7 @@ body {
         #top .overlay .login a, #top .overlay .login a:visited, #top .overlay .login a:active, #top .overlay .login a:hover {
           letter-spacing: 2px;
           color: white;
+          outline: none;
           border-bottom: 2px solid transparent;
           -webkit-transition: 0.3s ease-in-out;
           -moz-transition: 0.3s ease-in-out;
@@ -4875,6 +4879,7 @@ body {
       transition: 0.3s ease; }
       #top .overlay .learn-more a, #top .overlay .learn-more a:visited, #top .overlay .learn-more a:active {
         color: #fefefe;
+        outline: none;
         -webkit-transition: 0.3s ease-in-out;
         -moz-transition: 0.3s ease-in-out;
         -ms-transition: 0.3s ease-in-out;
@@ -4996,6 +5001,9 @@ body {
             color: #ffeb3b;
             padding: 7px 0; }
 
+.reveal {
+  outline: none; }
+
 .login-box {
   box-shadow: 0 2px 4px rgba(10, 10, 10, 0.4);
   background: #fefefe;
@@ -5041,6 +5049,8 @@ body {
   box-shadow: none;
   border-bottom: 1px solid #aaf0d1;
   font-weight: 400; }
+  .login-box-input::placeholder {
+    padding-left: 20px; }
 
 .login-box-input:focus {
   color: #aaf0d1;
@@ -5076,7 +5086,7 @@ body {
     background-color: #aaf0d1;
     color: #0a0a0a; }
   .login-box-submit-button:hover, .login-box-submit-button:focus {
-    background-color: #bbf3da;
+    background-color: #ccf6e3;
     color: #0a0a0a; }
 
 .login-box-submit-button:hover, .login-box-submit-button:focus {
@@ -5112,7 +5122,7 @@ body {
     background-color: #3b5998;
     color: #fefefe; }
   .login-box-social-button-facebook:hover, .login-box-social-button-facebook:focus {
-    background-color: #5375bc;
+    background-color: #7e97cd;
     color: #fefefe; }
 
 .login-box-social-button-twitter {
@@ -5142,7 +5152,7 @@ body {
     background-color: #55acee;
     color: #fefefe; }
   .login-box-social-button-twitter:hover, .login-box-social-button-twitter:focus {
-    background-color: #77bdf1;
+    background-color: #99cdf5;
     color: #fefefe; }
 
 .login-box-social-button-google {
@@ -5172,7 +5182,7 @@ body {
     background-color: #dd4b39;
     color: #fefefe; }
   .login-box-social-button-google:hover, .login-box-social-button-google:focus {
-    background-color: #e46f61;
+    background-color: #eb9388;
     color: #fefefe; }
 
 [class*="login-box-social-button-"]:hover,

@@ -4,6 +4,7 @@
     a, a:visited, a:active, a:hover {
       letter-spacing: 2px;
       color: $link-color;
+      outline: none;
       border-bottom: 2px solid transparent;
       @include transition(.3s ease-in-out)
     }
@@ -31,6 +32,7 @@
 @mixin basic-links($link-color, $hover-color) {
   a, a:visited, a:active {
     color: $link-color;
+    outline: none;
     @include transition(.3s ease-in-out);
   }
 

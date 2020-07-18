@@ -14,6 +14,10 @@ $social-brand-github: #000000;
 $social-brand-tumblr: #32506d;
 
 
+.reveal {
+  outline: none;
+}
+
 .login-box {
   box-shadow: $login-box-shadow;
   background: $login-box-bg;

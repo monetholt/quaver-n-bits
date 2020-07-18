@@ -145,47 +145,79 @@
 <!--                <button data-slide="2"><span class="show-for-sr">Third slide details.</span></button>-->
 <!--                <button data-slide="3"><span class="show-for-sr">Fourth slide details.</span></button>-->
 <!--            </nav>-->
-        {{!-- </div>
-        <div class="create-profile">
-            <button class="button secondary hollow large expanded" href="#" data-open="registrationModal">Create Your Profile</button>
-        </div>
-    </div>
-</div> --}}
-
-{{! This div handles the modal for registration/login }}
-<div class="reveal large" id="registrationModal" data-reveal> 
+{{! This div handles the modal for registration/login}}
+<div class="reveal large" id="registrationModal" data-reveal>
     <div class="row">
-    <div class="login-box">
-        <div class="row collapse expanded">
-        <div class="small-12 medium-6 column small-order-2 medium-order-1">
-            <div class="login-box-form-section">
-            <h1 class="login-box-title">Sign up</h1>
-            <input class="login-box-input" type="text" name="username" placeholder="Username" />
-            <input class="login-box-input" type="email" name="email" placeholder="E-mail" />
-            <input class="login-box-input" type="password" name="password" placeholder="Password" />
-            <input class="login-box-input" type="password" name="password2" placeholder="Retype password" />
-            <input class="login-box-submit-button" type="submit" name="signup_submit" value="Sign me up" />
-            </div>
-        </div>
-        <div class="small-12 medium-6 column small-order-1 medium-order-2 login-box-social-section">
-            <div class="login-box-social-section-inner">
-                <span class="login-box-social-headline">Sign in with your social network</span>
-                <a class="login-box-social-button-facebook">Log in with facebook</a>
-                <a class="login-box-social-button-twitter">Log in with Twitter</a>
-                <a class="login-box-social-button-google">Log in with Google+</a>
-                <div class="login-box-form-section">
-                    <span class="or">OR</span>
-                    <input class="login-box-input" type="email" name="email" placeholder="E-mail" />
-                    <input class="login-box-input" type="password" name="password" placeholder="Password" />
-                    <input class="login-box-submit-button" type="submit" name="signin_submit" value="Sign in" />
+        <div class="login-box">
+            <div class="row collapse expanded">
+                <div class="small-12 medium-6 column small-order-2 medium-order-1">
+                    <form action="/register" method="POST">
+                        <div class="login-box-form-section">
+                            {{#if successRegistration}}
+                            <div style="color: green">{{successRegistration}}</div>
+                            {{/if}}
+                            <h1 class="login-box-title">Sign up</h1>
+                            <input class="login-box-input" type="text" name="firstname" placeholder="First Name" />
+                            <input class="login-box-input" type="text" name="lastname" placeholder="Last Name" />
+                            <input class="login-box-input" type="email" name="email" placeholder="E-mail" />
+                            <input class="login-box-input" type="password" name="password" placeholder="Password" />
+                            <input class="login-box-input" type="password" name="password2" placeholder="Retype password" />
+                            <input class="login-box-submit-button" type="submit" name="signup_submit" value="Sign me up" />
+                            {{#if errorRegistration}}
+                            <div style="color: red">{{errorRegistration}}</div>
+                            {{/if}}
+                        </div>
+                    </form>
+                </div>
+                <div class="small-12 medium-6 column small-order-1 medium-order-2 login-box-social-section">
+                    <div class="login-box-social-section-inner">
+                        <span class="login-box-social-headline">Sign in with your social network</span>
+                        <a class="login-box-social-button-facebook">Log in with facebook</a>
+                        <a class="login-box-social-button-twitter">Log in with Twitter</a>
+                        <a class="login-box-social-button-google">Log in with Google+</a>
+                        <form action="/login" method="POST">
+                            <div class="login-box-form-section">
+                                <span class="or">OR</span>
+                                <input class="login-box-input" type="email" name="email" placeholder="E-mail" />
+                                <input class="login-box-input" type="password" name="password" placeholder="Password" />
+                                <input class="login-box-submit-button" type="submit" name="signin_submit" value="Sign in" />
+                                {{#if messages.error}}
+                                <div style="color: red">{{messages.error}}</div>
+                                {{/if}}
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-        </div>
-    </div>
     </div>
     <button class="close-button" data-close aria-label="Close modal" type="button">
-    <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true">&times;</span>
     </button>
 </div>
 {{! End of registration div }}
+
+{{#if messages.error}}
+<script type="text/javascript">
+    //show the registration/login popup on load if there was a login error
+    $(function () {
+        $("#registrationModal").foundation('open');
+    });
+</script>
+{{/if}}
+{{#if errorRegistration}}
+<script type="text/javascript">
+    //show the registration/login popup on load if there was a registration error
+    $(function () {
+        $("#registrationModal").foundation('open');
+    });
+</script>
+{{/if}}
+{{#if successRegistration}}
+<script type="text/javascript">
+    //show the registration/login popup on load if there was a registration error
+    $(function () {
+        $("#registrationModal").foundation('open');
+    });
+</script>
+{{/if}}

@@ -2360,8 +2360,7 @@ ul.no-bullet, ol.no-bullet {
     float: right;
     margin-left: 1em; }
   .button.dropdown.hollow::after, .button.dropdown.clear::after {
-    border-top-color: #25d185; }
-  .button.dropdown.hollow.primary::after, .button.dropdown.clear.primary::after {
+    border-top-color: #25d185; }  .button.dropdown.hollow.primary::after, .button.dropdown.clear.primary::after {
     border-top-color: #aaf0d1; }
   .button.dropdown.hollow.secondary::after, .button.dropdown.clear.secondary::after {
     border-top-color: #fffab0; }

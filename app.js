@@ -8,6 +8,7 @@ const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
 
+// constants
 const port = 3000;
 const app = express();
 
@@ -20,8 +21,7 @@ app.engine('handlebars', handlebars({
 }));
 
 // set up file location for static files
-app.use(express.static(path.join(__dirname, 'static')))
-app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'static')));
 
 app.use(express.urlencoded({ extended: false }));
 //const users = [];
@@ -77,7 +77,7 @@ app.use(methodOverride('_method'));
 
 
 //any page requiring authentication needs to run checkAuthenticated first
-//PLACEHOLDER for landing page. 
+//PLACEHOLDER for landing page.
 app.get('/index', checkAuthenticated, function (req, res, next) {
     res.render('index', { user: req.user });
 });
@@ -132,6 +132,27 @@ app.post('/register', checkNotAuthenticated, async function (req, res) {
 app.delete('/logout', (req, res) => {
     req.logOut();
     res.redirect('/'); //on logout, redirect to landing page
+});
+
+app.get('/profile',checkAuthenticated,(req,res,next) => {
+    try {
+        mysql.pool.query('CALL GetProfile(?)', [req.user.UserKey], function(err, rows) {
+            if(err) {
+                throw(err);
+            } else if(rows.length > 0) {
+                let context = {
+                    profile: rows[0][0],
+                    instruments: rows[1],
+                    workSamples: rows[2]
+                };
+                res.render('profile', context);
+            } else {
+                throw(new ReferenceError("No profile found"));
+            }
+        });
+    } catch(err) {
+        res.redirect('/profile?message=An unexpected error occurred retrieving your profile');
+    }
 });
 
 //for pages accessible by authenticated users only

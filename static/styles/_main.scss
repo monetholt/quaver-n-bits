@@ -11,7 +11,14 @@ span, button, input {
 }
 
 main {
-  margin-top: 60px;
+  padding-top: $nav-height;
+
+  .main-container {
+    margin: 5vh 5vw;
+    padding: 2vh 2vw;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+  }
 }
 
 

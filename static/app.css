@@ -4772,7 +4772,12 @@ span, button, input {
   outline: none !important; }
 
 main {
-  margin-top: 60px; }
+  padding-top: 60px; }
+  main .main-container {
+    margin: 5vh 5vw;
+    padding: 2vh 2vw;
+    border: 1px solid #aaa;
+    border-radius: 5px; }
 
 .full-page {
   width: 100vw;
@@ -5198,6 +5203,14 @@ main {
   font-size: 1.875rem;
   color: #fefefe;
   text-align: center; }
+
+.create-profile-header {
+  text-align: center; }
+  .create-profile-header h1 {
+    font-family: "Maven Pro", sans-serif;
+    font-weight: bold; }
+  .create-profile-header p {
+    font-size: 1rem; }
 
 nav {
   position: fixed;

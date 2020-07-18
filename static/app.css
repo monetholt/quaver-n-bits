@@ -5262,6 +5262,24 @@ nav {
     font-size: 36px;
     text-align: center;
     color: #fefefe;
-    border: 2px solid #fefefe;
-    border-radius: 25px;
-    overflow: hidden; }
+    border-radius: 25px; }
+    nav .avatar .avatar-image {
+      overflow: hidden;
+      border: 2px solid #fefefe;
+      height: inherit;
+      width: inherit;
+      border-radius: inherit; }
+    nav .avatar .nav-menu {
+      position: absolute;
+      top: 52px;
+      width: 20vw;
+      right: 0;
+      z-index: 20;
+      background: #fff;
+      border: 1px solid #eee;
+      box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.5); }
+    nav .avatar .menu-item {
+      font-size: 1.2rem;
+      padding: 10px; }
+      nav .avatar .menu-item a {
+        color: #212121; }

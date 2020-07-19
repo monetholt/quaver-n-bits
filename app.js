@@ -179,8 +179,45 @@ app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
     }
 });
 
+app.get('/profile/instruments',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'SELECT InstrumentKey, Instrument, SearchTerm FROM InstrumentLookup',
+            [],
+            function(err, rows) {
+                if(err) {
+                    throw(err);
+                } else if(rows.length > 0) {
+                    res.send(rows);
+                } else {
+                    res.send(null);
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'SELECT LevelKey, Level FROM LevelLookup',
+            [],
+            function(err, rows) {
+                if(err) {
+                    throw(err);
+                } else if(rows.length > 0) {
+                    res.send(rows);
+                } else {
+                    res.send(null);
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
 //TODO: potentially accept an array of instruments?
-//TODO: allow users to add instruments not already in InstrumentLookup?
 app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
@@ -203,8 +240,8 @@ app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
 app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
-            'UPDATE ProfileInstruments SET InstrumentID = ?, LevelID = ?, LastUpdated = NOW() WHERE ProfileID = ?',
-            [req.body.instrumentId, req.body.levelId, req.body.ProfileKey],
+            'UPDATE ProfileInstruments SET LevelID = ?, LastUpdated = NOW() WHERE ProfileID = ? AND InstrumentID = ?',
+            [req.body.levelId, req.body.ProfileKey, req.body.instrumentId],
             function(err, result) {
                 if(err) {
                     throw(err);

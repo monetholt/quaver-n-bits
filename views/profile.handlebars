@@ -56,17 +56,52 @@
     <label for="lookingForWork">Public: <input type="radio" id="public" name="lookingForWork" value="1" {{#if profile.LookingForWork}}checked{{/if}}></label>
 </form>
 <form method="post" action="/profile/instrument/add">
-    <label for="instrumentId">Instrument: <select name="instrumentId">
-        {{#each instruments}}
-            <option value="{{InstrumentKey}}">{{Instrument}}/option>
-        {{/each}}
+    <label for="instrumentId">Instrument: <select name="instrumentId" id="instrumentId">
     </select></label>
-    <label for="levelId">Level: <select name="levelId">
-        {{#each levels}}
-        <option value="{{LevelKey}}">{{Level}}/option>
-        {{/each}}
+    <label for="levelId">Level: <select name="levelId" id="levelId">
     </select></label>
 </form>
 <form method="post" action="/profile/instrument/update">
 
 </form>
+<script lang="js">
+    let sent1 = false;
+    let sent2 = false;
+    window.onload = function () {
+        if(!sent1) {
+            let request = new XMLHttpRequest();
+            request.open('GET', '/profile/instruments');
+            request.responseType = 'json';
+
+            request.onload = function () {
+                let array = request.response;
+                let select = document.getElementById("instrumentId");
+                for (let instrument of array) {
+                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);
+                    select.appendChild(option);
+                }
+            };
+            request.send();
+            console.log("sending req 1");
+            sent1 = true;
+        }
+
+        if(!sent2) {
+            let request2 = new XMLHttpRequest();
+            request2.open('GET', '/profile/levels');
+            request2.responseType = 'json';
+
+            request2.onload = function () {
+                let array2 = request2.response;
+                let select2 = document.getElementById("levelId");
+                for (let level of array2) {
+                    let option2 = new Option(level.Level, level.LevelKey);
+                    select2.appendChild(option2);
+                }
+            };
+            request2.send();
+            console.log("sending req 2");
+            sent2 = true;
+        }
+    }
+</script>

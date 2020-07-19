@@ -7,6 +7,9 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
+var bodyParser = require('body-parser');
+const utils = require('./utils');
+
 
 // constants
 const port = 3000;
@@ -16,7 +19,7 @@ const app = express();
 app.set('view engine', 'handlebars');
 app.engine('handlebars', handlebars({
     layoutsDir: path.join(__dirname, 'views/layouts'),
-    defaultLayout:'main',
+    defaultLayout: 'main',
     partialsDir: path.join(__dirname, 'views/partials')
 }));
 
@@ -24,6 +27,7 @@ app.engine('handlebars', handlebars({
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 //const users = [];
 
 const initializePassport = require('./passport-config'); //setup passport for authentication
@@ -160,8 +164,105 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                 throw(new ReferenceError("No profile found"));
             }
         });
+    } catch (err) {
+        res.redirect(utils.errorRedirect('/profile', 'An unexpected error occurred retrieving your profile'));
+    }
+});
+
+// saves the info that is located in the Profiles table and returns true if the update was successful
+app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.get('/profile/instruments',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'SELECT InstrumentKey, Instrument, SearchTerm FROM InstrumentLookup',
+            [],
+            function(err, rows) {
+                if(err) {
+                    throw(err);
+                } else if(rows.length > 0) {
+                    res.send(rows);
+                } else {
+                    res.send(null);
+                }
+            });
     } catch(err) {
-        res.redirect('/profile?message=An unexpected error occurred retrieving your profile');
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'SELECT LevelKey, Level FROM LevelLookup',
+            [],
+            function(err, rows) {
+                if(err) {
+                    throw(err);
+                } else if(rows.length > 0) {
+                    res.send(rows);
+                } else {
+                    res.send(null);
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+//TODO: potentially accept an array of instruments?
+app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
+            [req.body.ProfileKey, req.body.instrumentId, req.body.levelId],
+                function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+
+                } else {
+
+                }
+        });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE ProfileInstruments SET LevelID = ?, LastUpdated = NOW() WHERE ProfileID = ? AND InstrumentID = ?',
+            [req.body.levelId, req.body.ProfileKey, req.body.instrumentId],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+
+                } else {
+
+                }
+        });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
 

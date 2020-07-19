@@ -1,4 +1,37 @@
 {{>nav}}
+<script type="text/javascript">
+    function checkSelected() {
+        let val = document.getElementById("instruments").value;
+        let opts = document.getElementById('instrument-list').childNodes;
+        for (let i = 0; i < opts.length; i++) {
+            if (opts[i].value === val) {
+                addSelection(val);
+                break;
+            }
+        }
+    }
+
+    function addSelection(inst) {
+        let selection = document.getElementById("instrument-selection");
+        let item = document.createElement('div');
+        item.className = 'instrument-selection-item';
+        item.id = inst;
+        item.innerHTML = `
+            ${inst}
+            <select class="selection-level" name="selection-level" id="selection-level-${inst.toLowerCase()}">
+                <option disabled selected value> -- Skill Level -- </option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Expert">Expert</option>
+                <option value="Master">Master</option>
+            </select>
+            <div class="delete-selection">X</div>
+        `;
+
+        selection.appendChild(item);
+    }
+</script>
 <main>
     <div class="main-container">
         <div class="create-profile-header">
@@ -6,10 +39,36 @@
             <p>You're on your way to connect with other awesome musicians like yourself!</p>
             <p>Let's find out a little bit more about you first.</p>
         </div>
-    </div>
-    <div id="profile-form">
-        <form>
+        <div id="profile-form">
+            <form>
+                <table>
+                    <tr>
+                        <td>
+                            <label for="instruments">
+                                What instrument(s) do you play?
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
+                            <datalist id="instrument-list">
+                                {{#each instruments}}
+                                <option value="{{Instrument}}">
+                                {{/each}}
+                            </datalist>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="instrument-selection">
 
-        </form>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
     </div>
 </main>
+

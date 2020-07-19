@@ -76,7 +76,13 @@ app.use(passport.session());
 app.use(methodOverride('_method'));
 
 app.get('/create-profile',checkAuthenticated,(req,res) => {
-    res.render('create-profile', { user: req.user });
+    mysql.pool.query("SELECT Instrument FROM InstrumentLookup",(error, results) => {
+        if(error) {
+            res.write(JSON.stringify(error));
+            res.end();
+        }
+        res.render('create-profile', { user: req.user, instruments: results });
+    });
 });
 
 //any page requiring authentication needs to run checkAuthenticated first

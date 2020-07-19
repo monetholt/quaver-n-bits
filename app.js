@@ -217,7 +217,7 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
     }
 });
 
-//TODO: potentially accept an array of instruments?
+// inserts an instrument and associated level and returns true if the insert was successful
 app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
@@ -227,9 +227,9 @@ app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
                 if(err) {
                     throw(err);
                 } else if(result.changedRows === 1) {
-
+                    res.send(true);
                 } else {
-
+                    throw(new ReferenceError("Must save profile before adding instruments."));
                 }
         });
     } catch(err) {
@@ -237,6 +237,7 @@ app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
     }
 });
 
+// updates an instrument and associated level and returns true if the update was successful
 app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
@@ -246,9 +247,9 @@ app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {
                 if(err) {
                     throw(err);
                 } else if(result.changedRows === 1) {
-
+                    res.send(true);
                 } else {
-
+                    throw(new ReferenceError("No such instrument for this user"));
                 }
         });
     } catch(err) {

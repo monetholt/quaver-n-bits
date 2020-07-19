@@ -80,12 +80,12 @@ app.use(passport.session());
 app.use(methodOverride('_method'));
 
 app.get('/create-profile',checkAuthenticated,(req,res) => {
-    mysql.pool.query("SELECT Instrument FROM InstrumentLookup",(error, results) => {
+    mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
         if(error) {
             res.write(JSON.stringify(error));
             res.end();
         }
-        res.render('create-profile', { user: req.user, instruments: results });
+        res.render('create-profile', { user: req.user, instruments: rows[0], levels: rows[1] });
     });
 });
 
@@ -238,7 +238,7 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
 });
 
 //TODO: potentially accept an array of instruments?
-app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
+app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
             'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
@@ -257,7 +257,7 @@ app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
     }
 });
 
-app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {
+app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
             'UPDATE ProfileInstruments SET LevelID = ?, LastUpdated = NOW() WHERE ProfileID = ? AND InstrumentID = ?',

@@ -59,7 +59,7 @@
                             <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
                             <datalist id="instrument-list">
                                 {{#each instruments}}
-                                <option value="{{Instrument}}">
+                                <option data-value="{{InstrumentKey}}" value="{{Instrument}}">
                                 {{/each}}
                             </datalist>
                         </td>

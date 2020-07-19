@@ -277,25 +277,6 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
     }
 });
 
-app.get('/profile/instruments/search', checkAuthenticated, (req, res, next) => {
-   try {
-       mysql.pool.query(
-           'CALL SearchInstruments(?)',
-           [req.query.q],
-           function(err, rows) {
-               if(err) {
-                   throw(err);
-               } else if(rows.length > 0) {
-                   res.send(rows);
-               } else {
-                   res.send(null);
-               }
-           });
-   } catch(err) {
-       res.redirect(utils.profileUpdateErrorRedirect());
-   }
-});
-
 //for pages accessible by authenticated users only
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {

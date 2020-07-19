@@ -31,6 +31,11 @@ $delete-red-hover: #e57373;
   border: 1px solid #eee;
   border-radius: 5px;
 
+  label {
+    font-size: 1.25rem;
+    text-indent: 10px;
+  }
+
   #instruments {
     text-indent: 10px;
   }
@@ -44,6 +49,10 @@ $delete-red-hover: #e57373;
     border: 1px solid #ccc;
     border-radius: 25px;
     animation: 0.5s ease-out 0s 1 slideInFromTop;
+
+    .instrument-selection-text {
+      margin-right: 20px;
+    }
 
     .selection-level {
       text-indent: 10px;

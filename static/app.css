@@ -5228,6 +5228,9 @@ main {
   padding: 10px 20px;
   border: 1px solid #eee;
   border-radius: 5px; }
+  #profile-form label {
+    font-size: 1.25rem;
+    text-indent: 10px; }
   #profile-form #instruments {
     text-indent: 10px; }
   #profile-form .instrument-selection-item {
@@ -5239,6 +5242,8 @@ main {
     border: 1px solid #ccc;
     border-radius: 25px;
     animation: 0.5s ease-out 0s 1 slideInFromTop; }
+    #profile-form .instrument-selection-item .instrument-selection-text {
+      margin-right: 20px; }
     #profile-form .instrument-selection-item .selection-level {
       text-indent: 10px;
       margin: 10px 0; }

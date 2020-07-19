@@ -17,7 +17,7 @@
         item.className = 'instrument-selection-item';
         item.id = inst;
         item.innerHTML = `
-            ${inst}
+            <div class="instrument-selection-text">${inst}</div>
             <select class="selection-level" name="selection-level" id="selection-level-${inst.toLowerCase()}">
                 <option disabled selected value> -- Skill Level -- </option>
                 <option value="Beginner">Beginner</option>
@@ -26,11 +26,16 @@
                 <option value="Expert">Expert</option>
                 <option value="Master">Master</option>
             </select>
-            <div class="delete-selection">X</div>
+            <div class="delete-selection" onclick="remove(this)">X</div>
         `;
 
         selection.appendChild(item);
     }
+
+    function remove(item) {
+        item.parentNode.remove();
+    }
+
 </script>
 <main>
     <div class="main-container">
@@ -51,7 +56,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <input list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
+                            <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
                             <datalist id="instrument-list">
                                 {{#each instruments}}
                                 <option value="{{Instrument}}">

@@ -218,7 +218,7 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
 });
 
 // inserts an instrument and associated level and returns true if the insert was successful
-app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
+app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
             'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
@@ -238,7 +238,7 @@ app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
 });
 
 // updates an instrument and associated level and returns true if the update was successful
-app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {
+app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
             'UPDATE ProfileInstruments SET LevelID = ?, LastUpdated = NOW() WHERE ProfileID = ? AND InstrumentID = ?',
@@ -255,6 +255,25 @@ app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
+});
+
+app.get('/profile/instruments/search', checkAuthenticated, (req, res, next) => {
+   try {
+       mysql.pool.query(
+           'CALL SearchInstruments(?)',
+           [req.query.q],
+           function(err, rows) {
+               if(err) {
+                   throw(err);
+               } else if(rows.length > 0) {
+                   res.send(rows);
+               } else {
+                   res.send(null);
+               }
+           });
+   } catch(err) {
+       res.redirect(utils.profileUpdateErrorRedirect());
+   }
 });
 
 //for pages accessible by authenticated users only

@@ -66,12 +66,14 @@
     <label for="webAddress">Website: <input type="text" name="webAddress" value="{{profile.Website}}"></label>
     <label for="lookingForWork">Private: <input type="radio" id="private" name="lookingForWork" value="0" {{#if profile.LookingForWork}}{{else}}checked{{/if}}></label>
     <label for="lookingForWork">Public: <input type="radio" id="public" name="lookingForWork" value="1" {{#if profile.LookingForWork}}checked{{/if}}></label>
+    <button type="submit" class="button primary">Submit</button>
 </form>
 <form method="post" action="/profile/instrument/add">
     <label for="instrumentId">Instrument: <select name="instrumentId" id="instrumentId">
     </select></label>
     <label for="levelId">Level: <select name="levelId" id="levelId">
     </select></label>
+    <button type="submit" class="button primary">Submit</button>
 </form>
 <form method="post" action="/profile/instrument/update">
 

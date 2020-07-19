@@ -47,3 +47,26 @@
             </td>
         </tr>
 </table>
+<form method="post" action="/profile/basic">
+    <input type="hidden" name="ProfileKey" value="{{profile.ProfileKey}}">
+    <label for="zipCode">Zip Code: <input type="text" name="zipCode" value="{{profile.ZipCode}}"></label>
+    <label for="phoneNumber">Phone Number: <input type="text" name="phoneNumber" value="{{profile.Phone}}"></label>
+    <label for="webAddress">Website: <input type="text" name="webAddress" value="{{profile.Website}}"></label>
+    <label for="lookingForWork">Private: <input type="radio" id="private" name="lookingForWork" value="0" {{#if profile.LookingForWork}}{{else}}checked{{/if}}></label>
+    <label for="lookingForWork">Public: <input type="radio" id="public" name="lookingForWork" value="1" {{#if profile.LookingForWork}}checked{{/if}}></label>
+</form>
+<form method="post" action="/profile/instrument/add">
+    <label for="instrumentId">Instrument: <select name="instrumentId">
+        {{#each instruments}}
+            <option value="{{InstrumentKey}}">{{Instrument}}/option>
+        {{/each}}
+    </select></label>
+    <label for="levelId">Level: <select name="levelId">
+        {{#each levels}}
+        <option value="{{LevelKey}}">{{Level}}/option>
+        {{/each}}
+    </select></label>
+</form>
+<form method="post" action="/profile/instrument/update">
+
+</form>

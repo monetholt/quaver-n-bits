@@ -202,14 +202,17 @@ app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
 
 app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {
     try {
-        mysql.pool.query('', [], function(err, result) {
-            if(err) {
-                throw(err);
-            } else if(result.changedRows === 1) {
+        mysql.pool.query(
+            'UPDATE ProfileInstruments SET InstrumentID = ?, LevelID = ?, LastUpdated = NOW() WHERE ProfileID = ?',
+            [req.body.instrumentId, req.body.levelId, req.body.ProfileKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
 
-            } else {
+                } else {
 
-            }
+                }
         });
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());

@@ -3,9 +3,9 @@ $avatar-size: 44px;
 $avatar-icon-size: 36px;
 $nav-color-1: rgba(0,0,0,1);
 $nav-color-2: rgba(10,10,10,0.95);
-$logo-gradient-1: #97ec9d;
-$logo-gradient-2: #7accde;
-$logo-text-border: 0.3px rgba(151, 236, 157, 0.1);
+$logo-gradient-1: #4bff7a;
+$logo-gradient-2: #0fd3ff;
+$logo-text-border: 0.4px rgba(151, 236, 157, 0.1);
 
 nav {
   position: fixed;
@@ -45,32 +45,65 @@ nav {
     text-align: center;
     color: $white;
     border-radius: 25px;
+    cursor: pointer;
 
+    &:hover {
+      .nav-menu {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
     .avatar-image {
       overflow: hidden;
       border: 2px solid $white;
       height: inherit;
       width: inherit;
       border-radius: inherit;
+
+      &:hover {
+        border: 2px solid $primary-color;
+        @include transition(0.2s linear);
+      }
     }
 
     .nav-menu {
       position: absolute;
       top: 52px;
-      width: 20vw;
-      right: 0;
+      width: 250px;
+      right: -8px;
       z-index: 20;
       background: $white;
       border: 1px solid #eee;
       @include boxshadow(2px 2px 5px 0 rgba(0,0,0,0.5));
+      transition: 0.3s ease-in-out;
+      opacity: 0;
+      transform: translateX(100%);
+      transform-origin: top right;
     }
 
     .menu-item {
       font-size: 1.2rem;
       padding: 10px;
 
+      &:hover {
+        background-color: $secondary-color;
+        @include transition(0.2s linear);
+      }
+
       a{
         color: $dark-gray;
+      }
+    }
+
+    .separator {
+      margin: 20px 0;
+      padding: 0 0 1px 0 !important;
+      background-color: #eee;
+    }
+
+    .logout {
+      &:hover {
+        background-color: transparent;
       }
     }
   }

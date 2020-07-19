@@ -92,8 +92,9 @@ app.get('/', checkNotAuthenticated, function (req, res, next) {
 });
 
 //passport.js will handle login page
+// TODO: Change this so it only redirects to create-profile if no account exists.
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/index',
+    successRedirect: '/create-profile',
     failureRedirect: '/',
     failureFlash: true
 }));

@@ -1,0 +1,82 @@
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+$delete-red: #f44336;
+$delete-red-hover: #e57373;
+
+.create-profile-header {
+  text-align: center;
+
+  h1 {
+    font-family: $header-font;
+    font-weight: bold;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+#profile-form {
+  background: #fefefe;
+  padding: 10px 20px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+
+  label {
+    font-size: 1.25rem;
+    text-indent: 10px;
+  }
+
+  #instruments {
+    text-indent: 10px;
+  }
+
+  .instrument-selection-item {
+    display: block;
+    position: relative;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    animation: 0.5s ease-out 0s 1 slideInFromTop;
+
+    .instrument-selection-text {
+      margin-right: 20px;
+    }
+
+    .selection-level {
+      text-indent: 10px;
+      margin: 10px 0;
+    }
+
+    .delete-selection {
+      position: absolute;
+      margin: inherit;
+      top: 0;
+      right: 10px;
+      height: 25px;
+      text-align: center;
+      width: 25px;
+      color: white;
+      background: $delete-red;
+      font-weight: bold;
+      border: 1px solid white;
+      border-radius: 20px;
+      cursor: pointer;
+
+      &:hover {
+        background: $delete-red-hover;
+      }
+    }
+  }
+}

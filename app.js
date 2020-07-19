@@ -79,11 +79,30 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
+app.get('/create-profile',checkAuthenticated,(req,res) => {
+    mysql.pool.query("SELECT Instrument FROM InstrumentLookup",(error, results) => {
+        if(error) {
+            res.write(JSON.stringify(error));
+            res.end();
+        }
+        res.render('create-profile', { user: req.user, instruments: results });
+    });
+});
 
 //any page requiring authentication needs to run checkAuthenticated first
 //PLACEHOLDER for landing page.
 app.get('/index', checkAuthenticated, function (req, res, next) {
     res.render('index', { user: req.user });
+});
+
+app.get('/dashboard', checkAuthenticated, function (req, res, next) {
+    mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
+        if (results === undefined || results.length === 0) {
+            res.redirect('/create-profile');
+        } else {
+            res.render('dashboard', {user: req.user, profile: results});
+        }
+    });
 });
 
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
@@ -94,7 +113,7 @@ app.get('/', checkNotAuthenticated, function (req, res, next) {
 
 //passport.js will handle login page
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/index',
+    successRedirect: '/dashboard',
     failureRedirect: '/',
     failureFlash: true
 }));
@@ -145,6 +164,7 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                 throw(err);
             } else if(rows.length > 0) {
                 let context = {
+                    user: req.user,
                     profile: rows[0][0],
                     instruments: rows[1],
                     workSamples: rows[2]

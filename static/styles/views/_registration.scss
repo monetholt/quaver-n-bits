@@ -59,12 +59,11 @@ $social-brand-tumblr: #32506d;
   color: black;
   height: 2rem;
   border: 0;
-  padding-left: 0;
+  text-indent: 20px;
   box-shadow: none;
   border-bottom: 1px solid $primary-color;
   font-weight: 400;
   padding-left: 20px;
-
 }
 
 .login-box-input:focus {
@@ -130,3 +129,4 @@ $social-brand-tumblr: #32506d;
   padding-right: 25px;
   padding-top:  20px;
 }
+

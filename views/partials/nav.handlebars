@@ -1,0 +1,31 @@
+<nav>
+    <div class="logo"><h3>Musician Finder</h3></div>
+    {{#if profile}}
+    <div class="avatar">
+        <div class="avatar-image">
+            <i class="fas fa-user-astronaut"></i>
+        </div>
+
+        <div class="nav-menu">
+            <div class="menu-item">
+                <a href="/profile">View/Edit Profile</a>
+            </div>
+            <div class="menu-item">
+                <a href="#">Account Settings</a>
+            </div>
+            <div class="menu-item separator"></div>
+            <div class="menu-item logout">
+                <form action="/logout?_method=DELETE" method="POST">
+                    <button class="alert button expanded">Log Out</button>
+                </form>
+            </div>
+        </div>
+    {{else}}
+        <div class="nav-disabled-logout">
+            <form action="/logout?_method=DELETE" method="POST">
+                <button class="alert button">Log Out</button>
+            </form>
+        </div>
+    {{/if}}
+    </div>
+</nav>

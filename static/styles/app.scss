@@ -10,7 +10,15 @@
 // Mixins
 @import "base/_mixins";
 
+// Global Variables
+@import "base/_globals";
+
 // Views
 @import "_main";
 @import "views/_landing";
 @import "views/_registration";
+@import "views/_create-profile";
+@import "views/_profile";
+
+// Partials
+@import "views/partials/_nav";

@@ -1,4 +1,5 @@
 $body-bg: #eee;
+$main-container-bg: #fefefe;
 
 body {
   background: $body-bg;
@@ -8,6 +9,19 @@ body {
 
 span, button, input {
   outline: none !important;
+}
+
+main {
+  padding-top: $nav-height;
+
+  .main-container {
+    margin: 5vh 5vw;
+    padding: 2vh 2vw;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background-color: $main-container-bg;
+    @include boxshadow(2px 2px 5px 1px rgba(0, 0, 0, 0.2));
+  }
 }
 
 

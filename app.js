@@ -95,6 +95,16 @@ app.get('/index', checkAuthenticated, function (req, res, next) {
     res.render('index', { user: req.user });
 });
 
+app.get('/dashboard', checkAuthenticated, function (req, res, next) {
+    mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
+        if (results === undefined || results.length === 0) {
+            res.redirect('/create-profile');
+        } else {
+            res.render('dashboard', {user: req.user, profile: results});
+        }
+    });
+});
+
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
 //landing page does not need authentication, in fact we do not allow logged in users to access
 app.get('/', checkNotAuthenticated, function (req, res, next) {
@@ -102,9 +112,8 @@ app.get('/', checkNotAuthenticated, function (req, res, next) {
 });
 
 //passport.js will handle login page
-// TODO: Change this so it only redirects to create-profile if no account exists.
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/create-profile',
+    successRedirect: '/dashboard',
     failureRedirect: '/',
     failureFlash: true
 }));
@@ -155,6 +164,7 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                 throw(err);
             } else if(rows.length > 0) {
                 let context = {
+                    user: req.user,
                     profile: rows[0][0],
                     instruments: rows[1],
                     workSamples: rows[2]

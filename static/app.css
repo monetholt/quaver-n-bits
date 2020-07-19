@@ -5058,16 +5058,11 @@ main {
   color: black;
   height: 2rem;
   border: 0;
-  padding-left: 0;
   text-indent: 20px;
   box-shadow: none;
   border-bottom: 1px solid #aaf0d1;
-<<<<<<< HEAD
-  font-weight: 400; }
-=======
   font-weight: 400;
   padding-left: 20px; }
->>>>>>> master
 
 .login-box-input:focus {
   color: black;
@@ -5213,7 +5208,11 @@ main {
   color: #fefefe;
   text-align: center; }
 
-<<<<<<< HEAD
+.close-button {
+  color: #aaf0d1;
+  padding-right: 25px;
+  padding-top: 20px; }
+
 @keyframes slideInFromTop {
   0% {
     opacity: 0;
@@ -5270,6 +5269,51 @@ main {
       cursor: pointer; }
       #profile-form .instrument-selection-item .delete-selection:hover {
         background: #e57373; }
+
+.card-profile-stats {
+  border: 1px solid #ddd;
+  margin: 0 0 1.25rem;
+  padding: 1.25rem;
+  background: #333;
+  color: #fefefe; }
+  .card-profile-stats .card-profile-stats-intro {
+    text-align: center; }
+    .card-profile-stats .card-profile-stats-intro .card-profile-stats-intro-pic {
+      border-radius: 50%;
+      margin: 0 0 1.25rem;
+      border: 3px solid #fefefe; }
+    .card-profile-stats .card-profile-stats-intro .card-profile-stats-intro-content p:last-child {
+      margin: 0; }
+  .card-profile-stats .card-profile-stats-container {
+    text-align: center; }
+    .card-profile-stats .card-profile-stats-container .card-profile-stats-statistic {
+      margin: 0 0 1.25rem; }
+      .card-profile-stats .card-profile-stats-container .card-profile-stats-statistic p:last-child {
+        margin: 0; }
+  .card-profile-stats .card-profile-stats-more .card-profile-stats-more-link {
+    margin: 0;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #0a0a0a;
+    padding: 0.5rem;
+    cursor: pointer; }
+  .card-profile-stats .card-profile-stats-more .card-profile-stats-more-content {
+    display: none; }
+
+/* Large and up */
+@media print, screen and (min-width: 64em) {
+  .card-profile-stats .card-profile-stats-intro {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    text-align: left; }
+    .card-profile-stats .card-profile-stats-intro .card-profile-stats-intro-pic {
+      margin: 0 1.25rem 0 0;
+      max-width: 250px; }
+  .card-profile-stats .card-profile-stats-container {
+    display: flex;
+    justify-content: space-around; } }
 
 nav {
   position: fixed;
@@ -5372,9 +5416,8 @@ nav {
       background-color: #eee; }
     nav .avatar .logout:hover {
       background-color: transparent; }
-=======
-.close-button {
-  color: #aaf0d1;
-  padding-right: 25px;
-  padding-top: 20px; }
->>>>>>> master
+  nav .nav-disabled-logout {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    padding-top: 10px; }

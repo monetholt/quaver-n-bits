@@ -105,7 +105,7 @@ app.get('/index', checkAuthenticated, function (req, res, next) {
 
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
-        if (results === undefined || results.length === 0) {
+        if (results.ArtistName === undefined) {
             res.redirect('/create-profile');
         } else {
             res.render('dashboard', {user: req.user, profile: results});
@@ -141,7 +141,7 @@ app.post('/register', checkNotAuthenticated, async function (req, res) {
                 req.flash('errorRegistration', 'A user with this email already exists');
                 res.redirect('/');
             } else {
-                mysql.pool.query("INSERT INTO `Users` (`FirstName`, `LastName`, `Email`, `Password`) VALUES (?, ?, ?, ?)",
+                mysql.pool.query("CALL CreateUser(?, ?, ?, ?)",
                     [req.body.firstname, req.body.lastname, req.body.email, hashedPassword],
 
                     function (err, result) {
@@ -191,8 +191,8 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
 app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
-            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, LastUpdated = NOW() WHERE UserID = ?',
-            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.user.UserKey],
+            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.bandName, req.user.UserKey],
             function(err, result) {
                 if(err) {
                     throw(err);

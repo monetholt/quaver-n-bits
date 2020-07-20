@@ -105,7 +105,7 @@ app.get('/index', checkAuthenticated, function (req, res, next) {
 
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
-        if (results.ArtistName === undefined) {
+        if (results[0].ArtistName === null) {
             res.redirect('/create-profile');
         } else {
             res.render('dashboard', {user: req.user, profile: results});
@@ -192,14 +192,33 @@ app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
             'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
-            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.bandName, req.user.UserKey],
+            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
             function(err, result) {
                 if(err) {
                     throw(err);
                 } else if(result.changedRows === 1) {
                     res.send(true);
                 } else {
-                    throw(new ReferenceError("No profile found"));
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.redirect('/dashboard');
+                } else {
+                    throw(new ReferenceError("No profile found"))
                 }
             });
     } catch (err) {

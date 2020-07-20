@@ -20,7 +20,10 @@ app.set('view engine', 'handlebars');
 app.engine('handlebars', handlebars({
     layoutsDir: path.join(__dirname, 'views/layouts'),
     defaultLayout: 'main',
-    partialsDir: path.join(__dirname, 'views/partials')
+    partialsDir: path.join(__dirname, 'views/partials'),
+    helpers: {
+        moment: require('helper-moment')
+    }
 }));
 
 // set up file location for static files

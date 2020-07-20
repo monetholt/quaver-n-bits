@@ -28,6 +28,8 @@
     "foundation-sites": "^6.6.3",
     "express-flash": "0.0.2",
     "express-session": "^1.17.1",
+    "helper-moment": "^0.2.0",
+    "memorystore": "^1.6.2",
     "method-override": "^3.0.0",
     "mysql": "^2.18.1",
     "passport": "^0.4.1",

@@ -8,8 +8,12 @@
     <div class="card-profile-stats-intro">
         <img class="card-profile-stats-intro-pic" src="https://pbs.twimg.com/profile_images/732634911761260544/OxHbNdTF.jpg" alt="profile-image" />
         <div class="card-profile-stats-intro-content">
-            <h3>{{user.FirstName}} {{user.LastName}}</h3>
-            <p>Joined {{user.CreateDate}}</small></p>
+            {{#if user.ArtistName}}
+                <h3>{{user.ArtistName}}</h3>
+            {{else}}
+                <h3>{{user.FirstName}} {{user.LastName}}</h3>
+            {{/if}}
+            <p>Joined {{moment user.CreateDate format="YYYY-MM-DD"}}</small></p>
         </div> <!-- /.card-profile-stats-intro-content -->
     </div> <!-- /.card-profile-stats-intro -->
 </div>

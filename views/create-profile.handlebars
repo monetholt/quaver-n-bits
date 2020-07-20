@@ -68,7 +68,7 @@
                                     <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
                                     <datalist id="instrument-list">
                                         {{#each instruments}}
-                                        <option value="{{Instrument}}">
+                                        <option data-value="{{InstrumentKey}}" value="{{Instrument}}">
                                         {{/each}}
                                     </datalist>
                                 </td>
@@ -109,7 +109,7 @@
             </li>
             <li class="orbit-slide">
                 <div id="profile-form">
-                    <form>
+                    <form method="post" action="/profile/basic/create">
                         <table>
                             <h3>Step 3: Basic Info</h3>
                             <tr>
@@ -121,7 +121,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input placeholder="Band or artist name" type="text" id="ArtistName">
+                                    <input placeholder="Band or artist name" type="text" id="ArtistName" name="ArtistName">
                                 </td>
                             </tr>
                             <tr>
@@ -133,7 +133,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input placeholder="Zip code" type="text" pattern="[0-9]{5}" id="zipCode" required>
+                                    <input placeholder="Zip code" type="text" pattern="[0-9]{5}" id="zipCode" name="zipCode" required>
                                 </td>
                             </tr>
                             <tr>
@@ -145,7 +145,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input placeholder="Phone number" type="number" id="phoneNumber" required>
+                                    <input placeholder="Phone number" type="number" id="phoneNumber" name="phoneNumber" required>
                                 </td>
                             </tr>
                             <tr>
@@ -157,7 +157,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input placeholder="Website URL" type="text" id="webAddress">
+                                    <input placeholder="Website URL" type="text" id="webAddress" name="webAddress">
                                 </td>
                             </tr>
                             <tr>
@@ -169,15 +169,15 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input type="radio" id="yesLooking" name="lookingForWork" value="yes" checked>
+                                    <input type="radio" id="yesLooking" name="lookingForWork" value="1" checked>
                                     <label for="yesLooking">Yes</label>
-                                    <input type="radio" id="notLooking" name="lookingForWork" value="no">
+                                    <input type="radio" id="notLooking" name="lookingForWork" value="0">
                                     <label for="notLooking">No</label>
                                 </td>
                             </tr>
                         </table>
                         <div class="create-profile">
-                            <button class="button secondary hollow medium expanded" id="createProfileButton" href="#">Create Your Profile</button>
+                            <button class="button secondary hollow medium expanded" id="createProfileButton" type="submit">Create Your Profile</button>
                         </div>
                     </form>
                 </div>

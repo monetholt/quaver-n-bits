@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
+var MemoryStore = require('memorystore')(session)
 const methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 const utils = require('./utils');
@@ -76,7 +77,11 @@ app.use(flash());
 app.use(session({
     secret: "SECRETKEY",
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+        checkPeriod: 86400000 // removes expired entries every 24h
+    }),
 }));
 app.use(passport.initialize());
 app.use(passport.session());

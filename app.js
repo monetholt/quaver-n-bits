@@ -108,7 +108,7 @@ app.get('/index', checkAuthenticated, function (req, res, next) {
 
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
-        if (results[0].ArtistName === null) {
+        if (results.length == 0 || results[0].ArtistName === null) {
             res.redirect('/create-profile');
         } else {
             res.render('dashboard', {user: req.user, profile: results});

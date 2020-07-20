@@ -1,79 +1,109 @@
-main .main-container {
-  padding: 0;
-}
+$social-links: #607d8b;
+$social-links-underline: #48fe80;
 
-.card-profile-stats {
-  margin: 0 0 1.25rem;
-  padding: 1.25rem;
-  background: #333;
-  color: $white;
+.main-profile {
+  padding: 0 !important;
 
-  .card-profile-stats-intro {
-    text-align: center;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $header-font;
+  }
 
-    .card-profile-stats-intro-pic {
-      border-radius: 50%;
-      margin: 0 0 1.25rem;
-      border: 3px solid $white;
-    } // .card-profile-stats-intro-pic
+  .profile-header {
+    margin: 0 0 1.25rem;
+    padding: 1.25rem;
+    background: #333;
+    @include gradient(to bottom right, hsl(random(360), 70%, 50%), hsl(random(360), 70%, 50%));
+    color: $white;
 
-    .card-profile-stats-intro-content {
-      p:last-child {
-        margin: 0;
-      } // p:last-child
-    } // .card-profile-stats-intro-content
-  } // .card-profile-stats-intro
-
-  .card-profile-stats-container {
-    text-align: center;
-
-    .card-profile-stats-statistic {
-      margin: 0 0 1.25rem;
-
-      p:last-child {
-        margin: 0;
-      }
-    } // .card-profile-stats-statistic
-  } // .card-profile-stats-container
-
-  .card-profile-stats-more {
-    .card-profile-stats-more-link {
-      margin: 0;
+    .profile-header-intro {
       text-align: center;
-      font-size: 1.5rem;
-      color: $body-font-color;
-      padding: 0.5rem;
-      cursor: pointer;
-    } // .card-profile-stats-more-link
 
-    .card-profile-stats-more-content {
-      display: none;
-    } // .card-profile-stats-more-content
-  } // .card-profile-stats-more
-} // .card-profile-stats
+      .profile-header-image {
+        border-radius: 50%;
+        margin: 0 0 1.25rem;
+        border: 3px solid $white;
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+      }
+      .profile-header-title {
+        p:last-child {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  @include breakpoint(large) {
+    .profile-header {
+      .profile-header-intro {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        text-align: left;
+
+        .profile-header-image {
+          margin: 0 1.25rem 0 0;
+          width: 250px;
+        }
+      }
+    }
+  }
+
+  .profile-about {
+    padding: 1.25rem;
+
+    .cell {
+      padding: 1rem;
+    }
+
+    @include breakpoint(medium) {
+      .cell.medium-8 {
+        border-right: 1px solid #eee;
+      }
+    }
+
+    @include breakpoint(small only) {
+      .cell.medium-8 {
+        border-bottom: 1px solid #eee;
+      }
+
+      .cell.medium-4 {
+        border-bottom: 1px solid #eee;
+      }
+    }
+
+    .profile-social {
+      a {
+        position: relative;
+      }
+
+      i {
+        padding-right: 15px;
+      }
+
+      @include fancylinks($social-links, $social-links-underline)
+    }
+  }
+
+  .profile-media {
+    padding: 1.25rem;
+
+    .cell {
+      padding: 1rem;
+
+      @include breakpoint(medium) {
+        &:nth-of-type(1), &:nth-of-type(2) {
+          border-right: 1px solid #eee;
+        }
+      }
+
+      @include breakpoint(small only) {
+          border-bottom: 1px solid #eee;
+      }
+    }
 
 
-
-/* Large and up */
-@include breakpoint(large) {
-  .card-profile-stats {
-    .card-profile-stats-intro {
-      align-items: center;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      text-align: left;
-
-      .card-profile-stats-intro-pic {
-        margin: 0 1.25rem 0 0;
-        max-width: 250px;
-      } // .card-profile-stats-intro-pic
-    } // .card-profile-stats-intro
-
-    .card-profile-stats-container {
-      display: flex;
-      justify-content: space-around;
-    } // .card-profile-stats-container
-  } // .card-profile-stats
-
+  }
 }

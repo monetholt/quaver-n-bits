@@ -1,128 +1,168 @@
 {{>nav}}
 <main>
-    <div class="main-container">
-{{#if message}}
-    <p>{{message}}</p>
-{{/if}}
-<div class="card-profile-stats">
-    <div class="card-profile-stats-intro">
-        <img class="card-profile-stats-intro-pic" src="https://pbs.twimg.com/profile_images/732634911761260544/OxHbNdTF.jpg" alt="profile-image" />
-        <div class="card-profile-stats-intro-content">
-            {{#if user.ArtistName}}
-                <h3>{{user.ArtistName}}</h3>
-            {{else}}
-                <h3>{{user.FirstName}} {{user.LastName}}</h3>
-            {{/if}}
-            <p>Joined {{moment user.CreateDate format="YYYY-MM-DD"}}</small></p>
-        </div> <!-- /.card-profile-stats-intro-content -->
-    </div> <!-- /.card-profile-stats-intro -->
-</div>
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Value</th>
-    </tr>
-    {{#each profile}}
-        <tr>
-            <td>{{@key}}</td>
-            <td>{{this}}</td>
-        </tr>
-    {{/each}}
-</table>
-<table>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Level</th>
-                    </tr>
-                    {{#each instruments}}
-                        <tr>
-                            <td>{{InstrumentKey}} - {{Instrument}}</td>
-                            <td>{{LevelKey}} - {{Level}}</td>
-                        </tr>
-                    {{/each}}
-                </table>
-            </td>
-        </tr>
-</table>
-<table>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <th>Location</th>
-                    </tr>
-                    {{#each workSamples}}
-                        <tr>
-                            <td>{{SampleKey}} - {{SampleLocation}}</td>
-                        </tr>
-                    {{/each}}
-                </table>
-            </td>
-        </tr>
-</table>
-<form method="post" action="/profile/basic">
-    <input type="hidden" name="ProfileKey" value="{{profile.ProfileKey}}">
-    <label for="zipCode">Zip Code: <input type="text" name="zipCode" value="{{profile.ZipCode}}"></label>
-    <label for="phoneNumber">Phone Number: <input type="text" name="phoneNumber" value="{{profile.Phone}}"></label>
-    <label for="webAddress">Website: <input type="text" name="webAddress" value="{{profile.Website}}"></label>
-    <label for="lookingForWork">Private: <input type="radio" id="private" name="lookingForWork" value="0" {{#if profile.LookingForWork}}{{else}}checked{{/if}}></label>
-    <label for="lookingForWork">Public: <input type="radio" id="public" name="lookingForWork" value="1" {{#if profile.LookingForWork}}checked{{/if}}></label>
-    <button type="submit" class="button primary">Submit</button>
-</form>
-<form method="post" action="/profile/instrument/add">
-    <label for="instrumentId">Instrument: <select name="instrumentId" id="instrumentId">
-    </select></label>
-    <label for="levelId">Level: <select name="levelId" id="levelId">
-    </select></label>
-    <button type="submit" class="button primary">Submit</button>
-</form>
-<form method="post" action="/profile/instrument/update">
+    <div class="main-container main-profile">
 
-</form>
+    {{#if message}}
+        <p>{{message}}</p>
+    {{/if}}
+
+    <div class="profile-header">
+        <div class="profile-header-intro">
+            <img class="profile-header-image" src="/img/profile-img.jpg" />
+            <div class="profile-header-title">
+                {{#if profile.ArtistName}}
+                    <h1>{{profile.ArtistName}}</h1>
+                {{else}}
+                    <h1>{{user.FirstName}} {{user.LastName}}</h1>
+                {{/if}}
+                <h6>Joined {{user.CreateDate}}</h6>
+            </div>
+        </div>
+    </div>
+    <div class="profile-about grid-x">
+        <div class="cell medium-8">
+            <h2>About Me:</h2>
+            <p>Offices parties lasting outward nothing age few resolve. Impression to discretion understood to we interested he excellence. Him remarkably use projection collecting. Going about eat forty world has round miles. Attention affection at my preferred offending shameless me if agreeable. Life lain held calm and true neat she. Much feet each so went no from. Truth began maids linen an mr to after.</p>
+            <p>Picture removal detract earnest is by. Esteems met joy attempt way clothes yet demesne tedious. Replying an marianne do it an entrance advanced. Two dare say play when hold. Required bringing me material stanhill jointure is as he. Mutual indeed yet her living result matter him bed whence.</p>
+            <p>He an thing rapid these after going drawn or. Timed she his law the spoil round defer. In surprise concerns informed betrayed he learning is ye. Ignorant formerly so ye blessing. He as spoke avoid given downs money on we. Of properly carriage shutters ye as wandered up repeated moreover. Inquietude attachment if ye an solicitude to. Remaining so continued concealed as knowledge happiness. Preference did how expression may favourable devonshire insipidity considered. An length design regret an hardly barton mr figure.</p>
+            <p>Too cultivated use solicitude frequently. Dashwood likewise up consider continue entrance ladyship oh. Wrong guest given purse power is no. Friendship to connection an am considered difficulty. Country met pursuit lasting moments why calling certain the. Middletons boisterous our way understood law. Among state cease how and sight since shall. Material did pleasure breeding our humanity she contempt had. So ye really mutual no cousin piqued summer result.</p>
+        </div>
+        <div class="cell medium-4">
+            <div class="profile-instruments">
+                <h2>What I Play:</h2>
+                <ul>
+                    {{#each instruments}}
+                        <li>{{Instrument}} ({{Level}})</li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="profile-social">
+                <h2>Social:</h2>
+                {{#if profile.Website}}
+                    <a href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>Website</a>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    <div class="profile-media grid-x">
+        <div class="cell medium-6">
+            <h2>Videos:</h2>
+                [Coming Soon - Profile Videos!]
+        </div>
+        <div class="cell medium-6">
+            <h2>Music:</h2>
+                [Coming Soon - Profile Music!]
+        </div>
     </div>
 </main>
 
-<script lang="js">
-    let sent1 = false;
-    let sent2 = false;
-    window.onload = function () {
-        if(!sent1) {
-            let request = new XMLHttpRequest();
-            request.open('GET', '/profile/instruments');
-            request.responseType = 'json';
+<!--        -->
+<!--<table>-->
+<!--    <tr>-->
+<!--        <th>Name</th>-->
+<!--        <th>Value</th>-->
+<!--    </tr>-->
+<!--    {{#each profile}}-->
+<!--        <tr>-->
+<!--            <td>{{@key}}</td>-->
+<!--            <td>{{this}}</td>-->
+<!--        </tr>-->
+<!--    {{/each}}-->
+<!--</table>-->
+<!--<table>-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <table>-->
+<!--                    <tr>-->
+<!--                        <th>Name</th>-->
+<!--                        <th>Level</th>-->
+<!--                    </tr>-->
+<!--                    {{#each instruments}}-->
+<!--                        <tr>-->
+<!--                            <td>{{InstrumentKey}} - {{Instrument}}</td>-->
+<!--                            <td>{{LevelKey}} - {{Level}}</td>-->
+<!--                        </tr>-->
+<!--                    {{/each}}-->
+<!--                </table>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--</table>-->
+<!--<table>-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <table>-->
+<!--                    <tr>-->
+<!--                        <th>Location</th>-->
+<!--                    </tr>-->
+<!--                    {{#each workSamples}}-->
+<!--                        <tr>-->
+<!--                            <td>{{SampleKey}} - {{SampleLocation}}</td>-->
+<!--                        </tr>-->
+<!--                    {{/each}}-->
+<!--                </table>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--</table>-->
+<!--<form method="post" action="/profile/basic">-->
+<!--    <input type="hidden" name="ProfileKey" value="{{profile.ProfileKey}}">-->
+<!--    <label for="zipCode">Zip Code: <input type="text" name="zipCode" value="{{profile.ZipCode}}"></label>-->
+<!--    <label for="phoneNumber">Phone Number: <input type="text" name="phoneNumber" value="{{profile.Phone}}"></label>-->
+<!--    <label for="webAddress">Website: <input type="text" name="webAddress" value="{{profile.Website}}"></label>-->
+<!--    <label for="lookingForWork">Private: <input type="radio" id="private" name="lookingForWork" value="0" {{#if profile.LookingForWork}}{{else}}checked{{/if}}></label>-->
+<!--    <label for="lookingForWork">Public: <input type="radio" id="public" name="lookingForWork" value="1" {{#if profile.LookingForWork}}checked{{/if}}></label>-->
+<!--    <button type="submit" class="button primary">Submit</button>-->
+<!--</form>-->
+<!--<form method="post" action="/profile/instrument/add">-->
+<!--    <label for="instrumentId">Instrument: <select name="instrumentId" id="instrumentId">-->
+<!--    </select></label>-->
+<!--    <label for="levelId">Level: <select name="levelId" id="levelId">-->
+<!--    </select></label>-->
+<!--    <button type="submit" class="button primary">Submit</button>-->
+<!--</form>-->
+<!--<form method="post" action="/profile/instrument/update">-->
 
-            request.onload = function () {
-                let array = request.response;
-                let select = document.getElementById("instrumentId");
-                for (let instrument of array) {
-                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);
-                    select.appendChild(option);
-                }
-            };
-            request.send();
-            console.log("sending req 1");
-            sent1 = true;
-        }
+<!--</form>-->
+<!--    </div>-->
+<!--</main>-->
 
-        if(!sent2) {
-            let request2 = new XMLHttpRequest();
-            request2.open('GET', '/profile/levels');
-            request2.responseType = 'json';
+<!--<script lang="js">-->
+<!--    let sent1 = false;-->
+<!--    let sent2 = false;-->
+<!--    window.onload = function () {-->
+<!--        if(!sent1) {-->
+<!--            let request = new XMLHttpRequest();-->
+<!--            request.open('GET', '/profile/instruments');-->
+<!--            request.responseType = 'json';-->
 
-            request2.onload = function () {
-                let array2 = request2.response;
-                let select2 = document.getElementById("levelId");
-                for (let level of array2) {
-                    let option2 = new Option(level.Level, level.LevelKey);
-                    select2.appendChild(option2);
-                }
-            };
-            request2.send();
-            console.log("sending req 2");
-            sent2 = true;
-        }
-    }
-</script>
+<!--            request.onload = function () {-->
+<!--                let array = request.response;-->
+<!--                let select = document.getElementById("instrumentId");-->
+<!--                for (let instrument of array) {-->
+<!--                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);-->
+<!--                    select.appendChild(option);-->
+<!--                }-->
+<!--            };-->
+<!--            request.send();-->
+<!--            console.log("sending req 1");-->
+<!--            sent1 = true;-->
+<!--        }-->
+
+<!--        if(!sent2) {-->
+<!--            let request2 = new XMLHttpRequest();-->
+<!--            request2.open('GET', '/profile/levels');-->
+<!--            request2.responseType = 'json';-->
+
+<!--            request2.onload = function () {-->
+<!--                let array2 = request2.response;-->
+<!--                let select2 = document.getElementById("levelId");-->
+<!--                for (let level of array2) {-->
+<!--                    let option2 = new Option(level.Level, level.LevelKey);-->
+<!--                    select2.appendChild(option2);-->
+<!--                }-->
+<!--            };-->
+<!--            request2.send();-->
+<!--            console.log("sending req 2");-->
+<!--            sent2 = true;-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->

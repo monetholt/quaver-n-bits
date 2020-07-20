@@ -10,3 +10,4 @@ dbcon.js
 *.njsproj
 *.user
 *.sln
+*.env

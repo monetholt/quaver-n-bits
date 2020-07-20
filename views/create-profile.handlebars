@@ -44,7 +44,7 @@
             <p>You're on your way to connect with other awesome musicians like yourself!</p>
             <p>Let's find out a little bit more about you first.</p>
         </div>
-        <div class="orbit" role="region" aria-label="Create Profile Orbit" data-orbit>
+        <div class="orbit" role="region" aria-label="Create Profile Orbit" data-orbit data-auto-play="false">
             <div class="orbit-wrapper">
             <div class="orbit-controls">
             <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span>&#9664;&#xFE0E;</button>
@@ -91,14 +91,14 @@
                             <tr>
                             <h3>Step 2: Samples</h3>
                                 <td>
-                                    <label for="workSample">
+                                    <label for="workSamples">
                                         Upload a sample of your work
                                     </label>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <input type="file" id="workSample">
+                                    <input type="file" id="workSamples">
                                 </td>
                             </tr>
                             <tr>
@@ -114,14 +114,14 @@
                             <h3>Step 3: Basic Info</h3>
                             <tr>
                                 <td>
-                                    <label for="bandName">
+                                    <label for="ArtistName">
                                         What is your band or artist name?
                                     </label>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <input placeholder="Band or artist name" type="text" id="bandName">
+                                    <input placeholder="Band or artist name" type="text" id="ArtistName">
                                 </td>
                             </tr>
                             <tr>
@@ -150,14 +150,14 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <label for="websiteURL">
+                                    <label for="webAddress">
                                         Do you have a website?
                                     </label>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <input placeholder="Website URL" type="text" id="websiteURL">
+                                    <input placeholder="Website URL" type="text" id="webAddress">
                                 </td>
                             </tr>
                             <tr>
@@ -169,15 +169,15 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input type="radio" id="yesLooking" name="looking" value="yes" checked>
+                                    <input type="radio" id="yesLooking" name="lookingForWork" value="yes" checked>
                                     <label for="yesLooking">Yes</label>
-                                    <input type="radio" id="notLooking" name="looking" value="no">
+                                    <input type="radio" id="notLooking" name="lookingForWork" value="no">
                                     <label for="notLooking">No</label>
                                 </td>
                             </tr>
                         </table>
                         <div class="create-profile">
-                            <button class="button secondary hollow medium expanded" href="#">Create Your Profile</button>
+                            <button class="button secondary hollow medium expanded" id="createProfileButton" href="#">Create Your Profile</button>
                         </div>
                     </form>
                 </div>

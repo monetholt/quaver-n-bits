@@ -5,7 +5,7 @@
 <p>You're on your way to connect with other awesome musicians like yourself!</p>
 <p>Let's find out a little bit more about you first.</p>
 
-<form action="">
+<form action="/profile/instrument/add">
   <label for="instruments">What instrument(s) do you play?</label><br>
   <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
      <datalist id="instrument-list">
@@ -13,32 +13,43 @@
         <option value="{{Instrument}}">
         {{/each}}
      </datalist>
+ <label for="levels">At what Skill Level do you play this instrument?</label><br>
+  <input placeholder="Select a Skill Level" list="skill-level-list" type="text" id="levels" oninput="checkSelected()">
+     <datalist id="skill-level-list">
+        {{#each levels}}
+        <option value="{{Level}}">
+        {{/each}}
+     </datalist>
   <input type="submit" value="Add Instrument">
-  <label for="workSample">Upload a sample of your work</label><br>
-  <input type="file" id="workSample">
+</form>
 
-  <label for="bandName">
+  <label for="WorkSamples">Upload a sample of your work</label><br>
+  <input type="file" id="WorkSamples">
+
+  <label for="ArtistName">
     What is your band or artist name?
   </label>
-  <input placeholder="Band or artist name" type="text" id="bandName">
+  <input placeholder="Band or artist name" type="text" id="ArtistName">
   <input type="submit" value="Add Band or Artist Name">
 
-  <label for="zipCode">
+  <label for="ZipCode">
      What is your zip code?
   </label>
-  <input placeholder="Zip code" type="text" pattern="[0-9]{5}" id="zipCode" required>
+  <input placeholder="Zip code" type="text" pattern="[0-9]{5}" id="ZipCode" required>
   <input type="submit" value="Add Zipcode">
 
-  <label for="phoneNumber">
+  <label for="Phone">
      What is the best phone number to reach you at?
   </label>
-  <input placeholder="Phone number" type="number" id="phoneNumber" required>
+  <input placeholder="Phone number" type="number" id="Phone" required>
   <input type="submit" value="Add Phone Number">
-  <label for="websiteURL">
+
+  <label for="Website">
      Do you have a website?
   </label>
-  <input placeholder="Website URL" type="text" id="websiteURL">
+  <input placeholder="Website URL" type="text" id="Website">
   <input type="submit" value="Add URL">
+
   <label>
      Are you currently looking for a spot in a band?
   </label>
@@ -47,7 +58,7 @@
      <option value="0">No</option>
   </select>
   <input type="submit" value="Submit">
-
+  <input type="save" value="Save">
 
 </form>
 </main>

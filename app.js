@@ -238,12 +238,12 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
 });
 
 //TODO: potentially accept an array of instruments?
-app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
-    try {
-        mysql.pool.query(
-            'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
-            [req.body.ProfileKey, req.body.instrumentId, req.body.levelId],
-                function(err, result) {
+
+app.post('/profile/instrument/add', checkAuthenticated, (req, res, next) => {
+   try {
+     var query = "INSERT INTO ProfileInstruments(ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, SELECT InstrumentKey FROM InstrumentLookup WHERE Instrument = ?, 
+         SELECT LevelKey FROM LevelLookup WHERE Level = ?, NOW())";
+     mysql.pool.query(query, function(err, result) {
                 if(err) {
                     throw(err);
                 } else if(result.changedRows === 1) {
@@ -251,11 +251,14 @@ app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
                 } else {
 
                 }
-        });
-    } catch(err) {
-        res.redirect(utils.profileUpdateErrorRedirect());
-    }
+           });
+   } catch (err) {
+      res.redirect(utils.profileUpdateErrorRedirect());
+   }
 });
+
+
+
 
 app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
     try {

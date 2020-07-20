@@ -88,7 +88,7 @@ app.use(passport.session());
 app.use(methodOverride('_method'));
 
 app.get('/create-profile',checkAuthenticated,(req,res) => {
-    mysql.pool.query("SELECT Instrument FROM InstrumentLookup",(error, results) => {
+    mysql.pool.query("SELECT InstrumentKey, Instrument FROM InstrumentLookup",(error, results) => {
         if(error) {
             res.write(JSON.stringify(error));
             res.end();
@@ -246,23 +246,24 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
 });
 
 //TODO: potentially accept an array of instruments?
-app.post('profile/instrument/add',checkAuthenticated,(req, res, next) => {
-    try {
-        mysql.pool.query(
-            'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
-            [req.body.ProfileKey, req.body.instrumentId, req.body.levelId],
-                function(err, result) {
-                if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+app.post('profile/instrument/add', checkAuthenticated, (req, res, next) => {
+    console.log(req.body);
+    //try {
+    //    mysql.pool.query(
+    //        'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
+    //        [req.body.ProfileKey, req.body.instrumentId, req.body.levelId],
+    //            function(err, result) {
+    //            if(err) {
+    //                throw(err);
+    //            } else if(result.changedRows === 1) {
 
-                } else {
+    //            } else {
 
-                }
-        });
-    } catch(err) {
-        res.redirect(utils.profileUpdateErrorRedirect());
-    }
+    //            }
+    //    });
+    //} catch(err) {
+    //    res.redirect(utils.profileUpdateErrorRedirect());
+    //}
 });
 
 app.post('profile/instrument/update',checkAuthenticated,(req, res, next) => {

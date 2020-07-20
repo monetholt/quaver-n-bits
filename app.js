@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const express = require('express');
 const handlebars = require('express-handlebars');
 const path = require('path');
@@ -6,13 +9,14 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
+var MemoryStore = require('memorystore')(session)
 const methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 const utils = require('./utils');
 
 
 // constants
-const port = 3000;
+const port = process.env.PORT || 3000; //Heroku automatically assigns a port via an environmental variable. Locally will use 3000
 const app = express();
 
 // set up handlebars
@@ -76,7 +80,11 @@ app.use(flash());
 app.use(session({
     secret: "SECRETKEY",
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+        checkPeriod: 86400000 // removes expired entries every 24h
+    }),
 }));
 app.use(passport.initialize());
 app.use(passport.session());

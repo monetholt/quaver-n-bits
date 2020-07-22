@@ -22,10 +22,9 @@
     <div class="profile-about grid-x">
         <div class="cell medium-8">
             <h2>About Me:</h2>
-            <p>Offices parties lasting outward nothing age few resolve. Impression to discretion understood to we interested he excellence. Him remarkably use projection collecting. Going about eat forty world has round miles. Attention affection at my preferred offending shameless me if agreeable. Life lain held calm and true neat she. Much feet each so went no from. Truth began maids linen an mr to after.</p>
-            <p>Picture removal detract earnest is by. Esteems met joy attempt way clothes yet demesne tedious. Replying an marianne do it an entrance advanced. Two dare say play when hold. Required bringing me material stanhill jointure is as he. Mutual indeed yet her living result matter him bed whence.</p>
-            <p>He an thing rapid these after going drawn or. Timed she his law the spoil round defer. In surprise concerns informed betrayed he learning is ye. Ignorant formerly so ye blessing. He as spoke avoid given downs money on we. Of properly carriage shutters ye as wandered up repeated moreover. Inquietude attachment if ye an solicitude to. Remaining so continued concealed as knowledge happiness. Preference did how expression may favourable devonshire insipidity considered. An length design regret an hardly barton mr figure.</p>
-            <p>Too cultivated use solicitude frequently. Dashwood likewise up consider continue entrance ladyship oh. Wrong guest given purse power is no. Friendship to connection an am considered difficulty. Country met pursuit lasting moments why calling certain the. Middletons boisterous our way understood law. Among state cease how and sight since shall. Material did pleasure breeding our humanity she contempt had. So ye really mutual no cousin piqued summer result.</p>
+            <p>Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.</p>
+            <p>Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.</p>
+            <p>Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
         </div>
         <div class="cell medium-4">
             <div class="profile-instruments">
@@ -125,44 +124,44 @@
 <!--    </div>-->
 <!--</main>-->
 
-<!--<script lang="js">-->
-<!--    let sent1 = false;-->
-<!--    let sent2 = false;-->
-<!--    window.onload = function () {-->
-<!--        if(!sent1) {-->
-<!--            let request = new XMLHttpRequest();-->
-<!--            request.open('GET', '/profile/instruments');-->
-<!--            request.responseType = 'json';-->
+<script lang="js">
+    let sent1 = false;
+    let sent2 = false;
+    window.onload = function () {
+        if(!sent1) {
+            let request = new XMLHttpRequest();
+            request.open('GET', '/profile/instruments');
+            request.responseType = 'json';
 
-<!--            request.onload = function () {-->
-<!--                let array = request.response;-->
-<!--                let select = document.getElementById("instrumentId");-->
-<!--                for (let instrument of array) {-->
-<!--                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);-->
-<!--                    select.appendChild(option);-->
-<!--                }-->
-<!--            };-->
-<!--            request.send();-->
-<!--            console.log("sending req 1");-->
-<!--            sent1 = true;-->
-<!--        }-->
+            request.onload = function () {
+                let array = request.response;
+                let select = document.getElementById("instrumentId");
+                for (let instrument of array) {
+                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);
+                    select.appendChild(option);
+                }
+            };
+            request.send();
+            console.log("sending req 1");
+            sent1 = true;
+        }
 
-<!--        if(!sent2) {-->
-<!--            let request2 = new XMLHttpRequest();-->
-<!--            request2.open('GET', '/profile/levels');-->
-<!--            request2.responseType = 'json';-->
+        if(!sent2) {
+            let request2 = new XMLHttpRequest();
+            request2.open('GET', '/profile/levels');
+            request2.responseType = 'json';
 
-<!--            request2.onload = function () {-->
-<!--                let array2 = request2.response;-->
-<!--                let select2 = document.getElementById("levelId");-->
-<!--                for (let level of array2) {-->
-<!--                    let option2 = new Option(level.Level, level.LevelKey);-->
-<!--                    select2.appendChild(option2);-->
-<!--                }-->
-<!--            };-->
-<!--            request2.send();-->
-<!--            console.log("sending req 2");-->
-<!--            sent2 = true;-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
+            request2.onload = function () {
+                let array2 = request2.response;
+                let select2 = document.getElementById("levelId");
+                for (let level of array2) {
+                    let option2 = new Option(level.Level, level.LevelKey);
+                    select2.appendChild(option2);
+                }
+            };
+            request2.send();
+            console.log("sending req 2");
+            sent2 = true;
+        }
+    }
+</script>

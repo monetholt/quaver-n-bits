@@ -111,7 +111,13 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
         if (results[0].ArtistName === null) {
             res.redirect('/create-profile');
         } else {
-            res.render('dashboard', {user: req.user, profile: results});
+            mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
+                if(error) {
+                    res.write(JSON.stringify(error));
+                    res.end();
+                }
+                res.render('dashboard', {user: req.user, profile: results, instruments: rows[0], levels: rows[1]});
+            });
         }
     });
 });

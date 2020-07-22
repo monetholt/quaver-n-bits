@@ -124,44 +124,44 @@
 <!--    </div>-->
 <!--</main>-->
 
-<script lang="js">
-    let sent1 = false;
-    let sent2 = false;
-    window.onload = function () {
-        if(!sent1) {
-            let request = new XMLHttpRequest();
-            request.open('GET', '/profile/instruments');
-            request.responseType = 'json';
+<!--<script lang="js">-->
+<!--    let sent1 = false;-->
+<!--    let sent2 = false;-->
+<!--    window.onload = function () {-->
+<!--        if(!sent1) {-->
+<!--            let request = new XMLHttpRequest();-->
+<!--            request.open('GET', '/profile/instruments');-->
+<!--            request.responseType = 'json';-->
 
-            request.onload = function () {
-                let array = request.response;
-                let select = document.getElementById("instrumentId");
-                for (let instrument of array) {
-                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);
-                    select.appendChild(option);
-                }
-            };
-            request.send();
-            console.log("sending req 1");
-            sent1 = true;
-        }
+<!--            request.onload = function () {-->
+<!--                let array = request.response;-->
+<!--                let select = document.getElementById("instrumentId");-->
+<!--                for (let instrument of array) {-->
+<!--                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);-->
+<!--                    select.appendChild(option);-->
+<!--                }-->
+<!--            };-->
+<!--            request.send();-->
+<!--            console.log("sending req 1");-->
+<!--            sent1 = true;-->
+<!--        }-->
 
-        if(!sent2) {
-            let request2 = new XMLHttpRequest();
-            request2.open('GET', '/profile/levels');
-            request2.responseType = 'json';
+<!--        if(!sent2) {-->
+<!--            let request2 = new XMLHttpRequest();-->
+<!--            request2.open('GET', '/profile/levels');-->
+<!--            request2.responseType = 'json';-->
 
-            request2.onload = function () {
-                let array2 = request2.response;
-                let select2 = document.getElementById("levelId");
-                for (let level of array2) {
-                    let option2 = new Option(level.Level, level.LevelKey);
-                    select2.appendChild(option2);
-                }
-            };
-            request2.send();
-            console.log("sending req 2");
-            sent2 = true;
-        }
-    }
-</script>
+<!--            request2.onload = function () {-->
+<!--                let array2 = request2.response;-->
+<!--                let select2 = document.getElementById("levelId");-->
+<!--                for (let level of array2) {-->
+<!--                    let option2 = new Option(level.Level, level.LevelKey);-->
+<!--                    select2.appendChild(option2);-->
+<!--                }-->
+<!--            };-->
+<!--            request2.send();-->
+<!--            console.log("sending req 2");-->
+<!--            sent2 = true;-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->

@@ -5282,16 +5282,17 @@ main {
   .main-profile h1, .main-profile h2, .main-profile h3, .main-profile h4, .main-profile h5, .main-profile h6 {
     font-family: "Maven Pro", sans-serif; }
   .main-profile .profile-header {
+    position: relative;
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d926a3, #d9b826);
+    background-image: -webkit-linear-gradient(to bottom right, #d9c426, #a026d9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d926a3, #d9b826);
+    background-image: -moz-linear-gradient(to bottom right, #d9c426, #a026d9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d926a3, #d9b826);
+    background-image: -o-linear-gradient(to bottom right, #d9c426, #a026d9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d926a3, #d9b826);
+    background-image: linear-gradient(to bottom right, #d9c426, #a026d9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header .profile-header-intro {
@@ -5305,6 +5306,8 @@ main {
         object-fit: cover; }
       .main-profile .profile-header .profile-header-intro .profile-header-title p:last-child {
         margin: 0; }
+      .main-profile .profile-header .profile-header-intro .profile-header-title i {
+        padding-right: 10px; }
   @media print, screen and (min-width: 64em) {
     .main-profile .profile-header .profile-header-intro {
       align-items: center;
@@ -5315,24 +5318,28 @@ main {
       .main-profile .profile-header .profile-header-intro .profile-header-image {
         margin: 0 1.25rem 0 0;
         width: 250px; } }
-  .main-profile .profile-about {
+  .main-profile .profile-info {
     padding: 1.25rem; }
-    .main-profile .profile-about .cell {
-      padding: 1rem; }
+    .main-profile .profile-info .profile-about {
+      position: relative; }
+    .main-profile .profile-info .profile-meta {
+      position: relative; }
+    .main-profile .profile-info .cell {
+      padding: 1.25rem; }
     @media print, screen and (min-width: 40em) {
-      .main-profile .profile-about .cell.medium-8 {
+      .main-profile .profile-info .cell.medium-8 {
         border-right: 1px solid #eee; } }
     @media print, screen and (max-width: 39.99875em) {
-      .main-profile .profile-about .cell.medium-8 {
+      .main-profile .profile-info .cell.medium-8 {
         border-bottom: 1px solid #eee; }
-      .main-profile .profile-about .cell.medium-4 {
+      .main-profile .profile-info .cell.medium-4 {
         border-bottom: 1px solid #eee; } }
-    .main-profile .profile-about .profile-social a {
+    .main-profile .profile-info .profile-social a {
       position: relative; }
-    .main-profile .profile-about .profile-social i {
+    .main-profile .profile-info .profile-social i {
       padding-right: 15px; }
     @media (-webkit-min-device-pixel-ratio: 0) {
-      .main-profile .profile-about .profile-social a, .main-profile .profile-about .profile-social a:visited, .main-profile .profile-about .profile-social a:active, .main-profile .profile-about .profile-social a:hover {
+      .main-profile .profile-info .profile-social a, .main-profile .profile-info .profile-social a:visited, .main-profile .profile-info .profile-social a:active, .main-profile .profile-info .profile-social a:hover {
         letter-spacing: 2px;
         color: #607d8b;
         outline: none;
@@ -5342,7 +5349,7 @@ main {
         -ms-transition: 0.3s ease-in-out;
         -o-transition: 0.3s ease-in-out;
         transition: 0.3s ease-in-out; }
-      .main-profile .profile-about .profile-social a:before {
+      .main-profile .profile-info .profile-social a:before {
         content: "";
         position: absolute;
         width: 100%;
@@ -5360,7 +5367,7 @@ main {
         -ms-transition: 0.3s ease-in-out;
         -o-transition: 0.3s ease-in-out;
         transition: 0.3s ease-in-out; }
-      .main-profile .profile-about .profile-social a:hover:before {
+      .main-profile .profile-info .profile-social a:hover:before {
         opacity: 1;
         -webkit-transform: scaleX(1);
         -moz-transform: scaleX(1);
@@ -5369,13 +5376,45 @@ main {
   .main-profile .profile-media {
     padding: 1.25rem; }
     .main-profile .profile-media .cell {
-      padding: 1rem; }
+      padding: 1rem;
+      position: relative; }
       @media print, screen and (min-width: 40em) {
         .main-profile .profile-media .cell:nth-of-type(1), .main-profile .profile-media .cell:nth-of-type(2) {
           border-right: 1px solid #eee; } }
       @media print, screen and (max-width: 39.99875em) {
         .main-profile .profile-media .cell {
           border-bottom: 1px solid #eee; } }
+
+.profile-edit-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px; }
+  .profile-edit-button button {
+    display: flex;
+    vertical-align: middle;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    background: #eee;
+    border: 1px solid #333;
+    color: #333;
+    -webkit-box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+    -webkit-transition: 0.3s ease-out;
+    -moz-transition: 0.3s ease-out;
+    -ms-transition: 0.3s ease-out;
+    -o-transition: 0.3s ease-out;
+    transition: 0.3s ease-out; }
+    .profile-edit-button button:hover {
+      -webkit-transform: scale(1.1);
+      -moz-transform: scale(1.1);
+      -ms-transform: scale(1.1);
+      transform: scale(1.1); }
 
 .main-current-ads .current-ads-label {
   font-family: "Maven Pro", sans-serif;
@@ -5492,6 +5531,7 @@ nav {
   left: 0;
   width: 100vw;
   height: 60px;
+  z-index: 100;
   background-image: -webkit-linear-gradient(black, rgba(10, 10, 10, 0.95));
   /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
   background-image: -moz-linear-gradient(black, rgba(10, 10, 10, 0.95));

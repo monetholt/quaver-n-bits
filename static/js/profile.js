@@ -6,9 +6,14 @@ function bindButtons() {
         header: {
             isEditing: false,
             button: 'edit-header',
+            endpoint: 'header',
+            req: {
+                zipCode: "",
+                artistName: ""
+            },
             items: [
-                ['profile-header-title-text', 'edit-title-text'],
-                ['profile-header-title-loc', 'edit-title-loc']
+                ['profile-header-title-text', 'edit-title-text', 'artistName'],
+                ['profile-header-title-loc', 'edit-title-loc', 'zipCode']
             ]
         },
         about: {
@@ -43,22 +48,57 @@ function bindButtons() {
     }
 
     // Create event listeners for edit buttons:
-    console.log(JSON.stringify(state));
     for (let i=0; i < Object.keys(state).length; i++) {
         let key = state[Object.keys(state)[i]];
-        console.log(key);
-        document.getElementById(key.button).addEventListener('click', e => {
-            if(!key.isEditing) {
-                console.log("now we're editing " + key.button + "!");
-                for (let j=0; j < key.items.length; j++) {
-                    document.getElementById(key[key.items])
+        let button = document.getElementById(key.button);
+
+        button.addEventListener('click', e => {
+
+            let valuesChanged = false;
+
+            for (let j=0; j < key.items.length; j++) {
+                displayText = document.getElementById(key.items[j][0]);
+                editText = document.getElementById(key.items[j][1]);
+                displayText.hidden = !displayText.hidden;
+                editText.hidden = !editText.hidden;
+
+                if(!key.isEditing) {
+                    button.classList.add('edit-button-animate-in');
+                    editText.classList.add('edit-text-anim');
+                } else {
+                    key.req[key.items[j][2]] = editText.lastElementChild.value;
+                    if (displayText.textContent !== editText.lastElementChild.value) {
+                        valuesChanged = true;
+                        displayText.textContent = editText.lastElementChild.value;
+                    }
+                    button.classList.remove('edit-button-animate-in');
+                    editText.classList.remove('edit-text-anim');
                 }
+
+                button.blur();
             }
-            else {
-                console.log(key.button + " NOT SO MUCH!");
-            }
+
             key.isEditing = !key.isEditing;
+
+            if (valuesChanged) {
+                console.log("SOMETHING CHANGED - ALERT THE DATABASE! " + JSON.stringify(key.req));
+                openRequest(key.endpoint, key.req);
+            }
         });
+
+        function openRequest(endpoint, payload) {
+            let req = new XMLHttpRequest();
+            req.open('PUT', `/profile/${endpoint}`, true);
+            req.addEventListener('load', () => {
+                if (req.status < 400) {
+                    console.log("YAAAAS!");
+                } else {
+                    console.log("BAD." + req.statusText);
+                }
+            });
+            req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+            req.send(JSON.stringify(payload));
+        }
     }
     // document.getElementById('submitForm').addEventListener('click', e => {
 }

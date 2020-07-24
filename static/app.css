@@ -5277,6 +5277,33 @@ main {
       #profile-form .instrument-selection-item .delete-selection:hover {
         background: #e57373; }
 
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(30px); }
+  100% {
+    opacity: 1;
+    transform: translateX(0); } }
+
+@keyframes rotateButton {
+  0% {
+    transform: rotateY(0deg); }
+  50% {
+    transform: rotateY(90deg); }
+  100% {
+    transform: rotateY(0deg); } }
+
+@keyframes changeToEdit {
+  0% {
+    opacity: 1;
+    content: "\f303"; }
+  50% {
+    opacity: 0;
+    content: "\f058"; }
+  100% {
+    opacity: 1;
+    content: "\f058"; } }
+
 .main-profile {
   padding: 0 !important; }
   .main-profile h1, .main-profile h2, .main-profile h3, .main-profile h4, .main-profile h5, .main-profile h6 {
@@ -5286,13 +5313,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #26d926, #d9269d);
+    background-image: -webkit-linear-gradient(to bottom right, #d9cd26, #9726d9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #26d926, #d9269d);
+    background-image: -moz-linear-gradient(to bottom right, #d9cd26, #9726d9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #26d926, #d9269d);
+    background-image: -o-linear-gradient(to bottom right, #d9cd26, #9726d9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #26d926, #d9269d);
+    background-image: linear-gradient(to bottom right, #d9cd26, #9726d9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5419,6 +5446,17 @@ main {
       -moz-transform: scale(1.1);
       -ms-transform: scale(1.1);
       transform: scale(1.1); }
+    .profile-edit-button button:focus {
+      background: #eee; }
+
+.edit-text-anim {
+  animation: 0.5s ease-out 0s 1 slideInFromLeft; }
+
+.edit-button-animate-in {
+  animation: 0.5s ease 0s 1 rotateButton; }
+  .edit-button-animate-in .fas:before {
+    animation: 0.5s ease 0s 1 changeToEdit;
+    content: "\f058"; }
 
 .main-current-ads .current-ads-label {
   font-family: "Maven Pro", sans-serif;

@@ -14,16 +14,22 @@
                 <div class="profile-header-title">
                     {{#if profile.ArtistName}}
                         <h1 id="profile-header-title-text">{{profile.ArtistName}}</h1>
-                        <label for="edit-title-text">Display Name:</label>
-                        <input type="text" name="edit-title-text" value="{{profile.ArtistName}}">
+                        <div id="edit-title-text" hidden>
+                            <label for="edit-title-text-input">Display Name:</label>
+                            <input type="text" id="edit-title-text-input" value="{{profile.ArtistName}}">
+                        </div>
                     {{else}}
                         <h1 id="profile-header-title-text">{{user.FirstName}} {{user.LastName}}</h1>
-                        <label for="edit-title-text">Display Name:</label>
-                        <input type="text" name="edit-title-text" value="{{user.FirstName}} {{user.LastName}}">
+                        <div id="edit-title-text" hidden>
+                            <label for="edit-title-text-input">Display Name:</label>
+                            <input type="text" id="edit-title-text-input" value="{{user.FirstName}} {{user.LastName}}">
+                        </div>
                     {{/if}}
-                    <h6 id="profile-header-title-loc"><i class="fas fa-map-marker-alt"></i>{{profile.ZipCode}}</h6>
-                    <label for="edit-title-loc">Zip Code:</label>
-                    <input type="number" name="edit-title-loc" value="{{profile.ZipCode}}" min="00501" max="99950">
+                    <h6 id="profile-header-title-loc">{{profile.ZipCode}}</h6>
+                    <div id="edit-title-loc" hidden>
+                        <label for="edit-title-loc-input">Zip Code:</label>
+                        <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
+                    </div>
                     <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
                 </div>
             </div>
@@ -32,8 +38,10 @@
             <div class="cell medium-8 profile-about">
                 <div class="profile-edit-button"><button id="edit-about" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>About Me:</h2>
-                <p id="profile-about-text">{{profile.Bio}}</p>
-                <textarea name="edit-about-text" cols="80" rows="10">{{profile.Bio}}</textarea>
+                <div id="profile-about-text">{{profile.Bio}}</div>
+                <div id="edit-about-text" hidden>
+                    <textarea id="edit-about-text-input" cols="80" rows="10">{{profile.Bio}}</textarea>
+                </div>
             </div>
             <div class="cell medium-4 profile-meta">
                 <div class="profile-instruments">
@@ -51,7 +59,7 @@
                     {{#if profile.Website}}
                         <a id="profile-social-website" href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>Website</a>
                         <label for="edit-website-text">Website: </label>
-                        <input type="text" name="edit-website-text" value="{{profile.Website}}" />
+                        <input type="text" id="edit-website-text" value="{{profile.Website}}" />
                     {{/if}}
                 </div>
             </div>

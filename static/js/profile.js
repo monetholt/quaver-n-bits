@@ -19,8 +19,12 @@ function bindButtons() {
         about: {
             isEditing: false,
             button: 'edit-about',
+            endpoint: 'about',
+            req: {
+                bio: ""
+            },
             items: [
-                ['profile-about-text', 'edit-about-text']
+                ['profile-about-text', 'edit-about-text', 'bio']
             ]
         },
         social: {

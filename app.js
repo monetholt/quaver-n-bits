@@ -216,6 +216,26 @@ app.put('/profile/header', checkAuthenticated,(req, res, next) => {
     }
 });
 
+// saves the info that is located in the Profiles about/bio and returns true if update was successful
+app.put('/profile/about', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET Bio = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.bio, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
 // saves the info that is located in the Profiles table and returns true if the update was successful
 app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
     try {

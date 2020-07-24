@@ -1,3 +1,4 @@
+<script src="/js/profile.js"></script>
 {{>nav}}
 <main>
     <div class="main-container main-profile">
@@ -6,62 +7,71 @@
         <p>{{message}}</p>
     {{/if}}
 
-    <div class="profile-header">
-        <div class="profile-edit-button"><button class="button"><i class="fas fa-pencil-alt"></i></button></div>
-        <div class="profile-header-intro">
-            <img class="profile-header-image" src="/img/profile-img.jpg" />
-            <div class="profile-header-title">
-                {{#if profile.ArtistName}}
-                    <h1>{{profile.ArtistName}}</h1>
-                {{else}}
-                    <h1>{{user.FirstName}} {{user.LastName}}</h1>
-                {{/if}}
-                <h6><i class="fas fa-map-marker-alt"></i>{{profile.ZipCode}}</h6>
-                <h6>Joined {{user.CreateDate}}</h6>
+        <div class="profile-header">
+            <div class="profile-edit-button"><button id="edit-header" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+            <div class="profile-header-intro">
+                <img class="profile-header-image" src="/img/profile-img.jpg" />
+                <div class="profile-header-title">
+                    {{#if profile.ArtistName}}
+                        <h1 id="profile-header-title-text">{{profile.ArtistName}}</h1>
+                        <label for="edit-title-text">Display Name:</label>
+                        <input type="text" name="edit-title-text" value="{{profile.ArtistName}}">
+                    {{else}}
+                        <h1 id="profile-header-title-text">{{user.FirstName}} {{user.LastName}}</h1>
+                        <label for="edit-title-text">Display Name:</label>
+                        <input type="text" name="edit-title-text" value="{{user.FirstName}} {{user.LastName}}">
+                    {{/if}}
+                    <h6 id="profile-header-title-loc"><i class="fas fa-map-marker-alt"></i>{{profile.ZipCode}}</h6>
+                    <label for="edit-title-loc">Zip Code:</label>
+                    <input type="number" name="edit-title-loc" value="{{profile.ZipCode}}" min="00501" max="99950">
+                    <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="profile-info grid-x">
-        <div class="cell medium-8 profile-about">
-            <div class="profile-edit-button"><button class="button"><i class="fas fa-pencil-alt"></i></button></div>
-            <h2>About Me:</h2>
-            <p>Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.</p>
-            <p>Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.</p>
-            <p>Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
-        </div>
-        <div class="cell medium-4 profile-meta">
-            <div class="profile-edit-button"><button class="button"><i class="fas fa-pencil-alt"></i></button></div>
-            <div class="profile-instruments">
-                <h2>What I Play:</h2>
-                <ul>
-                    {{#each instruments}}
-                        <li>{{Instrument}} ({{Level}})</li>
-                    {{/each}}
-                </ul>
+        <div class="profile-info grid-x">
+            <div class="cell medium-8 profile-about">
+                <div class="profile-edit-button"><button id="edit-about" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                <h2>About Me:</h2>
+                <p id="profile-about-text">{{profile.Bio}}</p>
+                <textarea name="edit-about-text" cols="80" rows="10">{{profile.Bio}}</textarea>
             </div>
-            <div class="profile-social">
-                <h2>Social:</h2>
-                {{#if profile.Website}}
-                    <a href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>Website</a>
-                {{/if}}
+            <div class="cell medium-4 profile-meta">
+                <div class="profile-instruments">
+                    <div class="profile-edit-button"><button id="edit-instruments" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                    <h2>What I Play:</h2>
+                    <ul>
+                        {{#each instruments}}
+                            <li>{{Instrument}} ({{Level}})</li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="profile-social">
+                    <div class="profile-edit-button"><button id="edit-social" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                    <h2>Social:</h2>
+                    {{#if profile.Website}}
+                        <a id="profile-social-website" href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>Website</a>
+                        <label for="edit-website-text">Website: </label>
+                        <input type="text" name="edit-website-text" value="{{profile.Website}}" />
+                    {{/if}}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="profile-media grid-x">
-        <div class="cell medium-6">
-            <div class="profile-edit-button"><button class="button"><i class="fas fa-pencil-alt"></i></button></div>
-            <h2>Videos:</h2>
-                [Coming Soon - Profile Videos!]
-        </div>
-        <div class="cell medium-6">
-            <div class="profile-edit-button"><button class="button"><i class="fas fa-pencil-alt"></i></button></div>
-            <h2>Music:</h2>
-                [Coming Soon - Profile Music!]
+        <div class="profile-media grid-x">
+            <div class="cell medium-6">
+                <div class="profile-edit-button"><button id="edit-video" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                <h2>Videos:</h2>
+                    [Coming Soon - Profile Videos!]
+            </div>
+            <div class="cell medium-6">
+                <div class="profile-edit-button"><button id="edit-music" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                <h2>Music:</h2>
+                    [Coming Soon - Profile Music!]
+            </div>
         </div>
     </div>
 </main>
 
-<!--        -->
+
 <!--<table>-->
 <!--    <tr>-->
 <!--        <th>Name</th>-->

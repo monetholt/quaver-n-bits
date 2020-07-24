@@ -16,6 +16,10 @@ $social-links-underline: #48fe80;
     @include gradient(to bottom right, hsl(random(360), 70%, 50%), hsl(random(360), 70%, 50%));
     color: $white;
 
+    label {
+      color: $white;
+    }
+
     .profile-header-intro {
       text-align: center;
 
@@ -63,10 +67,6 @@ $social-links-underline: #48fe80;
       position: relative;
     }
 
-    .profile-meta {
-      position: relative;
-    }
-
     .cell {
       padding: 1.25rem;
     }
@@ -87,12 +87,18 @@ $social-links-underline: #48fe80;
       }
     }
 
+    .profile-instruments {
+      position: relative;
+    }
+
     .profile-social {
+      position: relative;
+
       a {
         position: relative;
       }
 
-      i {
+      .fa-globe {
         padding-right: 15px;
       }
 

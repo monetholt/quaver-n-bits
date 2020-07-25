@@ -51,11 +51,29 @@
             <h1>Current Ads:</h1>
         </div>
         <div class="current-ads-container">
-            <div class="current-ads-text">
-                <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
-                <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
-                    can grow your network.</p>
-            </div>
+            {{#if hasAds}}
+                <div class="row" data-equalizer data-equalize-on="medium" id="test-eq">
+                {{#each ads}}
+                        <div class="medium-4 columns">
+                        <div class="callout" data-equalizer-watch>
+                            <p><strong>{{Description}}</strong></p>
+                            <p>{{ZipCode}}</p>
+                            <p>{{LocationRadius}}</p>
+                            <ul>
+                                {{#each instruments}}
+                                    <li>{{Instrument}} - {{Level}}</li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                {{/each}}
+                </div>
+            {{else}}
+                <div class="current-ads-text">
+                    <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
+                    <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
+                        can grow your network.</p>
+                </div>
+            {{/if}}
             <div class="current-ads-cta">
                 <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-bullhorn"></i>Create An Ad!</button>
             </div>

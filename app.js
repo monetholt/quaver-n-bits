@@ -122,6 +122,17 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     });
 });
 
+app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
+   mysql.pool.query("SELECT * FROM Ads WHERE userID = ?;", [req.user.UserKey], (error, results) => {
+       if (error) {
+           res.write(JSON.stringify(error));
+           res.end();
+       }
+       console.log(results);
+       res.send({ads: results});
+   });
+});
+
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
 //landing page does not need authentication, in fact we do not allow logged in users to access
 app.get('/', checkNotAuthenticated, function (req, res, next) {

@@ -147,14 +147,13 @@ function getInstrumentsAndLevels(req, res, context, complete) {
 
 function getAds(req, res, context, complete) {
     mysql.pool.query("SELECT a.AdKey, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, a.DateCreated, " +
-        "a.LastUpdated FROM Ads a WHERE a.UserID = ?", [context.user.UserKey], (error, rows) => {
+        "a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ?", [context.user.UserKey], (error, rows) => {
         if(error) {
             throw(error);
         } else if(rows.length > 0) {
-            context['ads'] = rows;
-            context['hasAds'] = true;
+            var ads = rows;
             complete();
-            var ad_ids = jp.query(context['ads'], "$..AdKey");
+            var ad_ids = jp.query(ads, "$..AdKey");
             mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level\n" +
                 "FROM AdInstruments ai\n" +
                 "LEFT JOIN InstrumentLookup i ON i.InstrumentKey = ai.InstrumentID\n" +
@@ -164,18 +163,23 @@ function getAds(req, res, context, complete) {
                if(error) {
                    throw(error);
                } else if(rows.length > 0) {
-                    for(let ad of context['ads']){
+                    for(let ad of ads){
                         ad['instruments'] = rows.filter(row => row.AdId == ad['AdKey']);
                         console.log(ad);
                     }
+                    context['current_ads'] = ads.filter(ad => ad.IsActive === 1);
+                    context['has_current_ads'] = (context['current_ads'].length > 0);
+                    context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
+                    context['has_prev_ads'] = (context['prev_ads'].length > 0);
                     complete();
                } else {
                    complete();
                }
             });
         } else {
-            context['hasAds'] = false;
             complete();
+            context['has_current_ads'] = false;
+            context['has_prev_ads'] = false;
         }
     });
 }

@@ -51,9 +51,9 @@
             <h1>Current Ads:</h1>
         </div>
         <div class="current-ads-container">
-            {{#if hasAds}}
+            {{#if has_current_ads}}
                 <div class="row" data-equalizer data-equalize-on="medium" id="test-eq">
-                {{#each ads}}
+                {{#each current_ads}}
                         <div class="medium-4 columns">
                         <div class="callout" data-equalizer-watch>
                             <p><strong>{{Description}}</strong></p>
@@ -84,9 +84,27 @@
             <h1>Previous Ads:</h1>
         </div>
         <div class="previous-ads-container">
+        {{#if has_prev_ads}}
+            <div class="row" data-equalizer data-equalize-on="medium" id="test-eq">
+            {{#each prev_ads}}
+                <div class="medium-4 columns">
+                    <div class="callout" data-equalizer-watch>
+                        <p><strong>{{Description}}</strong></p>
+                        <p>{{ZipCode}}</p>
+                        <p>{{LocationRadius}}</p>
+                        <ul>
+                            {{#each instruments}}
+                                <li>{{Instrument}} - {{Level}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+            {{/each}}
+            </div>
+        {{else}}
             <div class="previous-ads-text">
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
             </div>
+        {{/if}}
         </div>
     </div>
 </main>

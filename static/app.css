@@ -5285,13 +5285,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d926a3, #d9b826);
+    background-image: -webkit-linear-gradient(to bottom right, #d92650, #2650d9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d926a3, #d9b826);
+    background-image: -moz-linear-gradient(to bottom right, #d92650, #2650d9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d926a3, #d9b826);
+    background-image: -o-linear-gradient(to bottom right, #d92650, #2650d9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d926a3, #d9b826);
+    background-image: linear-gradient(to bottom right, #d92650, #2650d9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header .profile-header-intro {
@@ -5389,6 +5389,16 @@ main {
   -webkit-box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01);
   -moz-box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01);
   box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01); }
+  .main-current-ads .current-ads-container .current-ads-loading {
+    color: #cacaca; }
+    .main-current-ads .current-ads-container .current-ads-loading .current-ads-loading-spin {
+      display: block;
+      text-align: center;
+      padding: 0;
+      margin: 0; }
+      .main-current-ads .current-ads-container .current-ads-loading .current-ads-loading-spin i {
+        color: #eaeaea;
+        font-size: 5rem; }
   .main-current-ads .current-ads-container .current-ads-text {
     text-align: center; }
     .main-current-ads .current-ads-container .current-ads-text h2 {

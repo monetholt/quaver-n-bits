@@ -4,12 +4,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.addEventListener('load', () => {
         let res = JSON.parse(req.responseText);
         console.log(res);
-        if (parseInt(res.cod) < 400){
+        if (req.status < 400){
+            document.getElementById('current-ads-loading').hidden = true;
+            document.getElementById('no-current-ads').hidden = false;
             console.log("YAY!");
         } else {
             console.log("WHOOPS!");
         }
     });
+    document.getElementById('current-ads-loading').hidden = false;
+    document.getElementById('no-current-ads').hidden = true;
     req.send(null);
 });
 

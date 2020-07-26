@@ -5313,13 +5313,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d9cd26, #9726d9);
+    background-image: -webkit-linear-gradient(to bottom right, #d92691, #26d9d0);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d9cd26, #9726d9);
+    background-image: -moz-linear-gradient(to bottom right, #d92691, #26d9d0);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d9cd26, #9726d9);
+    background-image: -o-linear-gradient(to bottom right, #d92691, #26d9d0);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d9cd26, #9726d9);
+    background-image: linear-gradient(to bottom right, #d92691, #26d9d0);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5457,6 +5457,13 @@ main {
   .edit-button-animate-in .fas:before {
     animation: 0.5s ease 0s 1 changeToEdit;
     content: "\f058"; }
+
+.switch, .switch.primary {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding-right: 10px;
+  padding-bottom: 60px; }
 
 .main-current-ads .current-ads-label {
   font-family: "Maven Pro", sans-serif;

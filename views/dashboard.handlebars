@@ -52,11 +52,13 @@
         </div>
         <div class="current-ads-container">
             {{#if has_current_ads}}
-                <div class="row" data-equalizer data-equalize-on="medium" id="test-eq">
+                <div class="row">
                 {{#each current_ads}}
-                        <div class="medium-4 columns">
+                <div class="medium-4 columns">
                         <div class="callout" data-equalizer-watch>
-                            <p><strong>{{Description}}</strong></p>
+                            <p>{{DatePosted}}</p>
+                            <p><strong>{{Title}}</strong></p>
+                            <p>{{Description}}</p>
                             <p>{{ZipCode}}</p>
                             <p>{{LocationRadius}}</p>
                             <ul>
@@ -65,6 +67,7 @@
                                 {{/each}}
                             </ul>
                         </div>
+                </div>
                 {{/each}}
                 </div>
             {{else}}
@@ -85,11 +88,13 @@
         </div>
         <div class="previous-ads-container">
         {{#if has_prev_ads}}
-            <div class="row" data-equalizer data-equalize-on="medium" id="test-eq">
+            <div class="row">
             {{#each prev_ads}}
                 <div class="medium-4 columns">
                     <div class="callout" data-equalizer-watch>
-                        <p><strong>{{Description}}</strong></p>
+                        <p>{{DatePosted}}</p>
+                        <p><strong>{{Title}}</strong></p>
+                        <p>{{Description}}</p>
                         <p>{{ZipCode}}</p>
                         <p>{{LocationRadius}}</p>
                         <ul>
@@ -98,8 +103,8 @@
                             {{/each}}
                         </ul>
                     </div>
+                </div>
             {{/each}}
-            </div>
         {{else}}
             <div class="previous-ads-text">
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>

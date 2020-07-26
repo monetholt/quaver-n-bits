@@ -273,24 +273,19 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
     }
 });
 
-//TODO: potentially accept an array of instruments?
-app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
-    try {
-        mysql.pool.query(
-            'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
-            [req.body.ProfileKey, req.body.instrumentId, req.body.levelId],
-                function(err, result) {
-                if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+//TODO: it will submit, but there's nothing stopping the user from trying to click the button before Level has been selected, and currently no success message either.
+app.post('/create-profile',checkAuthenticated,(req, res, next) => {
+    var sql = `INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, LastUpdated, CreateDate) VALUES (?, (SELECT InstrumentKey FROM InstrumentLookup WHERE Instrument = ?), (SELECT LevelKey FROM LevelLookup WHERE Level = ?), NOW(), NOW())`;
+    var inserts = [req.user.UserKey, req.body["instrument-list"], req.body["selection-level"]];
+    sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }else{
+                res.redirect('/create-profile');
+            }
+    });    
 
-                } else {
-
-                }
-        });
-    } catch(err) {
-        res.redirect(utils.profileUpdateErrorRedirect());
-    }
 });
 
 app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
@@ -311,6 +306,23 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
+
+//for storing data from ad creation, use req.body[] because otherwise it is read in as a subtraction
+//added form action and method, also changed from datalist to regular select.
+app.post('/dashboard', checkAuthenticated, (req, res, next) => {
+   var inserts = [req.user.UserKey, req.body["ad-title"], req.body["ad-text"], req.body["instrument-list"], req.body["selection-level"], req.body["instrument-selection-quantity"], req.user.UserKey, req.body["ad-radius"]];
+   var sql = `INSERT INTO Ads (UserID, Title, Description, Instrument, LevelID, Quantity, ZipCode, LocationRadius, DatePosted, Deleted, DateCreated, LastUpdated, IsActive) VALUES (?, ?, ?, ?, (SELECT LevelKey FROM LevelLookup WHERE Level = ?), ?, (SELECT ZipCode FROM Profiles WHERE UserID = ?), ?, NOW(), '0', NOW(), NOW(), '1')`;
+   sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }else{
+                res.redirect('/dashboard'); // successfully posted data to the database, redirecting to dashboard
+            }
+   });
+});
+    
+
 
 //for pages accessible by authenticated users only
 function checkAuthenticated(req, res, next) {

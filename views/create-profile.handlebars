@@ -36,6 +36,13 @@
         item.parentNode.remove();
     }
 
+    function cloneRow() {
+        var row = document.getElementById("rowToClone");      // locates the row we are going to copy
+        var table = document.getElementById("tableToModify"); // locates the end of the table that we are going to append to
+        var clone = row.cloneNode(true);
+        table.appendChild(clone);                             // adds the new row to end of table
+    }
+
 </script>
 <main>
     <div class="main-container">
@@ -53,7 +60,7 @@
             <ul class="orbit-container">
             <li class="is-active orbit-slide">
                 <div id="profile-form">
-                    <form>
+                    <form id = "addInstrumentToProfile" action="/create-profile" method="post">
                         <table>
                             <tr>
                             <h3>Step 1: Instruments</h3>
@@ -63,23 +70,26 @@
                                     </label>
                                 </td>
                             </tr>
-                            <tr>
+                        <tbody id = "tableToModify">
+                            <tr id="rowToClone">
                                 <td>
-                                    <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
-                                    <datalist id="instrument-list">
+                                    <select id="instrument-list" name="instrument-list" onchange="addSelection(this.value)">
                                         {{#each instruments}}
-                                        <option data-value="{{InstrumentKey}}" value="{{Instrument}}">
+                                        <option data-value="{{InstrumentKey}}" value="{{Instrument}}">{{Instrument}}</option>
                                         {{/each}}
-                                    </datalist>
+                                    </select>
+                                        <input type="submit" value = "Select Instrument">
+                            <!--        <button onclick="cloneRow()" value="Save">Save</button> -->
+                            <!-- trying to figure out if we can clone the elements haven't quite gotten this all the way working yet -->
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <div id="instrument-selection">
-
                                     </div>
                                 </td>
                             </tr>
+                        </tbody>
                         </table>
                     </form>
                 </div>

@@ -10,7 +10,6 @@
             }
         }
     }
-
     function addSelection(inst) {
         let selection = document.getElementById("instrument-selection");
         let item = document.createElement('div');
@@ -31,15 +30,13 @@
                 </div>
                 <div class="cell medium-1"></div>
                 <div class="cell medium-4">
-                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" />
+                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" name="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" />
                 </div>
             </div>
             <div class="delete-selection" onclick="remove(this)">X</div>
         `;
-
         selection.appendChild(item);
     }
-
     function remove(item) {
         item.parentNode.remove();
     }
@@ -78,7 +75,7 @@
     <button class="close-button" data-close aria-label="Close reveal" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
-    <form>
+    <form id = "addAd" action="/dashboard" method="post">
         <table>
             <tr>
                 <td>
@@ -87,7 +84,17 @@
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="ad-title" />
+                    <input type="text" id="ad-title" name="ad-title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ad-radius">How far of a location radius would you like your ad to reach (in miles, maximum is 625 miles)? </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="number" name="ad-radius" min="0" max="625" />
                 </td>
             </tr>
             <tr>
@@ -107,12 +114,12 @@
             </tr>
             <tr>
                 <td>
-                    <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
-                    <datalist id="instrument-list">
+                 <!--   <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" name = "instrument-list" oninput="checkSelected()"> -->
+                    <select id="instrument-list" name="instrument-list" onchange="addSelection(this.value)">
                         {{#each instruments}}
-                        <option data-value="{{InstrumentKey}}" value="{{Instrument}}">
+                        <option data-value="{{InstrumentKey}}" value="{{Instrument}}">{{Instrument}}</option>
                         {{/each}}
-                    </datalist>
+                    </select>
                 </td>
             </tr>
             <tr>

@@ -146,8 +146,8 @@ function getInstrumentsAndLevels(req, res, context, complete) {
 }
 
 function getAds(req, res, context, complete) {
-    mysql.pool.query("SELECT a.AdKey, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, a.DateCreated, " +
-        "a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ?", [context.user.UserKey], (error, rows) => {
+    mysql.pool.query("SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, a.DateCreated, " +
+        "a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC", [context.user.UserKey], (error, rows) => {
         if(error) {
             throw(error);
         } else if(rows.length > 0) {

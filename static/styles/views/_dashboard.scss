@@ -1,3 +1,14 @@
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 $delete-red: #f44336;
 $delete-red-hover: #e57373;
 
@@ -28,6 +39,10 @@ $delete-red-hover: #e57373;
           font-size: 5rem;
         }
       }
+    }
+
+    .no-current-ads {
+      animation: 1s ease-out 0s 1 slideInFromLeft;
     }
 
     .current-ads-text{

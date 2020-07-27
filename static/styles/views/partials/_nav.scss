@@ -3,9 +3,9 @@ $avatar-size: 44px;
 $avatar-icon-size: 36px;
 $nav-color-1: rgba(0,0,0,1);
 $nav-color-2: rgba(10,10,10,0.95);
-$logo-gradient-1: #4bff7a;
-$logo-gradient-2: #0fd3ff;
-$logo-text-border: 0.4px rgba(151, 236, 157, 0.1);
+$logo-gradient-1: $primary-color;
+$logo-gradient-2: #f6ff6b;
+$logo-text-border: 0.3px rgba(246, 255, 107, 0.1);
 
 nav {
   position: fixed;

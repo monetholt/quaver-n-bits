@@ -1,5 +1,6 @@
 $body-bg: #eee;
 $main-container-bg: #fefefe;
+$primary-button-outline: #19fff4;
 
 body {
   background: $body-bg;
@@ -24,5 +25,9 @@ main {
   }
 }
 
+.button.primary {
+  border: 1px solid $primary-button-outline;
+  box-shadow: 0 0 10px 2px inset #19fff399;
+}
 
 

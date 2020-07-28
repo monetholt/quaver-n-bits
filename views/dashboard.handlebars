@@ -51,11 +51,32 @@
             <h1>Current Ads:</h1>
         </div>
         <div class="current-ads-container">
-            <div class="current-ads-text">
-                <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
-                <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
-                    can grow your network.</p>
-            </div>
+            {{#if has_current_ads}}
+                <div class="row">
+                    {{#each current_ads}}
+                    <div class="medium-4 columns">
+                        <div class="callout" id="ad{{AdKey}}">
+                            <p>{{DatePosted}}</p>
+                            <p><strong>{{Title}}</strong></p>
+                            <p>{{Description}}</p>
+                            <p>{{ZipCode}}</p>
+                            <p>{{LocationRadius}}</p>
+                            <ul>
+                                {{#each instruments}}
+                                    <li>{{Instrument}} - {{Level}}</li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            {{else}}
+                <div class="current-ads-text">
+                    <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
+                    <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
+                        can grow your network.</p>
+                </div>
+            {{/if}}
             <div class="current-ads-cta">
                 <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-bullhorn"></i>Create An Ad!</button>
             </div>
@@ -66,9 +87,28 @@
             <h1>Previous Ads:</h1>
         </div>
         <div class="previous-ads-container">
+        {{#if has_prev_ads}}
+            <div class="row">
+                {{#each prev_ads}}
+                <div class="medium-4 columns">
+                    <div class="callout">
+                        <p><strong>{{Description}}</strong></p>
+                        <p>{{ZipCode}}</p>
+                        <p>{{LocationRadius}}</p>
+                        <ul>
+                            {{#each instruments}}
+                                <li>{{Instrument}} - {{Level}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        {{else}}
             <div class="previous-ads-text">
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
             </div>
+        {{/if}}
         </div>
     </div>
 </main>

@@ -13,6 +13,7 @@ var MemoryStore = require('memorystore')(session)
 const methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 const utils = require('./utils');
+const jp = require("jsonpath");
 
 
 // constants
@@ -107,20 +108,81 @@ app.get('/index', checkAuthenticated, function (req, res, next) {
 });
 
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
+    var callbackCount = 0;
+    var context = {
+        user: req.user
+    };
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
-        if (results.length == 0 || results[0].ArtistName === null) {
-            res.redirect('/create-profile');
-        } else {
-            mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
-                if(error) {
-                    res.write(JSON.stringify(error));
-                    res.end();
+        try {
+            if (results.length == 0 || results[0].ArtistName === null) {
+                res.redirect('/create-profile');
+            } else {
+                context['profile'] = results;
+                getInstrumentsAndLevels(req, res, context, complete);
+                getAds(req, res, context, complete);
+                function complete() {
+                    callbackCount++;
+                    if (callbackCount >= 3) {
+                        res.render('dashboard', context);
+                    }
                 }
-                res.render('dashboard', {user: req.user, profile: results, instruments: rows[0], levels: rows[1]});
-            });
+            }
+        } catch(err) {
+            res.write(JSON.stringify(err));
+            res.end();
         }
     });
 });
+
+function getInstrumentsAndLevels(req, res, context, complete) {
+    mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
+        if(error) {
+            throw(error);
+        }
+        context['instruments'] = rows[0];
+        context['levels'] = rows[1];
+        complete();
+    });
+}
+
+function getAds(req, res, context, complete) {
+    mysql.pool.query("SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, a.DateCreated, " +
+        "a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC", [context.user.UserKey], (error, rows) => {
+        if(error) {
+            throw(error);
+        } else if(rows.length > 0) {
+            var ads = rows;
+            complete();
+            var ad_ids = jp.query(ads, "$..AdKey");
+            mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level\n" +
+                "FROM AdInstruments ai\n" +
+                "LEFT JOIN InstrumentLookup i ON i.InstrumentKey = ai.InstrumentID\n" +
+                "LEFT JOIN LevelLookup l ON l.LevelKey = ai.LevelID\n" +
+                "WHERE ai.AdID IN(?)\n" +
+                "ORDER BY ai.AdID;", [ad_ids], (error, rows) => {
+               if(error) {
+                   throw(error);
+               } else if(rows.length > 0) {
+                    for(let ad of ads){
+                        ad['instruments'] = rows.filter(row => row.AdId == ad['AdKey']);
+                        console.log(ad);
+                    }
+                    context['current_ads'] = ads.filter(ad => ad.IsActive === 1);
+                    context['has_current_ads'] = (context['current_ads'].length > 0);
+                    context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
+                    context['has_prev_ads'] = (context['prev_ads'].length > 0);
+                    complete();
+               } else {
+                   complete();
+               }
+            });
+        } else {
+            complete();
+            context['has_current_ads'] = false;
+            context['has_prev_ads'] = false;
+        }
+    });
+}
 
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
 //landing page does not need authentication, in fact we do not allow logged in users to access

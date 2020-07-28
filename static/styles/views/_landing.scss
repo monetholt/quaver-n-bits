@@ -73,6 +73,11 @@ $star-yellow: #ffeb3b;
       padding: 5vh 0;
       width: 50vw;
       margin-top: 3vh;
+
+      button {
+        color: $dark-gray;
+        font-weight: bold;
+      }
     }
 
     .learn-more {

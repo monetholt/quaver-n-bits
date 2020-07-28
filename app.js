@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const express = require('express');
 const handlebars = require('express-handlebars');
 const path = require('path');
@@ -6,13 +9,14 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
+var MemoryStore = require('memorystore')(session)
 const methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 const utils = require('./utils');
 
 
 // constants
-const port = 3000;
+const port = process.env.PORT || 3000; //Heroku automatically assigns a port via an environmental variable. Locally will use 3000
 const app = express();
 
 // set up handlebars
@@ -20,7 +24,10 @@ app.set('view engine', 'handlebars');
 app.engine('handlebars', handlebars({
     layoutsDir: path.join(__dirname, 'views/layouts'),
     defaultLayout: 'main',
-    partialsDir: path.join(__dirname, 'views/partials')
+    partialsDir: path.join(__dirname, 'views/partials'),
+    helpers: {
+        moment: require('helper-moment')
+    }
 }));
 
 // set up file location for static files
@@ -73,19 +80,23 @@ app.use(flash());
 app.use(session({
     secret: "SECRETKEY",
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+        checkPeriod: 86400000 // removes expired entries every 24h
+    }),
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
 app.get('/create-profile',checkAuthenticated,(req,res) => {
-    mysql.pool.query("SELECT Instrument FROM InstrumentLookup",(error, results) => {
+    mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
         if(error) {
             res.write(JSON.stringify(error));
             res.end();
         }
-        res.render('create-profile', { user: req.user, instruments: results });
+        res.render('create-profile', { user: req.user, instruments: rows[0], levels: rows[1] });
     });
 });
 
@@ -97,10 +108,16 @@ app.get('/index', checkAuthenticated, function (req, res, next) {
 
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
-        if (results === undefined || results.length === 0) {
+        if (results.length == 0 || results[0].ArtistName === null) {
             res.redirect('/create-profile');
         } else {
-            res.render('dashboard', {user: req.user, profile: results});
+            mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
+                if(error) {
+                    res.write(JSON.stringify(error));
+                    res.end();
+                }
+                res.render('dashboard', {user: req.user, profile: results, instruments: rows[0], levels: rows[1]});
+            });
         }
     });
 });
@@ -133,7 +150,7 @@ app.post('/register', checkNotAuthenticated, async function (req, res) {
                 req.flash('errorRegistration', 'A user with this email already exists');
                 res.redirect('/');
             } else {
-                mysql.pool.query("INSERT INTO `Users` (`FirstName`, `LastName`, `Email`, `Password`) VALUES (?, ?, ?, ?)",
+                mysql.pool.query("CALL CreateUser(?, ?, ?, ?)",
                     [req.body.firstname, req.body.lastname, req.body.email, hashedPassword],
 
                     function (err, result) {
@@ -183,15 +200,34 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
 app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
-            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, LastUpdated = NOW() WHERE UserID = ?',
-            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.user.UserKey],
+            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
             function(err, result) {
                 if(err) {
                     throw(err);
                 } else if(result.changedRows === 1) {
                     res.send(true);
                 } else {
-                    throw(new ReferenceError("No profile found"));
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.redirect('/dashboard');
+                } else {
+                    throw(new ReferenceError("No profile found"))
                 }
             });
     } catch (err) {

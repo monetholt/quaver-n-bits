@@ -1,122 +1,167 @@
 {{>nav}}
 <main>
-    <div class="main-container">
-{{#if message}}
-    <p>{{message}}</p>
-{{/if}}
-<div class="card-profile-stats">
-    <div class="card-profile-stats-intro">
-        <img class="card-profile-stats-intro-pic" src="https://pbs.twimg.com/profile_images/732634911761260544/OxHbNdTF.jpg" alt="profile-image" />
-        <div class="card-profile-stats-intro-content">
-            <h3>{{user.FirstName}} {{user.LastName}}</h3>
-            <p>Joined {{user.CreateDate}}</small></p>
-        </div> <!-- /.card-profile-stats-intro-content -->
-    </div> <!-- /.card-profile-stats-intro -->
-</div>
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Value</th>
-    </tr>
-    {{#each profile}}
-        <tr>
-            <td>{{@key}}</td>
-            <td>{{this}}</td>
-        </tr>
-    {{/each}}
-</table>
-<table>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Level</th>
-                    </tr>
-                    {{#each instruments}}
-                        <tr>
-                            <td>{{InstrumentKey}} - {{Instrument}}</td>
-                            <td>{{LevelKey}} - {{Level}}</td>
-                        </tr>
-                    {{/each}}
-                </table>
-            </td>
-        </tr>
-</table>
-<table>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <th>Location</th>
-                    </tr>
-                    {{#each workSamples}}
-                        <tr>
-                            <td>{{SampleKey}} - {{SampleLocation}}</td>
-                        </tr>
-                    {{/each}}
-                </table>
-            </td>
-        </tr>
-</table>
-<form method="post" action="/profile/basic">
-    <input type="hidden" name="ProfileKey" value="{{profile.ProfileKey}}">
-    <label for="zipCode">Zip Code: <input type="text" name="zipCode" value="{{profile.ZipCode}}"></label>
-    <label for="phoneNumber">Phone Number: <input type="text" name="phoneNumber" value="{{profile.Phone}}"></label>
-    <label for="webAddress">Website: <input type="text" name="webAddress" value="{{profile.Website}}"></label>
-    <label for="lookingForWork">Private: <input type="radio" id="private" name="lookingForWork" value="0" {{#if profile.LookingForWork}}{{else}}checked{{/if}}></label>
-    <label for="lookingForWork">Public: <input type="radio" id="public" name="lookingForWork" value="1" {{#if profile.LookingForWork}}checked{{/if}}></label>
-</form>
-<form method="post" action="/profile/instrument/add">
-    <label for="instrumentId">Instrument: <select name="instrumentId" id="instrumentId">
-    </select></label>
-    <label for="levelId">Level: <select name="levelId" id="levelId">
-    </select></label>
-</form>
-<form method="post" action="/profile/instrument/update">
+    <div class="main-container main-profile">
 
-</form>
+    {{#if message}}
+        <p>{{message}}</p>
+    {{/if}}
+
+    <div class="profile-header">
+        <div class="profile-header-intro">
+            <img class="profile-header-image" src="/img/profile-img.jpg" />
+            <div class="profile-header-title">
+                {{#if profile.ArtistName}}
+                    <h1>{{profile.ArtistName}}</h1>
+                {{else}}
+                    <h1>{{user.FirstName}} {{user.LastName}}</h1>
+                {{/if}}
+                <h6>Joined {{user.CreateDate}}</h6>
+            </div>
+        </div>
+    </div>
+    <div class="profile-about grid-x">
+        <div class="cell medium-8">
+            <h2>About Me:</h2>
+            <p>Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.</p>
+            <p>Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.</p>
+            <p>Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
+        </div>
+        <div class="cell medium-4">
+            <div class="profile-instruments">
+                <h2>What I Play:</h2>
+                <ul>
+                    {{#each instruments}}
+                        <li>{{Instrument}} ({{Level}})</li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="profile-social">
+                <h2>Social:</h2>
+                {{#if profile.Website}}
+                    <a href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>Website</a>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    <div class="profile-media grid-x">
+        <div class="cell medium-6">
+            <h2>Videos:</h2>
+                [Coming Soon - Profile Videos!]
+        </div>
+        <div class="cell medium-6">
+            <h2>Music:</h2>
+                [Coming Soon - Profile Music!]
+        </div>
     </div>
 </main>
 
-<script lang="js">
-    let sent1 = false;
-    let sent2 = false;
-    window.onload = function () {
-        if(!sent1) {
-            let request = new XMLHttpRequest();
-            request.open('GET', '/profile/instruments');
-            request.responseType = 'json';
+<!--        -->
+<!--<table>-->
+<!--    <tr>-->
+<!--        <th>Name</th>-->
+<!--        <th>Value</th>-->
+<!--    </tr>-->
+<!--    {{#each profile}}-->
+<!--        <tr>-->
+<!--            <td>{{@key}}</td>-->
+<!--            <td>{{this}}</td>-->
+<!--        </tr>-->
+<!--    {{/each}}-->
+<!--</table>-->
+<!--<table>-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <table>-->
+<!--                    <tr>-->
+<!--                        <th>Name</th>-->
+<!--                        <th>Level</th>-->
+<!--                    </tr>-->
+<!--                    {{#each instruments}}-->
+<!--                        <tr>-->
+<!--                            <td>{{InstrumentKey}} - {{Instrument}}</td>-->
+<!--                            <td>{{LevelKey}} - {{Level}}</td>-->
+<!--                        </tr>-->
+<!--                    {{/each}}-->
+<!--                </table>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--</table>-->
+<!--<table>-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <table>-->
+<!--                    <tr>-->
+<!--                        <th>Location</th>-->
+<!--                    </tr>-->
+<!--                    {{#each workSamples}}-->
+<!--                        <tr>-->
+<!--                            <td>{{SampleKey}} - {{SampleLocation}}</td>-->
+<!--                        </tr>-->
+<!--                    {{/each}}-->
+<!--                </table>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--</table>-->
+<!--<form method="post" action="/profile/basic">-->
+<!--    <input type="hidden" name="ProfileKey" value="{{profile.ProfileKey}}">-->
+<!--    <label for="zipCode">Zip Code: <input type="text" name="zipCode" value="{{profile.ZipCode}}"></label>-->
+<!--    <label for="phoneNumber">Phone Number: <input type="text" name="phoneNumber" value="{{profile.Phone}}"></label>-->
+<!--    <label for="webAddress">Website: <input type="text" name="webAddress" value="{{profile.Website}}"></label>-->
+<!--    <label for="lookingForWork">Private: <input type="radio" id="private" name="lookingForWork" value="0" {{#if profile.LookingForWork}}{{else}}checked{{/if}}></label>-->
+<!--    <label for="lookingForWork">Public: <input type="radio" id="public" name="lookingForWork" value="1" {{#if profile.LookingForWork}}checked{{/if}}></label>-->
+<!--    <button type="submit" class="button primary">Submit</button>-->
+<!--</form>-->
+<!--<form method="post" action="/profile/instrument/add">-->
+<!--    <label for="instrumentId">Instrument: <select name="instrumentId" id="instrumentId">-->
+<!--    </select></label>-->
+<!--    <label for="levelId">Level: <select name="levelId" id="levelId">-->
+<!--    </select></label>-->
+<!--    <button type="submit" class="button primary">Submit</button>-->
+<!--</form>-->
+<!--<form method="post" action="/profile/instrument/update">-->
 
-            request.onload = function () {
-                let array = request.response;
-                let select = document.getElementById("instrumentId");
-                for (let instrument of array) {
-                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);
-                    select.appendChild(option);
-                }
-            };
-            request.send();
-            console.log("sending req 1");
-            sent1 = true;
-        }
+<!--</form>-->
+<!--    </div>-->
+<!--</main>-->
 
-        if(!sent2) {
-            let request2 = new XMLHttpRequest();
-            request2.open('GET', '/profile/levels');
-            request2.responseType = 'json';
+<!--<script lang="js">-->
+<!--    let sent1 = false;-->
+<!--    let sent2 = false;-->
+<!--    window.onload = function () {-->
+<!--        if(!sent1) {-->
+<!--            let request = new XMLHttpRequest();-->
+<!--            request.open('GET', '/profile/instruments');-->
+<!--            request.responseType = 'json';-->
 
-            request2.onload = function () {
-                let array2 = request2.response;
-                let select2 = document.getElementById("levelId");
-                for (let level of array2) {
-                    let option2 = new Option(level.Level, level.LevelKey);
-                    select2.appendChild(option2);
-                }
-            };
-            request2.send();
-            console.log("sending req 2");
-            sent2 = true;
-        }
-    }
-</script>
+<!--            request.onload = function () {-->
+<!--                let array = request.response;-->
+<!--                let select = document.getElementById("instrumentId");-->
+<!--                for (let instrument of array) {-->
+<!--                    let option = new Option(instrument.Instrument, instrument.InstrumentKey);-->
+<!--                    select.appendChild(option);-->
+<!--                }-->
+<!--            };-->
+<!--            request.send();-->
+<!--            console.log("sending req 1");-->
+<!--            sent1 = true;-->
+<!--        }-->
+
+<!--        if(!sent2) {-->
+<!--            let request2 = new XMLHttpRequest();-->
+<!--            request2.open('GET', '/profile/levels');-->
+<!--            request2.responseType = 'json';-->
+
+<!--            request2.onload = function () {-->
+<!--                let array2 = request2.response;-->
+<!--                let select2 = document.getElementById("levelId");-->
+<!--                for (let level of array2) {-->
+<!--                    let option2 = new Option(level.Level, level.LevelKey);-->
+<!--                    select2.appendChild(option2);-->
+<!--                }-->
+<!--            };-->
+<!--            request2.send();-->
+<!--            console.log("sending req 2");-->
+<!--            sent2 = true;-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->

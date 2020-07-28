@@ -218,18 +218,48 @@ app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
 
 app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
     try {
-        mysql.pool.query(
-            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
-            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
-            function(err, result) {
-                if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
-                    res.redirect('/dashboard');
-                } else {
-                    throw(new ReferenceError("No profile found"))
-                }
-            });
+        mysql.pool.getConnection(function (err, conn) {
+            if (err) throw (err);
+
+            //create the profile
+            conn.query(
+                'INSERT INTO Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, UserID = ?, CreateDate = NOW(), LastUpdated = NOW()',
+                [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
+                function (err, rows) {
+                    console.log(rows);
+                    if (err) {
+                        conn.release();
+                        throw (err);
+                    }
+                    else if (rows.insertId > 0) //now that profile is created, add instruments
+                    {
+                        //first format instrument/levelIDs sent in with form
+                        var instruments = [];
+
+                        for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+
+                            if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
+                                instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], rows.insertId]);
+                            }
+                            else break;
+                        }
+
+                        //add the instruments
+                        conn.query(`INSERT INTO ProfileInstruments (InstrumentID, LevelID, ProfileID)  VALUES ?  `, [instruments],
+                            function (err, rows) {
+                                conn.release();
+
+                                if (err) throw (err);
+                                else res.redirect('/dashboard');
+                            });
+
+                    }
+                    else {
+                        conn.release();
+                        throw (new ReferenceError("No profile created"));
+                    }
+                });
+        });
     } catch (err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }

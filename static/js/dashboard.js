@@ -1,21 +1,99 @@
+// document.addEventListener('DOMContentLoaded', (event) => {
+//     let req = new XMLHttpRequest();
+//     let url = 'https://soundcloud.com/milklab/nate-kimball-orchestra-namaste';
+//     req.open('GET', `https://cors-anywhere.herokuapp.com/${url}`, true);
+//     req.addEventListener('load', () => {
+//         let res = req.responseText;
+//         if (req.status < 400) {
+//             // console.log(res);
+//             console.log("YAY!");
+//             let number = res.match(/soundcloud:\/\/sounds:(\d{9})/);
+//             console.log(number[1]);
+//             let iframe = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${number[1]}`;
+//             console.log(iframe);
+//         }
+//     });
+//     req.send(null);
+// });
+
 document.addEventListener('DOMContentLoaded', (event) => {
     let req = new XMLHttpRequest();
     req.open('GET', '/dashboard/ads', true);
     req.addEventListener('load', () => {
         let res = JSON.parse(req.responseText);
-        console.log(res);
-        if (req.status < 400){
-            document.getElementById('current-ads-loading').hidden = true;
-            document.getElementById('no-current-ads').hidden = false;
-            console.log("YAY!");
+        if (req.status < 400) {
+            console.log(res);
+            if (res.ads) {
+                document.getElementById('current-ads-loading').hidden = true;
+                document.getElementById('previous-ads-loading').hidden = true;
+
+                // Create Levels
+                let levels = {};
+                for (let i=0; i < res.levels.length; i++) {
+                    levels[res.levels[i]['LevelKey']] = res.levels[i]['Level'];
+                }
+
+                let currentAds = document.getElementById('current-ads');
+                let previousAds = document.getElementById('previous-ads');
+                for (let ad in res.ads) {
+                    if (res.ads[ad]['IsActive'] === 1) {
+                        currentAds.appendChild(createAd(res.ads[ad], levels));
+                    } else {
+                        previousAds.appendChild(createAd(res.ads[ad], levels));
+                    }
+                }
+            } else {
+                console.log("No ads here :(");
+                document.getElementById('current-ads-loading').hidden = true;
+                document.getElementById('previous-ads-loading').hidden = true;
+                document.getElementById('no-current-ads').hidden = false;
+                document.getElementById('no-previous-ads').hidden = false;
+            }
         } else {
             console.log("WHOOPS!");
         }
     });
     document.getElementById('current-ads-loading').hidden = false;
+    document.getElementById('previous-ads-loading').hidden = false;
     document.getElementById('no-current-ads').hidden = true;
+    document.getElementById('no-previous-ads').hidden = true;
     req.send(null);
 });
+
+function createAd(thisAd, levels) {
+    let currentAd = document.createElement('div');
+    currentAd.id = 'display-ads-ad-' + thisAd.AdKey;
+    currentAd.className = 'display-ads-ad';
+    currentAd.innerHTML = `
+        <div class="display-ads-ad-overlay">
+            ${thisAd.IsActive === 1 ? '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' : '<button class="button secondary large"><i class="fas fa-sync"></i>Enable Ad</button>'}
+        </div>
+        <div class="grid-x display-ads-ad-header">
+            <div class="cell medium-6 display-ads-ad-title">
+                <h2>${thisAd.Title}</h2>
+                <h5>${thisAd.DatePosted === thisAd.LastUpdated ? "Posted" : "Updated"} ${moment(thisAd.DatePosted).startOf('day').fromNow()}</h5>
+            </div>
+            <div class="cell medium-6 display-ads-ad-loc">
+                <div class="display-ads-ad-loc-display">
+                    ${thisAd.IsActive === 1 ? '<i class="fas fa-broadcast-tower"></i> Within <strong>' + thisAd.LocationRadius + '</strong> miles of <strong>' + thisAd.ZipCode + '</strong>' : '<i class="fas fa-microphone-alt-slash"></i>This ad is currently <strong>inactive</strong>.'}                            
+                </div>
+            </div>
+        </div>
+        <div class="grid-x display-ads-ad-body">
+            <div class="cell medium-8 display-ads-ad-description">
+                <p>${thisAd.Description}</p>
+                
+            </div> 
+            <div class="cell medium-4 display-ads-ad-instruments">
+                <h6>What I'm looking for: </h6>
+                <ul>
+                    <li><strong>${thisAd.Quantity}</strong> ${levels[thisAd.LevelID]} ${thisAd.Instrument}${thisAd.Quantity === 1 ? "" : "s"}</li>
+                </ul>
+            </div> 
+        </div>
+        `;
+    return currentAd;
+}
 
 function checkSelected() {
     let val = document.getElementById("instruments").value;

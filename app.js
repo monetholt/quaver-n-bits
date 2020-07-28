@@ -123,13 +123,20 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
 });
 
 app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
-   mysql.pool.query("SELECT * FROM Ads WHERE userID = ?;", [req.user.UserKey], (error, results) => {
+   mysql.pool.query("SELECT * FROM Ads WHERE userID = ?;", [req.user.UserKey], (error, resultsAds) => {
        if (error) {
            res.write(JSON.stringify(error));
            res.end();
        }
-       console.log(results);
-       res.send({ads: results});
+       mysql.pool.query("SELECT LevelKey, Level FROM LevelLookup;", (error, resultsLevels) => {
+           if (error) {
+               res.write(JSON.stringify(error));
+               res.end();
+           }
+
+           res.send({ads: resultsAds, levels: resultsLevels});
+       });
+
    });
 });
 
@@ -339,6 +346,33 @@ app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
 
                 }
         });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.get('/profile/worksamples', checkAuthenticated, (req, res, next) => {
+    try {
+        mysql.pool.query(
+            'SELECT ProfileKey FROM Profiles WHERE UserID = ?',
+            [req.user.UserKey],
+            function(err, rows) {
+                if(err) {
+                    throw(err);
+                } else {
+                    let profileKey = rows[0]['ProfileKey'];
+                    mysql.pool.query(
+                    'SELECT SampleKey, SampleLocation FROM WorkSamples WHERE ProfileID = ?',
+                    [profileKey],
+                    function(err, rows) {
+                        if (err) {
+                            throw(err);
+                        } else {
+                            res.send(rows);
+                        }
+                    });
+                }
+            });
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }

@@ -9,6 +9,54 @@
   }
 }
 
+@keyframes rockBackAndForth {
+  0% {
+    transform: rotateZ(0);
+  }
+
+  25% {
+    transform: rotateZ(25deg);
+  }
+
+  50% {
+    transform: rotateZ(0);
+  }
+
+  75% {
+    transform: rotateZ(-25deg);
+  }
+
+  100% {
+    transform: rotateZ(0);
+  }
+}
+
+@keyframes spinOnce {
+  0% {
+    transform: rotateZ(0);
+  }
+
+  50% {
+    transform: rotateZ(90deg);
+  }
+
+  100% {
+    transform: rotateZ(180deg);
+  }
+}
+
+@keyframes beacon {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
 $delete-red: #f44336;
 $delete-red-hover: #e57373;
 
@@ -18,6 +66,11 @@ $delete-red-hover: #e57373;
     text-indent: 10px;
   }
 
+  .create-ad-cta {
+    i {
+      padding-right: 10px;
+    }
+  }
   .current-ads-container {
     display: block;
     background: #f2f2f2;
@@ -43,6 +96,125 @@ $delete-red-hover: #e57373;
 
     .no-current-ads {
       animation: 1s ease-out 0s 1 slideInFromLeft;
+    }
+
+    .display-ads-ad {
+      position: relative;
+      margin: 20px;
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 5px 2px rgba(0,0,0,0.1);
+      background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
+      animation: 1s ease-out 0s 1 slideInFromLeft;
+
+      .display-ads-ad-overlay {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        background: rgba(0,0,0,0.0);
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        @include transition(0.3s ease-out);
+
+        .button {
+          opacity: 0;
+          @include transform(translateY(-50%));
+          @include transition(0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28));
+
+          i {
+            padding-right: 10px;
+          }
+
+          &:hover {
+            i {
+              animation: 0.3s ease-out 0s 1 rockBackAndForth;
+            }
+          }
+        }
+
+        &:hover {
+          background: rgba(0,0,0,0.5);
+
+          .button {
+            @include transform(translateY(0));
+            opacity: 1;
+          }
+        }
+      }
+
+      .display-ads-ad-header {
+        background: #4a4a4a;
+        padding: 20px;
+
+        .display-ads-ad-title {
+          h2 {
+            color: $white;
+            font-weight: bold;
+            font-family: $header-font;
+            padding: 0;
+            margin: 0;
+          }
+
+          h5 {
+            font-style: italic;
+            color: $medium-gray;
+          }
+        }
+
+        .display-ads-ad-loc {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          color: #70fed2;
+          margin: 10px 0;
+
+          @include breakpoint(small only) {
+            justify-content: center;
+          }
+
+          .display-ads-ad-loc-display {
+            border: 1px solid #70fed2;
+            background: #70fed221;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-align: center;
+          }
+
+          i {
+            animation: 2s ease-out 0s infinite beacon;
+            padding-right: 15px;
+          }
+        }
+      }
+      .display-ads-ad-body {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+
+        .display-ads-ad-description {
+
+        }
+
+        .display-ads-ad-instruments {
+          padding: 0 20px;
+          border-left: 1px solid #ddd;
+
+          h6 {
+            font-family: $header-font;
+            font-weight: bold;
+          }
+          @include breakpoint(small only) {
+            padding: 20px 0;
+            border-left: none;
+            border-top: 1px solid #ddd;
+          }
+        }
+      }
     }
 
     .current-ads-text{
@@ -85,10 +257,153 @@ $delete-red-hover: #e57373;
     border-radius: 5px;
     padding: 20px;
     @include boxshadow(0 0 5px 2px inset rgba(0, 0, 0, 0.01));
+
+    #no-previous-ads {
+      animation: 1s ease-out 0s 1 slideInFromLeft;
+    }
+
+    .previous-ads-loading {
+      color: $medium-gray;
+
+      .previous-ads-loading-spin {
+        display: block;
+        text-align: center;
+        padding: 0;
+        margin: 0;
+
+        i {
+          color: #eaeaea;
+          font-size: 5rem;
+        }
+      }
+    }
+
+    .display-ads-ad {
+      position: relative;
+      margin: 20px;
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
+      background-image: linear-gradient(to right, #00000066, #00000066), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
+      animation: 1s ease-out 0s 1 slideInFromLeft;
+
+      .display-ads-ad-overlay {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        background: rgba(0, 0, 0, 0.0);
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        @include transition(0.3s ease-out);
+
+        .button {
+          opacity: 0;
+          @include transform(translateY(-50%));
+          @include transition(0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28));
+
+          i {
+            margin-right: 10px;
+          }
+
+          &:hover {
+            i {
+              animation: 0.3s ease-out 0s 1 spinOnce;
+            }
+          }
+        }
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.5);
+
+          .button {
+            @include transform(translateY(0));
+            opacity: 1;
+          }
+        }
+
+      }
+      .display-ads-ad-header {
+        background: #4a4a4a;
+        padding: 20px;
+
+        .display-ads-ad-title {
+          h2 {
+            color: #929292;
+            font-weight: bold;
+            font-family: $header-font;
+            padding: 0;
+            margin: 0;
+          }
+
+          h5 {
+            font-style: italic;
+            color: $medium-gray;
+          }
+        }
+
+        .display-ads-ad-loc {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          color: #a5a5a5;
+          margin: 10px 0;
+
+          @include breakpoint(small only) {
+            justify-content: center;
+          }
+
+          .display-ads-ad-loc-display {
+            border: 1px solid $black;
+            background: #00000021;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-align: center;
+          }
+
+          i {
+            padding-right: 15px;
+          }
+        }
+      }
+      .display-ads-ad-body {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #666;
+
+        .display-ads-ad-description {
+
+        }
+
+        .display-ads-ad-instruments {
+          padding: 0 20px;
+          border-left: 1px solid #666;
+
+          h6 {
+            font-family: $header-font;
+            font-weight: bold;
+          }
+          @include breakpoint(small only) {
+            padding: 20px 0;
+            border-left: none;
+            border-top: 1px solid #666;
+          }
+        }
+      }
+    }
   }
 
   .previous-ads-text {
     text-align: center;
+
+    h2 {
+      font-family: $header-font;
+      font-weight: bold;
+    }
 
     h3 {
       font-family: $header-font;

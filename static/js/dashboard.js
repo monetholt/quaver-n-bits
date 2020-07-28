@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         let res = JSON.parse(req.responseText);
         if (req.status < 400) {
             console.log(res);
-            if (res.ads) {
+            if (res.ads.length > 0) {
                 document.getElementById('current-ads-loading').hidden = true;
                 document.getElementById('previous-ads-loading').hidden = true;
 

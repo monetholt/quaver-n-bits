@@ -34,7 +34,11 @@
                 </div>
             </div>
             <div class="switch primary">
-                <h6>Privacy:</h6>
+                {{#if profile.LookingForWork}}
+                    <h6>Privacy: Public</h6>
+                {{else}}
+                    <h6>Privacy: Private</h6>
+                {{/if}}
                 <input class="switch-input" id="primarySwitch" type="checkbox" name="primarySwitch">
                 <label class="switch-paddle" for="primarySwitch">
                     <span class="show-for-sr">Profile Privacy</span>
@@ -45,10 +49,10 @@
             <div class="cell medium-8 profile-about">
                 <div class="profile-edit-button"><button id="edit-about" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>About Me:</h2>
-                <div id="profile-about-text">{{profile.Bio}}</div>
-                <div id="edit-about-text" hidden>
-                    <textarea id="edit-about-text-input" cols="80" rows="10">{{profile.Bio}}</textarea>
-                </div>
+                    <div id="profile-about-text">{{profile.Bio}}</div>
+                    <div id="edit-about-text" hidden>
+                        <textarea id="edit-about-text-input" cols="80" rows="10">{{profile.Bio}}</textarea>
+                    </div>
             </div>
             <div class="cell medium-4 profile-meta">
                 <div class="profile-instruments">
@@ -75,12 +79,20 @@
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-video" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>Videos:</h2>
-                    [Coming Soon - Profile Videos!]
+                <div class="responsive-embed widescreen">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/lFW8ihz6ELI" frameborder="0" allowfullscreen></iframe>
+                </div>
             </div>
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-music" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>Music:</h2>
+                {{#if workSamples}}
+                    {{#each workSamples}}
+                        <iframe id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
+                    {{/each}}
+                {{else}}
                     [Coming Soon - Profile Music!]
+                {{/if}}
             </div>
         </div>
     </div>

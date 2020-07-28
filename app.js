@@ -198,7 +198,7 @@ function getAds(req, res, context, complete) {
 app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
     mysql.pool.query(
         "INSERT INTO UserSettings (UserID, SettingKey, `Value`) VALUES (?, (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder'), ?)",
-        [req.user.UserKey, request.body.sortOrder], (error, rows) => {
+        [req.user.UserKey, req.body.sortOrder], (error, rows) => {
             if (error) {
                 throw(error);
             } else if (rows.length > 0) {

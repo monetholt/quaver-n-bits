@@ -134,6 +134,24 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     });
 });
 
+app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
+   mysql.pool.query("SELECT * FROM Ads WHERE userID = ?;", [req.user.UserKey], (error, resultsAds) => {
+       if (error) {
+           res.write(JSON.stringify(error));
+           res.end();
+       }
+       mysql.pool.query("SELECT LevelKey, Level FROM LevelLookup;", (error, resultsLevels) => {
+           if (error) {
+               res.write(JSON.stringify(error));
+               res.end();
+           }
+
+           res.send({ads: resultsAds, levels: resultsLevels});
+       });
+
+   });
+});
+
 function getInstrumentsAndLevels(req, res, context, complete) {
     mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
         if(error) {
@@ -145,6 +163,7 @@ function getInstrumentsAndLevels(req, res, context, complete) {
     });
 }
 
+// TODO (Nate): Rework this function to replace what's in '/dashboard/ads' for async request.
 function getAds(req, res, context, complete) {
     mysql.pool.query("SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, a.DateCreated, " +
         "a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC", [context.user.UserKey], (error, rows) => {
@@ -171,6 +190,7 @@ function getAds(req, res, context, complete) {
                     context['has_current_ads'] = (context['current_ads'].length > 0);
                     context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
                     context['has_prev_ads'] = (context['prev_ads'].length > 0);
+                    console.log(context);
                     complete();
                } else {
                    complete();
@@ -255,6 +275,46 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
         });
     } catch (err) {
         res.redirect(utils.errorRedirect('/profile', 'An unexpected error occurred retrieving your profile'));
+    }
+});
+
+// saves the info that is located in the Profiles header and returns true if update was successful
+app.put('/profile/header', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET ZipCode = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.zipCode, req.body.artistName, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+// saves the info that is located in the Profiles about/bio and returns true if update was successful
+app.put('/profile/about', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET Bio = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.bio, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
 
@@ -350,6 +410,33 @@ app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
                     throw(new ReferenceError("Must save profile before adding instruments."));
                 }
         });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.get('/profile/worksamples', checkAuthenticated, (req, res, next) => {
+    try {
+        mysql.pool.query(
+            'SELECT ProfileKey FROM Profiles WHERE UserID = ?',
+            [req.user.UserKey],
+            function(err, rows) {
+                if(err) {
+                    throw(err);
+                } else {
+                    let profileKey = rows[0]['ProfileKey'];
+                    mysql.pool.query(
+                    'SELECT SampleKey, SampleLocation FROM WorkSamples WHERE ProfileID = ?',
+                    [profileKey],
+                    function(err, rows) {
+                        if (err) {
+                            throw(err);
+                        } else {
+                            res.send(rows);
+                        }
+                    });
+                }
+            });
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }

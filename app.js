@@ -163,6 +163,7 @@ function getInstrumentsAndLevels(req, res, context, complete) {
     });
 }
 
+// TODO (Nate): Rework this function to replace what's in '/dashboard/ads' for async request.
 function getAds(req, res, context, complete) {
     mysql.pool.query("SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, a.DateCreated, " +
         "a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC", [context.user.UserKey], (error, rows) => {
@@ -189,6 +190,7 @@ function getAds(req, res, context, complete) {
                     context['has_current_ads'] = (context['current_ads'].length > 0);
                     context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
                     context['has_prev_ads'] = (context['prev_ads'].length > 0);
+                    console.log(context);
                     complete();
                } else {
                    complete();

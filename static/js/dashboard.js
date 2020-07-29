@@ -66,7 +66,12 @@ function createAd(thisAd, levels) {
     currentAd.className = 'display-ads-ad';
     currentAd.innerHTML = `
         <div class="display-ads-ad-overlay">
-            ${thisAd.IsActive === 1 ? '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' : '<button class="button secondary large"><i class="fas fa-sync"></i>Enable Ad</button>'}
+            ${thisAd.IsActive === 1 ? 
+                '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' +
+                '<button class="button secondary large"><i class="far fa-edit"></i>Edit Ad</button>' +
+                '<button class="button warning large"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>':
+                '<button class="button secondary large"><i class="fas fa-sync"></i>Enable Ad</button>'
+            }
         </div>
         <div class="grid-x display-ads-ad-header">
             <div class="cell medium-6 display-ads-ad-title">

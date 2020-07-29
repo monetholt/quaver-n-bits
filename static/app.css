@@ -5313,13 +5313,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #2c26d9, #26d96b);
+    background-image: -webkit-linear-gradient(to bottom right, #7dd926, #bed926);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #2c26d9, #26d96b);
+    background-image: -moz-linear-gradient(to bottom right, #7dd926, #bed926);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #2c26d9, #26d96b);
+    background-image: -o-linear-gradient(to bottom right, #7dd926, #bed926);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #2c26d9, #26d96b);
+    background-image: linear-gradient(to bottom right, #7dd926, #bed926);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5466,6 +5466,14 @@ main {
     opacity: 1;
     transform: translateX(0); } }
 
+@keyframes zoomInAndOut {
+  0% {
+    transform: scale(1); }
+  50% {
+    transform: scale(1.2); }
+  100% {
+    transform: scale(1); } }
+
 @keyframes rockBackAndForth {
   0% {
     transform: rotateZ(0); }
@@ -5548,6 +5556,7 @@ main {
       transition: 0.3s ease-out; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button {
         opacity: 0;
+        margin: 0 10px;
         -webkit-transform: translateY(-50%);
         -moz-transform: translateY(-50%);
         -ms-transform: translateY(-50%);
@@ -5559,8 +5568,12 @@ main {
         transition: 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button i {
           padding-right: 10px; }
-        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover i {
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-search {
           animation: 0.3s ease-out 0s 1 rockBackAndForth; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-edit {
+          animation: 0.5s ease-out 0s 1 zoomInAndOut; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-microphone-alt-slash {
+          animation: 0.3s ease-out 0s 1 beacon; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay:hover {
         background: rgba(0, 0, 0, 0.5); }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay:hover .button {
@@ -5569,6 +5582,11 @@ main {
           -ms-transform: translateY(0);
           transform: translateY(0);
           opacity: 1; }
+      @media print, screen and (max-width: 39.99875em) {
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay {
+          flex-direction: column; }
+          .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button {
+            margin: 10px 0; } }
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-header {
       background: #4a4a4a;
       padding: 20px; }
@@ -5679,6 +5697,7 @@ main {
       transition: 0.3s ease-out; }
       .main-previous-ads .previous-ads-container .display-ads-ad .display-ads-ad-overlay .button {
         opacity: 0;
+        margin: 0 10px;
         -webkit-transform: translateY(-50%);
         -moz-transform: translateY(-50%);
         -ms-transform: translateY(-50%);

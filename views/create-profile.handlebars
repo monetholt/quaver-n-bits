@@ -23,22 +23,66 @@
 
 <script type="text/javascript">
 
+    //copped this from our friend stack overflow:https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
+    //when passed a url will return true if valid youtube link:
+    function validateYouTubeUrl(url) {
+        if (url != undefined || url != '') {
+            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+            var match = url.match(regExp);
+            if (match && match[2].length == 11) {
+                // Do anything for being valid
+                return true;
+                // if need to change the url to embed url then use below line
+                //$('#ytplayerSide').attr('src', 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0');
+            }
+            else return false;
+
+        } else return false;
+    }
+
+    //followed the youtube fn, but this time for soundcloud. Copped regex from here:https://stackoverflow.com/questions/61486337/regex-for-soundcloud-url
+    function validateSoundCloudUrl(url) {
+        if (url != undefined || url != '') {
+            var regExp = /^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/.*$/;
+            var match = url.match(regExp);
+            if (match) {
+                // Do anything for being valid
+                return true;
+            }
+            else return false;
+
+        } else return false;
+    }
+
     //when passed an instrument id + name, will add a new section under the instrument select so the user can select level or delete.
+    //will show user an error if they try to add the same instrument twice
     function addSelection(id, inst) {
         var selectionDiv = $("#instrument-selection"); //grab section below instrument select 
-        selectionDiv.append("<div class='instrument-selection-item' id='" + id + "'></div>"); //add a new 'box' for this selected instrument
 
-        var thisSelection = selectionDiv.find("#" + id); 
+        //check to see if the user has already selected this instrument
+        if (selectionDiv.find("#" + id).length > 0) {
+            //oops they already selected this. show error
+            $("#error-msg").html("Hey! You already selected this instrument."); //maybe remove if too annoying?
+            $('#error-modal').foundation('open');
 
-        thisSelection.append("<div class='delete-selection'>X</div>"); //add the icon to delete this section
-        var levelSelect = $("#level-list-main").clone(); //copy the existing level selector so this instrument can have its own
-        levelSelect.attr("id", "#level-" + id); //set the id for the level select + unhide it
-        levelSelect.css("display", "block");
+        }
+        else {
+            //ready to add!
+            selectionDiv.append("<div class='instrument-selection-item' id='" + id + "'></div>"); //add a new 'box' for this selected instrument
 
-        thisSelection.append("<div class='instrument-selection-text'>" + inst + "</div>");
-        thisSelection.append(levelSelect);
+            var thisSelection = selectionDiv.find("#" + id);
 
-        $("#smartwizard").find(".tab-content").css("height", "auto"); //resize wizard container. Weird hack bc the autoAdjustHeight option isn't working for the smartWizard
+            thisSelection.append("<div class='delete-selection'>X</div>"); //add the icon to delete this section
+            var levelSelect = $("#level-list-main").clone(); //copy the existing level selector so this instrument can have its own
+            levelSelect.attr("id", "#level-" + id); //set the id for the level select + unhide it
+            levelSelect.css("display", "block");
+
+            thisSelection.append("<div class='instrument-selection-text'>" + inst + "</div>");
+            thisSelection.append(levelSelect);
+
+            $("#smartwizard").find(".tab-content").css("height", "auto"); //resize wizard container. Weird hack bc the autoAdjustHeight option isn't working for the smartWizard
+        }
+
     }
 
 
@@ -115,11 +159,30 @@
             }
         });
 
-        //move on to step 3.. TODO after we add work samples
+        //move on to step 3
         $("#step-2-finish").click(function (e) {
             e.preventDefault();
-            $('#smartwizard').smartWizard("stepState", [2], "enable");
-            $('#smartwizard').smartWizard("goToStep", 2); //if all is good, go to next step
+
+            var url = $("#worksample-entered").val();
+
+            if (url != "") //blank is ok!
+            {
+                if (!validateSoundCloudUrl(url) && !validateYouTubeUrl(url)) {
+                    $("#error-msg").html("Please enter a valid soundcloud or YouTube url.");
+                    $('#error-modal').foundation('open');
+                }
+                else {
+                    //all good
+                    $("#worksample").val(url) //blank out url
+                    $('#smartwizard').smartWizard("stepState", [2], "enable");
+                    $('#smartwizard').smartWizard("goToStep", 2); //if all is good, go to next step
+                }
+            }
+            else {
+                $("#worksample").val(""); //blank out url
+                $('#smartwizard').smartWizard("stepState", [2], "enable");
+                $('#smartwizard').smartWizard("goToStep", 2); //if all is good, go to next step
+            }
         });
 
 
@@ -191,7 +254,13 @@
                     </div>
                 </div>
                 <div id="step-2" class="tab-pane" role="tabpanel">
-                    We will add this next sprint! Just continue on for now...
+                    <h3>Step 2: Add a Work Sample</h3>
+
+                    <p>Enter a Soundcloud or Youtube URL to show off your talent. You can update your profile to add more samples later.</p>
+
+                    <input id="worksample-entered" type="text" value="" placeholder="Soundcloud or Youtube url"/>
+
+                
                     <div class="toolbar toolbar-bottom" role="toolbar" style="text-align: right;">
                         <button class="button success" type="button" id="step-2-finish">Next</button>
                     </div>
@@ -199,8 +268,19 @@
                 <div id="step-3" class="tab-pane" role="tabpanel">
                     <h3>Step 3: Basic Info</h3>
                     <form method="post" action="/profile/basic/create">
-
                         <table>
+                            <tr>
+                                <td>
+                                    <label for="Bio">
+                                        About Me
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <textarea placeholder="Enter a bio for others to see when they view your profile" id="Bio" name="Bio"></textarea>
+                                </td>
+                            </tr>
                             <tr>
                                 <td>
                                     <label for="ArtistName">
@@ -266,6 +346,9 @@
                             </tr>
                         </table>
                         <div id="instrument-selections" style="display:none"></div>
+                        <div id="work-sample-input" style="display:none">
+                            <input type="text" id="worksample" name="WorkSample" value="">
+                        </div>
                         <div class="create-profile">
                             <button class="button success large expanded" id="createProfileButton" type="submit">Create Your Profile</button>
                         </div>

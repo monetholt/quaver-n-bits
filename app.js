@@ -102,11 +102,6 @@ app.get('/create-profile',checkAuthenticated,(req,res) => {
 });
 
 //any page requiring authentication needs to run checkAuthenticated first
-//PLACEHOLDER for landing page.
-app.get('/index', checkAuthenticated, function (req, res, next) {
-    res.render('index', { user: req.user });
-});
-
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     var callbackCount = 0;
     var context = {
@@ -114,9 +109,18 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     };
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
         try {
-            if (results.length == 0 || results[0].ArtistName === null) {
+            //console.log("we here"); //MONET: just wanted to check I redirected here after create profile form success
+            if (results.length == 0)
+            {
+                //for now you are SOL
+                res.write("No profile created for this user");
+                res.end();
+            }
+            else if (results[0].ArtistName === null) {
+                req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
                 res.redirect('/create-profile');
             } else {
+                req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
                 context['profile'] = results;
                 getInstrumentsAndLevels(req, res, context, complete);
                 getAds(req, res, context, complete);
@@ -343,25 +347,27 @@ app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
         mysql.pool.getConnection(function (err, conn) {
             if (err) throw (err);
 
+            var worksampleurl = req.body.WorkSample;
+
             //create the profile
             conn.query(
-                'INSERT INTO Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, UserID = ?, CreateDate = NOW(), LastUpdated = NOW()',
-                [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
+                'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, Bio = ?, LastUpdated = NOW() WHERE UserID = ?',
+                [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.body.Bio, req.user.UserKey],
                 function (err, rows) {
-                    console.log(rows);
                     if (err) {
                         conn.release();
                         throw (err);
                     }
-                    else if (rows.insertId > 0) //now that profile is created, add instruments
+                    else if (rows.changedRows === 1) //now that profile is created, add instruments
                     {
+                        var profileKey = req.session.ProfileID
                         //first format instrument/levelIDs sent in with form
                         var instruments = [];
 
                         for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
 
                             if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
-                                instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], rows.insertId]);
+                                instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], profileKey]);
                             }
                             else break;
                         }
@@ -369,10 +375,28 @@ app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
                         //add the instruments
                         conn.query(`INSERT INTO ProfileInstruments (InstrumentID, LevelID, ProfileID)  VALUES ?  `, [instruments],
                             function (err, rows) {
-                                conn.release();
 
-                                if (err) throw (err);
-                                else res.redirect('/dashboard');
+                                if (err) {
+                                    conn.release();
+                                    throw (err);
+                                }
+                                else
+                                {
+                                    if (worksampleurl && worksampleurl != "") //if user added a work sample, go add it
+                                    {
+                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?', [profileKey, worksampleurl],
+                                            function (err, rows) {
+                                                conn.release();
+
+                                                if (err) throw (err);
+                                                else res.redirect('/dashboard'); //otherwise send em to the dashboard
+                                            });
+                                    }
+                                    else {
+                                        conn.release();
+                                        res.redirect('/dashboard'); //otherwise send em to the dashboard
+                                    }
+                                }
                             });
 
                     }
@@ -505,7 +529,7 @@ function checkAuthenticated(req, res, next) {
 //for pages accessible by non-authenticated users only
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        return res.redirect('/index'); //if authenticated, bump to dashboard page
+        return res.redirect('/dashboard'); //if authenticated, bump to dashboard page
     }
     next();
 }

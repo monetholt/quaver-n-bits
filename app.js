@@ -13,6 +13,7 @@ var MemoryStore = require('memorystore')(session)
 const methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 const utils = require('./utils');
+const jp = require("jsonpath");
 
 
 // constants
@@ -107,20 +108,102 @@ app.get('/index', checkAuthenticated, function (req, res, next) {
 });
 
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
+    var callbackCount = 0;
+    var context = {
+        user: req.user
+    };
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
-        if (results.length == 0 || results[0].ArtistName === null) {
-            res.redirect('/create-profile');
-        } else {
-            mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
-                if(error) {
-                    res.write(JSON.stringify(error));
-                    res.end();
+        try {
+            if (results.length == 0 || results[0].ArtistName === null) {
+                res.redirect('/create-profile');
+            } else {
+                context['profile'] = results;
+                getInstrumentsAndLevels(req, res, context, complete);
+                getAds(req, res, context, complete);
+                function complete() {
+                    callbackCount++;
+                    if (callbackCount >= 3) {
+                        res.render('dashboard', context);
+                    }
                 }
-                res.render('dashboard', {user: req.user, profile: results, instruments: rows[0], levels: rows[1]});
-            });
+            }
+        } catch(err) {
+            res.write(JSON.stringify(err));
+            res.end();
         }
     });
 });
+
+app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
+   mysql.pool.query("SELECT * FROM Ads WHERE userID = ?;", [req.user.UserKey], (error, resultsAds) => {
+       if (error) {
+           res.write(JSON.stringify(error));
+           res.end();
+       }
+       mysql.pool.query("SELECT LevelKey, Level FROM LevelLookup;", (error, resultsLevels) => {
+           if (error) {
+               res.write(JSON.stringify(error));
+               res.end();
+           } else {
+               res.render('dashboard');
+           }
+       });
+
+   });
+});
+
+function getInstrumentsAndLevels(req, res, context, complete) {
+    mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
+        if(error) {
+            throw(error);
+        }
+        context['instruments'] = rows[0];
+        context['levels'] = rows[1];
+        complete();
+    });
+}
+
+// TODO (Nate): Rework this function to replace what's in '/dashboard/ads' for async request.
+function getAds(req, res, context, complete) {
+    mysql.pool.query("SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, a.DateCreated, " +
+        "a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC", [context.user.UserKey], (error, rows) => {
+        if(error) {
+            throw(error);
+        } else if(rows.length > 0) {
+            var ads = rows;
+            complete();
+            var ad_ids = jp.query(ads, "$..AdKey");
+            mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level\n" +
+                "FROM AdInstruments ai\n" +
+                "LEFT JOIN InstrumentLookup i ON i.InstrumentKey = ai.InstrumentID\n" +
+                "LEFT JOIN LevelLookup l ON l.LevelKey = ai.LevelID\n" +
+                "WHERE ai.AdID IN(?)\n" +
+                "ORDER BY ai.AdID;", [ad_ids], (error, rows) => {
+               if(error) {
+                   throw(error);
+               } else if(rows.length > 0) {
+                    for(let ad of ads){
+                        ad['instruments'] = rows.filter(row => row.AdId == ad['AdKey']);
+                        console.log(ad);
+                    }
+                    context['current_ads'] = ads.filter(ad => ad.IsActive === 1);
+                    context['has_current_ads'] = (context['current_ads'].length > 0);
+                    context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
+                    context['has_prev_ads'] = (context['prev_ads'].length > 0);
+                    console.log(context);
+                    complete();
+               } else {
+                   complete();
+               }
+            });
+        } else {
+            complete();
+            context['has_current_ads'] = false;
+            context['has_prev_ads'] = false;
+        }
+    });
+}
+
 
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
 //landing page does not need authentication, in fact we do not allow logged in users to access
@@ -193,6 +276,46 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
         });
     } catch (err) {
         res.redirect(utils.errorRedirect('/profile', 'An unexpected error occurred retrieving your profile'));
+    }
+});
+
+// saves the info that is located in the Profiles header and returns true if update was successful
+app.put('/profile/header', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET ZipCode = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.zipCode, req.body.artistName, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+// saves the info that is located in the Profiles about/bio and returns true if update was successful
+app.put('/profile/about', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET Bio = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.bio, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
 
@@ -273,6 +396,7 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
     }
 });
 
+
 //TODO: it will submit, but there's nothing stopping the user from trying to click the button before Level has been selected, and currently no success message either.
 app.post('/create-profile',checkAuthenticated,(req, res, next) => {
     var sql = `INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, LastUpdated, CreateDate) VALUES (?, (SELECT InstrumentKey FROM InstrumentLookup WHERE Instrument = ?), (SELECT LevelKey FROM LevelLookup WHERE Level = ?), NOW(), NOW())`;
@@ -288,6 +412,34 @@ app.post('/create-profile',checkAuthenticated,(req, res, next) => {
 
 });
 
+app.get('/profile/worksamples', checkAuthenticated, (req, res, next) => {
+    try {
+        mysql.pool.query(
+            'SELECT ProfileKey FROM Profiles WHERE UserID = ?',
+            [req.user.UserKey],
+            function(err, rows) {
+                if(err) {
+                    throw(err);
+                } else {
+                    let profileKey = rows[0]['ProfileKey'];
+                    mysql.pool.query(
+                    'SELECT SampleKey, SampleLocation FROM WorkSamples WHERE ProfileID = ?',
+                    [profileKey],
+                    function(err, rows) {
+                        if (err) {
+                            throw(err);
+                        } else {
+                            res.send(rows);
+                        }
+                    });
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+// updates an instrument and associated level and returns true if the update was successful
 app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
@@ -297,9 +449,9 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
                 if(err) {
                     throw(err);
                 } else if(result.changedRows === 1) {
-
+                    res.send(true);
                 } else {
-
+                    throw(new ReferenceError("No such instrument for this user"));
                 }
         });
     } catch(err) {
@@ -309,7 +461,7 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
 
 //for storing data from ad creation, use req.body[] because otherwise it is read in as a subtraction
 //added form action and method, also changed from datalist to regular select.
-app.post('/dashboard', checkAuthenticated, (req, res, next) => {
+ app.post('/dashboard/ads/update', checkAuthenticated, (req, res, next) => {
    var inserts = [req.user.UserKey, req.body["ad-title"], req.body["ad-text"], req.body["instrument-list"], req.body["selection-level"], req.body["instrument-selection-quantity"], req.user.UserKey, req.body["ad-radius"]];
    var sql = `INSERT INTO Ads (UserID, Title, Description, Instrument, LevelID, Quantity, ZipCode, LocationRadius, DatePosted, Deleted, DateCreated, LastUpdated, IsActive) VALUES (?, ?, ?, ?, (SELECT LevelKey FROM LevelLookup WHERE Level = ?), ?, (SELECT ZipCode FROM Profiles WHERE UserID = ?), ?, NOW(), '0', NOW(), NOW(), '1')`;
    sql = mysql.pool.query(sql, inserts, function(error, results, fields){
@@ -317,7 +469,7 @@ app.post('/dashboard', checkAuthenticated, (req, res, next) => {
                 res.write(JSON.stringify(error));
                 res.end();
             }else{
-                res.redirect('/dashboard'); // successfully posted data to the database, redirecting to dashboard
+                res.redirect('/dashboard/ads'); // successfully posted data to the database, redirecting to dashboard
             }
    });
 });

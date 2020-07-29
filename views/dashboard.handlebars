@@ -1,4 +1,5 @@
 {{>nav}}
+<<<<<<< HEAD
 <script type="text/javascript">
     function checkSelected() {
         let val = document.getElementById("instruments").value;
@@ -42,19 +43,40 @@
     }
 
 </script>
+=======
+<script src="/js/dashboard.js"></script>
+>>>>>>> master
 <main>
     <div class="main-container main-current-ads">
-        <div class="current-ads-label">
-            <h1>Current Ads:</h1>
+        <div class="grid-x">
+            <div class="cell medium-10 current-ads-label">
+                <h1>Current Ads:</h1>
+            </div>
+            <div class="cell medium-2 create-ad-cta">
+                <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-plus"></i>New Ad</button>
+            </div>
         </div>
         <div class="current-ads-container">
-            <div class="current-ads-text">
-                <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
-                <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
-                    can grow your network.</p>
+            <div id="current-ads-loading" class="current-ads-loading">
+                <div class="current-ads-text">
+                    <h2>Consulting the Lexicon</h2>
+                </div>
+                <div class="current-ads-loading-spin">
+                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+                </div>
             </div>
-            <div class="current-ads-cta">
-                <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-bullhorn"></i>Create An Ad!</button>
+            <div id="no-current-ads" class="no-current-ads" hidden>
+                <div class="current-ads-text">
+                    <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
+                    <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
+                        can grow your network.</p>
+                </div>
+                <div class="current-ads-cta">
+                    <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-bullhorn"></i>Create An Ad!</button>
+                </div>
+            </div>
+            <div id="current-ads">
+
             </div>
         </div>
     </div>
@@ -63,8 +85,19 @@
             <h1>Previous Ads:</h1>
         </div>
         <div class="previous-ads-container">
-            <div class="previous-ads-text">
+            <div id="no-previous-ads" class="previous-ads-text">
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
+            </div>
+            <div id="previous-ads-loading" class="previous-ads-loading">
+                <div class="previous-ads-text">
+                    <h2>Consulting the Lexicon</h2>
+                </div>
+                <div class="previous-ads-loading-spin">
+                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+                </div>
+            </div>
+            <div id="previous-ads">
+
             </div>
         </div>
     </div>

@@ -126,7 +126,7 @@ function addSelection(inst) {
                 </div>
                 <div class="cell medium-1"></div>
                 <div class="cell medium-4">
-                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" />
+                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" name="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" />
                 </div>
             </div>
             <div class="delete-selection" onclick="remove(this)">X</div>

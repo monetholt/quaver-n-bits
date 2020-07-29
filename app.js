@@ -184,13 +184,11 @@ function getAds(req, res, context, complete) {
                } else if(rows.length > 0) {
                     for(let ad of ads){
                         ad['instruments'] = rows.filter(row => row.AdId == ad['AdKey']);
-                        console.log(ad);
                     }
                     context['current_ads'] = ads.filter(ad => ad.IsActive === 1);
                     context['has_current_ads'] = (context['current_ads'].length > 0);
                     context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
                     context['has_prev_ads'] = (context['prev_ads'].length > 0);
-                    console.log(context);
                     complete();
                } else {
                    complete();
@@ -460,6 +458,21 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
+});
+
+//for storing data from ad creation, use req.body[] because otherwise it is read in as a subtraction
+//added form action and method, also changed from datalist to regular select.
+app.post('/dashboard', checkAuthenticated, (req, res, next) => {
+    var inserts = [req.user.UserKey, req.body["ad-title"], req.body["ad-text"], req.body["instrument-list"], req.body["selection-level"], req.body["instrument-selection-quantity"], req.user.UserKey, req.body["ad-radius"]];
+    var sql = `INSERT INTO Ads (UserID, Title, Description, Instrument, LevelID, Quantity, ZipCode, LocationRadius, DatePosted, Deleted, DateCreated, LastUpdated, IsActive) VALUES (?, ?, ?, ?, (SELECT LevelKey FROM LevelLookup WHERE Level = ?), ?, (SELECT ZipCode FROM Profiles WHERE UserID = ?), ?, NOW(), '0', NOW(), NOW(), '1')`;
+    sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+        if(error){
+            res.write(JSON.stringify(error));
+            res.end();
+        }else{
+            res.redirect('/dashboard'); // successfully posted data to the database, redirecting to dashboard
+        }
+    });
 });
 
 //for pages accessible by authenticated users only

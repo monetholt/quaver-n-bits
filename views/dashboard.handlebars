@@ -62,7 +62,7 @@
     <button class="close-button" data-close aria-label="Close reveal" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
-    <form>
+    <form id = "addAd" action="/dashboard" method="post">
         <table>
             <tr>
                 <td>
@@ -71,7 +71,17 @@
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="ad-title" />
+                    <input type="text" id="ad-title" name="ad-title" required />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ad-radius">How far of a location radius would you like your ad to reach (in miles, maximum is 625 miles)? </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="number" name="ad-radius" min="0" max="625" required />
                 </td>
             </tr>
             <tr>
@@ -81,7 +91,7 @@
             </tr>
             <tr>
                 <td>
-                    <textarea name="ad-text" cols="80" rows="10"></textarea>
+                    <textarea name="ad-text" cols="80" rows="10" required></textarea>
                 </td>
             </tr>
             <tr>
@@ -91,12 +101,12 @@
             </tr>
             <tr>
                 <td>
-                    <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
-                    <datalist id="instrument-list">
+                    <!--   <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" name = "instrument-list" oninput="checkSelected()"> -->
+                    <select id="instrument-list" name="instrument-list" onchange="addSelection(this.value)">
                         {{#each instruments}}
-                        <option data-value="{{InstrumentKey}}" value="{{Instrument}}">
+                            <option data-value="{{InstrumentKey}}" value="{{Instrument}}">{{Instrument}}</option>
                         {{/each}}
-                    </datalist>
+                    </select>
                 </td>
             </tr>
             <tr>

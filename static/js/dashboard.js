@@ -115,7 +115,7 @@ function addSelection(inst) {
             <div class="instrument-selection-text">${inst}</div>
             <div class="grid-x">
                 <div class="cell medium-7">
-                    <select class="selection-level" name="selection-level" id="selection-level-${inst.toLowerCase()}">
+                    <select class="selection-level" name="selection-level" id="selection-level-${inst.toLowerCase()}" required>
                         <option disabled selected value> -- Skill Level -- </option>
                         <option value="Beginner">Beginner</option>
                         <option value="Intermediate">Intermediate</option>
@@ -126,7 +126,7 @@ function addSelection(inst) {
                 </div>
                 <div class="cell medium-1"></div>
                 <div class="cell medium-4">
-                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" />
+                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" name="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" required />
                 </div>
             </div>
             <div class="delete-selection" onclick="remove(this)">X</div>

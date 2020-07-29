@@ -109,7 +109,6 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     };
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
         try {
-            //console.log("we here"); //MONET: just wanted to check I redirected here after create profile form success
             if (results.length == 0)
             {
                 //for now you are SOL
@@ -202,6 +201,7 @@ function getAds(req, res, context, complete) {
             });
         } else {
             complete();
+            complete(); //need to add another call to callback so we can render dashboard
             context['has_current_ads'] = false;
             context['has_prev_ads'] = false;
         }

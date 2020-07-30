@@ -23,30 +23,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
         let res = JSON.parse(req.responseText);
         if (req.status < 400) {
             console.log(res);
-            if (res.ads.length > 0) {
+            if (res.has_current_ads) {
                 document.getElementById('current-ads-loading').hidden = true;
-                document.getElementById('previous-ads-loading').hidden = true;
-
-                // Create Levels
-                let levels = {};
-                for (let i=0; i < res.levels.length; i++) {
-                    levels[res.levels[i]['LevelKey']] = res.levels[i]['Level'];
-                }
-
                 let currentAds = document.getElementById('current-ads');
-                let previousAds = document.getElementById('previous-ads');
-                for (let ad in res.ads) {
-                    if (res.ads[ad]['IsActive'] === 1) {
-                        currentAds.appendChild(createAd(res.ads[ad], levels));
-                    } else {
-                        previousAds.appendChild(createAd(res.ads[ad], levels));
-                    }
+                for (let ad in res.current_ads) {
+                        currentAds.appendChild(createAd(res.current_ads[ad]));
                 }
             } else {
-                console.log("No ads here :(");
                 document.getElementById('current-ads-loading').hidden = true;
-                document.getElementById('previous-ads-loading').hidden = true;
                 document.getElementById('no-current-ads').hidden = false;
+            }
+
+            if (res.has_prev_ads) {
+                document.getElementById('previous-ads-loading').hidden = true;
+                let previousAds = document.getElementById('previous-ads');
+                for (let ad in res.prev_ads) {
+                    previousAds.appendChild(createAd(res.prev_ads[ad]));
+                }
+            } else {
+                document.getElementById('previous-ads-loading').hidden = true;
                 document.getElementById('no-previous-ads').hidden = false;
             }
         } else {
@@ -60,7 +55,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.send(null);
 });
 
-function createAd(thisAd, levels) {
+function createAd(thisAd) {
     let currentAd = document.createElement('div');
     currentAd.id = 'display-ads-ad-' + thisAd.AdKey;
     currentAd.className = 'display-ads-ad';
@@ -122,7 +117,7 @@ function createAd(thisAd, levels) {
         <div class="grid-x display-ads-ad-header">
             <div class="cell medium-6 display-ads-ad-title">
                 <h2>${thisAd.Title}</h2>
-                <h5>${thisAd.DatePosted === thisAd.LastUpdated ? "Posted" : "Updated"} ${moment(thisAd.DatePosted).startOf('day').fromNow()}</h5>
+                <h5>${thisAd.DatePosted === thisAd.LastUpdated ? "Posted" : "Updated"} ${moment(thisAd.DatePosted).fromNow()}</h5>
             </div>
             <div class="cell medium-6 display-ads-ad-loc">
                 <div class="display-ads-ad-loc-display">
@@ -138,7 +133,7 @@ function createAd(thisAd, levels) {
             <div class="cell medium-4 display-ads-ad-instruments">
                 <h6>What I'm looking for: </h6>
                 <ul>
-                    <li><strong>${thisAd.Quantity}</strong> ${levels[thisAd.LevelID]} ${thisAd.Instrument}${thisAd.Quantity === 1 ? "" : "s"}</li>
+                ${ createInstrumentList(thisAd.instruments) }
                 </ul>
             </div> 
         </div>
@@ -146,6 +141,13 @@ function createAd(thisAd, levels) {
     return currentAd;
 }
 
+function createInstrumentList(instruments) {
+    let list = ``;
+    for (let i in instruments) {
+        list += `<li>${instruments[i]['Level']}-Level <strong>${instruments[i]['Instrument']}</strong></li>`;
+    }
+    return list;
+}
 
 //when passed an instrument id + name, will add a new section under the instrument select so the user can select level or delete.
 //will show user an error if they try to add the same instrument twice

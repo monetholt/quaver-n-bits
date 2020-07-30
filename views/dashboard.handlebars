@@ -102,12 +102,19 @@
             </tr>
             <tr>
                 <td>
-                    <label for="ad-radius">How far of a location radius would you like your ad to reach (in miles, maximum is 625 miles)? </label>
+                    <label for="ad-radius">Search Radius:</label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input type="number" name="ad-radius" min="0" max="625" />
+                    <select name="ad-radius">
+                        <option value="Any" selected>Any</option>
+                        <option value="5">5 Miles</option>
+                        <option value="10">10 Miles</option>
+                        <option value="25">25 Miles</option>
+                        <option value="50">50 Miles</option>
+                        <option value="100">100 Miles</option>
+                    </select>
                 </td>
             </tr>
             <tr>

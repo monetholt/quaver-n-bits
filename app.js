@@ -125,10 +125,9 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
 
                 context['profile'] = results;
                 getInstrumentsAndLevels(req, res, context, complete);
-                getAds(req, res, context, complete);
                 function complete() {
                     callbackCount++;
-                    if (callbackCount >= 3) {
+                    if (callbackCount >= 2) {
                         res.render('dashboard', context);
                     }
                 }
@@ -141,21 +140,19 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
 });
 
 app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
-   mysql.pool.query("SELECT * FROM Ads WHERE userID = ?;", [req.user.UserKey], (error, resultsAds) => {
-       if (error) {
-           res.write(JSON.stringify(error));
-           res.end();
-       }
-       mysql.pool.query("SELECT LevelKey, Level FROM LevelLookup;", (error, resultsLevels) => {
-           if (error) {
-               res.write(JSON.stringify(error));
-               res.end();
-           } else {
-               res.render('dashboard');
-           }
-       });
-
-   });
+    let callbackCount = 0;
+    let context = {
+        user: req.user
+    };
+    getInstrumentsAndLevels(req, res, context, complete);
+    getAds(req, res, context, complete);
+    function complete() {
+        callbackCount++;
+        if (callbackCount >= 3) {
+            console.log("context from /dashboard/ads: ", context);
+            res.send(context);
+        }
+    }
 });
 
 function getInstrumentsAndLevels(req, res, context, complete) {

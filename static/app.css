@@ -5313,13 +5313,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #26d980, #26d94a);
+    background-image: -webkit-linear-gradient(to bottom right, #d96526, #71d926);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #26d980, #26d94a);
+    background-image: -moz-linear-gradient(to bottom right, #d96526, #71d926);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #26d980, #26d94a);
+    background-image: -o-linear-gradient(to bottom right, #d96526, #71d926);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #26d980, #26d94a);
+    background-image: linear-gradient(to bottom right, #d96526, #71d926);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5502,11 +5502,28 @@ main {
 
 @keyframes beacon {
   0% {
-    opacity: 0.4; }
-  50% {
     opacity: 1; }
+  50% {
+    opacity: 0.4; }
   100% {
-    opacity: 0.4; } }
+    opacity: 1; } }
+
+@keyframes burningDumpster {
+  0% {
+    color: #fefefe; }
+  10% {
+    transform: scale(1.1); }
+  25% {
+    color: #faff00; }
+  50% {
+    color: #ff9a00; }
+  75% {
+    color: #faff00;
+    transform: scale(1.1); }
+  90% {
+    transform: scale(1); }
+  100% {
+    color: #fefefe; } }
 
 .main-current-ads .current-ads-label {
   font-family: "Maven Pro", sans-serif;
@@ -5646,7 +5663,9 @@ main {
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-edit {
           animation: 0.5s ease-out 0s 1 zoomInAndOut; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-microphone-alt-slash {
-          animation: 0.3s ease-out 0s 1 beacon; }
+          animation: 1s ease-out 0s 1 beacon; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-dumpster-fire {
+          animation: 1s ease-out 0s 1 burningDumpster; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay:hover {
         background: rgba(0, 0, 0, 0.5); }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay:hover .button {

@@ -16,6 +16,9 @@
 //     req.send(null);
 // });
 
+// Global placeholder for state.
+let allAds = {}
+
 document.addEventListener('DOMContentLoaded', (event) => {
     let req = new XMLHttpRequest();
     req.open('GET', '/dashboard/ads', true);
@@ -28,6 +31,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let currentAds = document.getElementById('current-ads');
                 for (let ad in res.current_ads) {
                         currentAds.appendChild(createAd(res.current_ads[ad]));
+                        allAds[res.current_ads[ad]['AdKey']] = res.current_ads[ad];
                 }
             } else {
                 document.getElementById('current-ads-loading').hidden = true;
@@ -39,11 +43,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let previousAds = document.getElementById('previous-ads');
                 for (let ad in res.prev_ads) {
                     previousAds.appendChild(createAd(res.prev_ads[ad]));
+                    allAds[res.prev_ads[ad]['AdKey']] = res.prev_ads[ad];
                 }
             } else {
                 document.getElementById('previous-ads-loading').hidden = true;
                 document.getElementById('no-previous-ads').hidden = false;
             }
+
+            console.log(allAds);
         } else {
             console.log("WHOOPS!");
         }
@@ -59,7 +66,6 @@ function createAd(thisAd) {
     let currentAd = document.createElement('div');
     currentAd.id = 'display-ads-ad-' + thisAd.AdKey;
     currentAd.className = 'display-ads-ad';
-    console.log("The time coming in for this ad: ", thisAd.DatePosted);
     currentAd.innerHTML = `
         <div id="display-ads-edit-overlay-${thisAd.AdKey}" class="display-ads-edit-overlay" hidden>
             <div class="grid-x ads-edit-header">
@@ -113,9 +119,10 @@ function createAd(thisAd) {
             ${thisAd.IsActive === 1 ? 
                 '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' +
                 '<button class="button secondary large" onclick="toggleEditAdView(' + thisAd.AdKey + ')"><i class="far fa-edit"></i>Edit Ad</button>' +
-                '<button class="button warning large"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>':
-                '<button class="button secondary large"><i class="fas fa-sync"></i>Enable Ad</button>'
+                '<button class="button warning large" onclick="toggleEnableAd(' + thisAd.AdKey + ')"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>' :
+                '<button class="button secondary large" onclick="toggleEnableAd(' + thisAd.AdKey + ')"><i class="fas fa-sync"></i>Enable Ad</button>'
             }
+            <button class="button alert large"><i class="fas fa-dumpster-fire"></i>Delete Ad</button>
         </div>
         <div class="grid-x display-ads-ad-header">
             <div class="cell medium-6 display-ads-ad-title">
@@ -147,6 +154,33 @@ function createAd(thisAd) {
 function toggleEditAdView(id){
     let thisView = document.getElementById(`display-ads-edit-overlay-${id}`);
     thisView.hidden = !thisView.hidden;
+}
+
+function toggleEnableAd(id) {
+    console.log("allAds["+id+"].IsActive : " + allAds[id].IsActive);
+    let payload = {AdKey: id, IsActive: allAds[id].IsActive === 1 ? 0 : 1 };
+    console.log("calling toggleEnableAd with Ad #" + id + " and value: " + JSON.stringify(payload));
+
+    let req = new XMLHttpRequest();
+    req.open('PUT', `/dashboard/ads/enable`, true);
+    req.addEventListener('load', () => {
+        if (req.status < 400) {
+            console.log(req.responseText);
+            allAds[id].IsActive = allAds[id].IsActive === 1 ? 0 : 1;
+            let oldAd = document.getElementById(`display-ads-ad-${id}`);
+            oldAd.parentNode.removeChild(oldAd);
+
+            if (allAds[id].IsActive === 1) {
+                document.getElementById('current-ads').appendChild(createAd(allAds[id]));
+            } else {
+                document.getElementById('previous-ads').appendChild(createAd(allAds[id]));
+            }
+        } else {
+            console.log("tried to toggle Ad #" + id + " but failed.");
+        }
+    });
+    req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    req.send(JSON.stringify(payload));
 }
 
 function createInstrumentList(instruments) {

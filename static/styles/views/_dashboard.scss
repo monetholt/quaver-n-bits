@@ -70,13 +70,38 @@
 
 @keyframes beacon {
   0% {
-    opacity: 0.4;
-  }
-  50% {
     opacity: 1;
   }
-  100% {
+  50% {
     opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes burningDumpster {
+  0% {
+    color: $white;
+  }
+  10% {
+    transform: scale(1.1);
+  }
+  25% {
+    color: #faff00;
+  }
+  50% {
+    color: #ff9a00;
+  }
+  75% {
+    color: #faff00;
+    transform: scale(1.1);
+  }
+  90% {
+    transform: scale(1);
+  }
+  100% {
+    color: $white;
   }
 }
 
@@ -271,7 +296,11 @@ $delete-red-hover: #e57373;
             }
 
             .fa-microphone-alt-slash {
-              animation: 0.3s ease-out 0s 1 beacon;
+              animation: 1s ease-out 0s 1 beacon;
+            }
+
+            .fa-dumpster-fire {
+              animation: 1s ease-out 0s 1 burningDumpster;
             }
           }
         }

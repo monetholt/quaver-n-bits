@@ -194,10 +194,10 @@ function toggleEnableAd(id) {
             // Recreate it and put it where it should be, alerting the user.
             if (allAds[id].IsActive === 1) {
                 document.getElementById('current-ads').appendChild(createAd(allAds[id]));
-                showAlert("success", "far fa-check-circle", `Your ad <span>${allAds[id]['Title']}</span> is now enabled.`)
+                showAlert("success", "far fa-check-circle", `Your ad <span>${allAds[id]['Title']}</span> is now enabled.`);
             } else {
                 document.getElementById('previous-ads').appendChild(createAd(allAds[id]));
-                showAlert("caution", "fas fa-microphone-alt-slash", `Your ad <span>${allAds[id]['Title']}</span> is now disabled.`)
+                showAlert("caution", "fas fa-microphone-alt-slash", `Your ad <span>${allAds[id]['Title']}</span> is now disabled.`);
             }
         } else {
             // Ohgodnonono.
@@ -206,6 +206,10 @@ function toggleEnableAd(id) {
     });
     req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
     req.send(JSON.stringify(payload));
+}
+
+function updateAd(id) {
+
 }
 
 // Sends a request to /dashboard/ads/delete to remove this ad and its associated instruments from the user's account.

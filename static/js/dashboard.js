@@ -23,30 +23,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
         let res = JSON.parse(req.responseText);
         if (req.status < 400) {
             console.log(res);
-            if (res.ads.length > 0) {
+            if (res.has_current_ads) {
                 document.getElementById('current-ads-loading').hidden = true;
-                document.getElementById('previous-ads-loading').hidden = true;
-
-                // Create Levels
-                let levels = {};
-                for (let i=0; i < res.levels.length; i++) {
-                    levels[res.levels[i]['LevelKey']] = res.levels[i]['Level'];
-                }
-
                 let currentAds = document.getElementById('current-ads');
-                let previousAds = document.getElementById('previous-ads');
-                for (let ad in res.ads) {
-                    if (res.ads[ad]['IsActive'] === 1) {
-                        currentAds.appendChild(createAd(res.ads[ad], levels));
-                    } else {
-                        previousAds.appendChild(createAd(res.ads[ad], levels));
-                    }
+                for (let ad in res.current_ads) {
+                        currentAds.appendChild(createAd(res.current_ads[ad]));
                 }
             } else {
-                console.log("No ads here :(");
                 document.getElementById('current-ads-loading').hidden = true;
-                document.getElementById('previous-ads-loading').hidden = true;
                 document.getElementById('no-current-ads').hidden = false;
+            }
+
+            if (res.has_prev_ads) {
+                document.getElementById('previous-ads-loading').hidden = true;
+                let previousAds = document.getElementById('previous-ads');
+                for (let ad in res.prev_ads) {
+                    previousAds.appendChild(createAd(res.prev_ads[ad]));
+                }
+            } else {
+                document.getElementById('previous-ads-loading').hidden = true;
                 document.getElementById('no-previous-ads').hidden = false;
             }
         } else {
@@ -60,22 +55,76 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.send(null);
 });
 
-function createAd(thisAd, levels) {
+function createAd(thisAd) {
     let currentAd = document.createElement('div');
     currentAd.id = 'display-ads-ad-' + thisAd.AdKey;
     currentAd.className = 'display-ads-ad';
+    console.log("The time coming in for this ad: ", thisAd.DatePosted);
     currentAd.innerHTML = `
+        <div id="display-ads-edit-overlay-${thisAd.AdKey}" class="display-ads-edit-overlay" hidden>
+            <div class="grid-x ads-edit-header">
+                <div class="cell medium-12 ads-edit-editing">
+                    <div class="ads-edit-editing-text">
+                        <i class="far fa-edit"></i>Editing Ad: <strong>${thisAd.Title}</strong>    
+                    </div>
+                </div>
+                <div class="cell medium-6 ads-edit-title">
+                    <label for="ads-edit-title-${thisAd.AdKey}">Title:</label>
+                    <input type="text" name="ads-edit-title-${thisAd.AdKey}" id="ads-edit-title-${thisAd.AdKey}" value="${thisAd.Title}">
+                </div>
+                <div class="cell medium-3 ads-edit-radius">
+                    <label for="ads-edit-radius-${thisAd.AdKey}">Search Radius:</label>
+                    <select name="ads-edit-radius-${thisAd.AdKey}" id="ads-edit-radius-${thisAd.AdKey}">
+                        <option value="Any" selected>Any</option>
+                        <option value="5">5 Miles</option>
+                        <option value="10">10 Miles</option>
+                        <option value="25">25 Miles</option>
+                        <option value="50">50 Miles</option>
+                        <option value="100">100 Miles</option>
+                    </select>
+                </div>
+                <div class="cell medium-3 ads-edit-loc">
+                    <label for="ads-edit-loc-${thisAd.AdKey}">Zip Code:</label>
+                    <input type="text" name="ads-edit-loc-${thisAd.AdKey}" id="ads-edit-loc-${thisAd.AdKey}" value="${thisAd.ZipCode}">
+                </div>
+            </div>
+            <div class="grid-x ads-edit-body">
+                <div class="cell medium-8 ads-edit-description">
+                    <label for="ads-edit-description-${thisAd.AdKey}">Description:</label>
+                    <textarea id="ads-edit-description-${thisAd.AdKey}" rows="5">${thisAd.Description}</textarea>
+                </div>
+                <div class="cell medium-4 ads-edit-instruments">
+                    <label for="ads-edit-instruments-${thisAd.AdKey}">Instruments:</label>
+                    <ul>
+                        ${ createInstrumentList(thisAd.instruments) }
+                    </ul>
+                </div>
+            </div>
+            <div class="grid-x ads-edit-footer">
+                <div class="cell medium-3 ads-edit-cancel">
+                    <button class="button alert large expanded" onclick="toggleEditAdView(${thisAd.AdKey})"><i class="far fa-window-close"></i>Cancel</button>
+                </div>
+                <div class="cell medium-9 ads-edit-save">
+                    <button class="button primary large expanded"><i class="fas fa-share"></i>Save Ad</button>
+                </div>
+            </div>
+        </div>
         <div class="display-ads-ad-overlay">
-            ${thisAd.IsActive === 1 ? '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' : '<button class="button secondary large"><i class="fas fa-sync"></i>Enable Ad</button>'}
+            ${thisAd.IsActive === 1 ? 
+                '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' +
+                '<button class="button secondary large" onclick="toggleEditAdView(' + thisAd.AdKey + ')"><i class="far fa-edit"></i>Edit Ad</button>' +
+                '<button class="button warning large"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>':
+                '<button class="button secondary large"><i class="fas fa-sync"></i>Enable Ad</button>'
+            }
         </div>
         <div class="grid-x display-ads-ad-header">
             <div class="cell medium-6 display-ads-ad-title">
                 <h2>${thisAd.Title}</h2>
-                <h5>${thisAd.DatePosted === thisAd.LastUpdated ? "Posted" : "Updated"} ${moment(thisAd.DatePosted).startOf('day').fromNow()}</h5>
+                <h5>${thisAd.DatePosted === thisAd.LastUpdated ? "Posted" : "Updated"} ${moment(thisAd.DatePosted).subtract(7, 'hours').add(5, 'minutes').fromNow()}</h5>
             </div>
             <div class="cell medium-6 display-ads-ad-loc">
                 <div class="display-ads-ad-loc-display">
-                    ${thisAd.IsActive === 1 ? '<i class="fas fa-broadcast-tower"></i> Within <strong>' + thisAd.LocationRadius + '</strong> miles of <strong>' + thisAd.ZipCode + '</strong>' : '<i class="fas fa-microphone-alt-slash"></i>This ad is currently <strong>inactive</strong>.'}                            
+                    ${thisAd.IsActive === 1 ? '<i class="fas fa-broadcast-tower"></i> Within <strong>' + (thisAd.LocationRadius === 0 ? 'Any' : thisAd.LocationRadius) + '</strong> miles of <strong>' + thisAd.ZipCode + '</strong>' : '<i class="fas fa-microphone-alt-slash"></i>This ad is currently <strong>inactive</strong>.'}                            
                 </div>
             </div>
         </div>
@@ -87,7 +136,7 @@ function createAd(thisAd, levels) {
             <div class="cell medium-4 display-ads-ad-instruments">
                 <h6>What I'm looking for: </h6>
                 <ul>
-                    <li><strong>${thisAd.Quantity}</strong> ${levels[thisAd.LevelID]} ${thisAd.Instrument}${thisAd.Quantity === 1 ? "" : "s"}</li>
+                ${ createInstrumentList(thisAd.instruments) }
                 </ul>
             </div> 
         </div>
@@ -95,46 +144,121 @@ function createAd(thisAd, levels) {
     return currentAd;
 }
 
-function checkSelected() {
-    let val = document.getElementById("instruments").value;
-    let opts = document.getElementById('instrument-list').childNodes;
-    for (let i = 0; i < opts.length; i++) {
-        if (opts[i].value === val) {
-            addSelection(val);
-            break;
-        }
+function toggleEditAdView(id){
+    let thisView = document.getElementById(`display-ads-edit-overlay-${id}`);
+    thisView.hidden = !thisView.hidden;
+}
+
+function createInstrumentList(instruments) {
+    let list = ``;
+    for (let i in instruments) {
+        list += `<li>${instruments[i]['Level']}-Level <strong>${instruments[i]['Instrument']}</strong></li>`;
     }
+    return list;
 }
 
-function addSelection(inst) {
-    let selection = document.getElementById("instrument-selection");
-    let item = document.createElement('div');
-    item.className = 'instrument-selection-item';
-    item.id = inst;
-    item.innerHTML = `
-            <div class="instrument-selection-text">${inst}</div>
-            <div class="grid-x">
-                <div class="cell medium-7">
-                    <select class="selection-level" name="selection-level" id="selection-level-${inst.toLowerCase()}" required>
-                        <option disabled selected value> -- Skill Level -- </option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                        <option value="Expert">Expert</option>
-                        <option value="Master">Master</option>
-                    </select>
-                </div>
-                <div class="cell medium-1"></div>
-                <div class="cell medium-4">
-                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" name="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" required />
-                </div>
-            </div>
-            <div class="delete-selection" onclick="remove(this)">X</div>
-        `;
+//when passed an instrument id + name, will add a new section under the instrument select so the user can select level or delete.
+//will show user an error if they try to add the same instrument twice
+function addSelection(id, inst) {
+    var selectionDiv = $("#instrument-selection"); //grab section below instrument select
 
-    selection.appendChild(item);
+    var thisId = id + "-" + Date.now();
+
+    selectionDiv.append("<div class='instrument-selection-item' id='" + thisId +"'></div>"); //add a new 'box' for this selected instrument
+
+    var thisSelection = selectionDiv.find("#" + thisId);
+
+    thisSelection.append("<div class='delete-selection'>X</div>"); //add the icon to delete this section
+    var levelSelect = $("#level-list-main").clone(); //copy the existing level selector so this instrument can have its own
+    levelSelect.attr("id", "#level-" + thisId); //set the id for the level select + unhide it
+    levelSelect.css("display", "block");
+
+    thisSelection.append("<div class='instrument-selection-text'>" + inst + "</div>");
+    thisSelection.append(levelSelect);
+    thisSelection.append("<input placeholder='Quantity' type='number' class='selection-quantity'  id='quantity-" + thisId+"' min='1' max='99' />");
+
 }
 
-function remove(item) {
-    item.parentNode.remove();
-}
+$(document).ready(function () {
+
+    //set up the instrument to use select2 for easy searching+selecting. This seemed closest to the datalist we were using
+    $('#instrument-list').select2({
+        placeholder: "Select an instrument"
+    }).on('select2:select', function (e) {
+        //whenever we select a new instrument, add it to the section below to select level
+        var selectedOption = $("#instrument-list").select2('data')[0];
+        addSelection(selectedOption.id, (selectedOption.text));
+    });
+
+    //click event to remove selected instruments.
+    $("body").on("click", ".delete-selection", function () {
+        $(this).parent().remove();
+    });
+
+    $("#addAd").submit(function (e) {
+        e.preventDefault();
+        $("#error-msg-ad").html("");
+
+        var form = this;
+
+        //get all selected instruments
+        var selectedInstruments = $(".instrument-selection-item");
+
+        //make sure the user chose at least one
+        if (selectedInstruments.length < 1) {
+            $("#error-msg-ad").html("Please select at least one instrument");
+        }
+        else {
+
+            //gather IDs + make sure levels are all selected
+            var errorMsg = ""; //this will be non-blank if we find an error
+            var selected = [];
+            var idlevelcombos = []; //
+
+            selectedInstruments.each(function () {
+                var instID = $(this).attr("id").split("-")[0]; //get the instrument ID
+                var levelID = $(this).find("select.selection-level").val(); //get the levelID
+                var quantity = $(this).find("input.selection-quantity").val(); //get the quantity
+
+
+                if (levelID < 1) { //this instrument doesnt have a level selected
+                    errorMsg = "Please select an experience level for each instrument";
+                    return false;
+                }
+                else if (quantity == "" || quantity < 1) {
+                    errorMsg = "Please select a quantity for each instrument";
+                    return false;
+                }
+                else if ($.inArray(instID + "-" + levelID, idlevelcombos) !== -1)
+                {
+                    errorMsg = "Hey, if you select more than one of the same instrument you need to select different levels for each";
+                    return false;
+                }
+                else
+                {
+                    selected.push([instID, levelID, quantity]); //add the ids to our data array
+                    idlevelcombos.push(instID+"-"+levelID); //add the ids combo to our lookup
+
+                }
+            });
+
+            if (errorMsg != "") { //if we found an error, show it
+
+                $("#error-msg-ad").html(errorMsg);
+            }
+            else {
+                //transfer over selected ids to hidden inputs in create form
+                $("#instrument-selections").html("");
+                $.each(selected, function (i, vals) {
+                    $("#instrument-selections").append("<input type='text' name='InstrumentID-" + i + "' value='" + vals[0] + "'>");
+                    $("#instrument-selections").append("<input type='text' name='LevelID-" + i + "' value='" + vals[1] + "'>");
+                    $("#instrument-selections").append("<input type='text' name='Quantity-" + i + "' value='" + vals[2] + "'>");
+
+                });
+
+                form.submit(); // submit the form if everything is good!
+            }
+        }
+    });
+
+});

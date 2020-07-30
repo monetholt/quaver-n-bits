@@ -9,6 +9,29 @@
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+@keyframes zoomInAndOut {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
 @keyframes rockBackAndForth {
   0% {
     transform: rotateZ(0);
@@ -50,7 +73,7 @@
     opacity: 0.4;
   }
   50% {
-    opacity: 0.8;
+    opacity: 1;
   }
   100% {
     opacity: 0.4;
@@ -105,9 +128,116 @@ $delete-red-hover: #e57373;
       border: 1px solid #eee;
       border-radius: 20px;
       overflow: hidden;
+      min-height: 500px;
       box-shadow: 0 0 5px 2px rgba(0,0,0,0.1);
       background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
       animation: 1s ease-out 0s 1 slideInFromLeft;
+
+      @include breakpoint(small only) {
+        min-height: 1000px;
+      }
+
+      .beacon-border {
+        animation: 2s ease-out 0s infinite beacon;
+      }
+      .display-ads-edit-overlay {
+        position: absolute;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        background: $white;
+        height: 100%;
+        width: 100%;
+        animation: 0.5s ease-out 0s 1 fadeIn;
+
+        .ads-edit-header {
+          padding: 20px;
+          color: white !important;
+          background: #4a4a4a;
+
+          .ads-edit-editing {
+            text-align: center;
+            color: #ffeb3b;
+            margin-bottom: 10px;
+
+            .ads-edit-editing-text {
+              padding: 10px 20px;
+              border-radius: 50px;
+              border: 1px solid #ffeb3b;
+              background: #ffeb3b21;
+              animation: 2s ease-out 0s infinite beacon;
+
+              i {
+                padding-right: 10px;
+              }
+            }
+          }
+
+          .ads-edit-save {
+            display: flex;
+            vertical-align: middle;
+          }
+
+          .ads-edit-cancel {
+            display: flex;
+            vertical-align: middle;
+          }
+
+          label {
+            text-indent: 10px;
+            font-weight: bold;
+            font-family: $header-font;
+            color: $white;
+          }
+
+          .cell {
+            padding: 0 10px;
+          }
+        }
+
+        .ads-edit-body {
+          padding: 20px;
+
+          .cell {
+            padding: 0 10px;
+          }
+
+          label {
+            text-indent: 10px;
+            font-weight: bold;
+            font-family: $header-font;
+            color: $dark-gray;
+          }
+
+          textarea {
+            resize: none;
+          }
+
+          button {
+            i {
+              padding-right: 10px;
+            }
+          }
+        }
+
+        .ads-edit-footer {
+          position: absolute;
+          border-top: 1px solid #ddd;
+          padding: 20px 10px 0 10px;
+          width: 100%;
+          bottom: 0;
+
+          .cell {
+            padding: 0 10px;
+          }
+
+          button {
+            i {
+              padding-right: 10px;
+            }
+          }
+        }
+      }
 
       .display-ads-ad-overlay {
         position: absolute;
@@ -123,6 +253,7 @@ $delete-red-hover: #e57373;
 
         .button {
           opacity: 0;
+          margin: 0 10px;
           @include transform(translateY(-50%));
           @include transition(0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28));
 
@@ -131,8 +262,16 @@ $delete-red-hover: #e57373;
           }
 
           &:hover {
-            i {
+            .fa-search {
               animation: 0.3s ease-out 0s 1 rockBackAndForth;
+            }
+
+            .fa-edit {
+              animation: 0.5s ease-out 0s 1 zoomInAndOut;
+            }
+
+            .fa-microphone-alt-slash {
+              animation: 0.3s ease-out 0s 1 beacon;
             }
           }
         }
@@ -143,6 +282,14 @@ $delete-red-hover: #e57373;
           .button {
             @include transform(translateY(0));
             opacity: 1;
+          }
+        }
+
+        @include breakpoint(small only) {
+          flex-direction: column;
+
+          .button {
+            margin: 10px 0;
           }
         }
       }
@@ -194,6 +341,7 @@ $delete-red-hover: #e57373;
       .display-ads-ad-body {
         margin: 20px;
         padding: 20px;
+        height: 320px;
         border: 1px solid #ddd;
 
         .display-ads-ad-description {
@@ -303,6 +451,7 @@ $delete-red-hover: #e57373;
 
         .button {
           opacity: 0;
+          margin: 0 10px;
           @include transform(translateY(-50%));
           @include transition(0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28));
 

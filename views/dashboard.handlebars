@@ -1,5 +1,6 @@
 {{>nav}}
 <script src="/js/dashboard.js"></script>
+
 <main>
     <div class="main-container main-current-ads">
         <div class="grid-x">
@@ -62,7 +63,7 @@
     <button class="close-button" data-close aria-label="Close reveal" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
-    <form id = "addAd" action="/dashboard" method="post">
+    <form id = "addAd" action="/dashboard/ads/update" method="post">
         <table>
             <tr>
                 <td>
@@ -101,8 +102,8 @@
             </tr>
             <tr>
                 <td>
-                 <!--   <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" name = "instrument-list" oninput="checkSelected()"> -->
-                    <select id="instrument-list" name="instrument-list" onchange="addSelection(this.value)">
+                 <!--   <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instrument" name = "instrument-list" oninput="checkSelected()"> -->
+                    <select id="instrument-list0" name="instrument-list" onchange="addSelection(this.value)">
                         {{#each instruments}}
                         <option data-value="{{InstrumentKey}}" value="{{Instrument}}">{{Instrument}}</option>
                         {{/each}}
@@ -112,7 +113,6 @@
             <tr>
                 <td>
                     <div id="instrument-selection">
-
                     </div>
                 </td>
             </tr>

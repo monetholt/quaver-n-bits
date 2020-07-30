@@ -104,8 +104,11 @@ function bindButtons() {
             req.send(JSON.stringify(payload));
         }
     }
+
+
     // document.getElementById('submitForm').addEventListener('click', e => {
 }
+
 
 /*
 This is how we are going to get track ID from Soundcloud URLs for each track -
@@ -128,3 +131,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.send(null);
 });
 */
+
+window.addEventListener('DOMContentLoaded', () => {
+    let req = new XMLHttpRequest();
+    req.open('GET', `/profile/worksamples`, true);
+    req.addEventListener('load', () => {
+        if (req.status < 400) {
+            console.log(req.responseText);
+        } else {
+            console.log("BAD." + req.statusText);
+        }
+    });
+    req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    req.send(null);
+});
+

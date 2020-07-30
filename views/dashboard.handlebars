@@ -1,63 +1,36 @@
 {{>nav}}
-<script type="text/javascript">
-    function checkSelected() {
-        let val = document.getElementById("instruments").value;
-        let opts = document.getElementById('instrument-list').childNodes;
-        for (let i = 0; i < opts.length; i++) {
-            if (opts[i].value === val) {
-                addSelection(val);
-                break;
-            }
-        }
-    }
-
-    function addSelection(inst) {
-        let selection = document.getElementById("instrument-selection");
-        let item = document.createElement('div');
-        item.className = 'instrument-selection-item';
-        item.id = inst;
-        item.innerHTML = `
-            <div class="instrument-selection-text">${inst}</div>
-            <div class="grid-x">
-                <div class="cell medium-7">
-                    <select class="selection-level" name="selection-level" id="selection-level-${inst.toLowerCase()}">
-                        <option disabled selected value> -- Skill Level -- </option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                        <option value="Expert">Expert</option>
-                        <option value="Master">Master</option>
-                    </select>
-                </div>
-                <div class="cell medium-1"></div>
-                <div class="cell medium-4">
-                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" />
-                </div>
-            </div>
-            <div class="delete-selection" onclick="remove(this)">X</div>
-        `;
-
-        selection.appendChild(item);
-    }
-
-    function remove(item) {
-        item.parentNode.remove();
-    }
-
-</script>
+<script src="/js/dashboard.js"></script>
 <main>
     <div class="main-container main-current-ads">
-        <div class="current-ads-label">
-            <h1>Current Ads:</h1>
+        <div class="grid-x">
+            <div class="cell medium-10 current-ads-label">
+                <h1>Current Ads:</h1>
+            </div>
+            <div class="cell medium-2 create-ad-cta">
+                <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-plus"></i>New Ad</button>
+            </div>
         </div>
         <div class="current-ads-container">
-            <div class="current-ads-text">
-                <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
-                <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
-                    can grow your network.</p>
+            <div id="current-ads-loading" class="current-ads-loading">
+                <div class="current-ads-text">
+                    <h2>Consulting the Lexicon</h2>
+                </div>
+                <div class="current-ads-loading-spin">
+                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+                </div>
             </div>
-            <div class="current-ads-cta">
-                <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-bullhorn"></i>Create An Ad!</button>
+            <div id="no-current-ads" class="no-current-ads" hidden>
+                <div class="current-ads-text">
+                    <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
+                    <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
+                        can grow your network.</p>
+                </div>
+                <div class="current-ads-cta">
+                    <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-bullhorn"></i>Create An Ad!</button>
+                </div>
+            </div>
+            <div id="current-ads">
+
             </div>
         </div>
     </div>
@@ -66,8 +39,19 @@
             <h1>Previous Ads:</h1>
         </div>
         <div class="previous-ads-container">
-            <div class="previous-ads-text">
+            <div id="no-previous-ads" class="previous-ads-text">
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
+            </div>
+            <div id="previous-ads-loading" class="previous-ads-loading">
+                <div class="previous-ads-text">
+                    <h2>Consulting the Lexicon</h2>
+                </div>
+                <div class="previous-ads-loading-spin">
+                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+                </div>
+            </div>
+            <div id="previous-ads">
+
             </div>
         </div>
     </div>

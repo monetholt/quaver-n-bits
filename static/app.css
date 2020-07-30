@@ -5313,13 +5313,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d96526, #71d926);
+    background-image: -webkit-linear-gradient(to bottom right, #26d950, #cdd926);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d96526, #71d926);
+    background-image: -moz-linear-gradient(to bottom right, #26d950, #cdd926);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d96526, #71d926);
+    background-image: -o-linear-gradient(to bottom right, #26d950, #cdd926);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d96526, #71d926);
+    background-image: linear-gradient(to bottom right, #26d950, #cdd926);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -6037,3 +6037,47 @@ nav {
     top: 0;
     right: 20px;
     padding-top: 10px; }
+
+@keyframes inAndOut {
+  0% {
+    transform: translateY(0%); }
+  10% {
+    transform: translateY(-100%); }
+  90% {
+    transform: translateY(-100%); }
+  100% {
+    transform: translateY(0%); } }
+
+#alert-popout {
+  position: fixed;
+  display: flex;
+  bottom: -50px;
+  left: 0;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  z-index: 999;
+  background: #212121;
+  color: #fefefe;
+  font-size: 16px;
+  animation: 2.5s ease-out 0.1s 1 inAndOut; }
+  #alert-popout i {
+    padding-right: 10px; }
+  #alert-popout span {
+    font-weight: bold;
+    text-decoration: underline;
+    padding: 0 4px; }
+  #alert-popout.hidden {
+    display: none; }
+  #alert-popout.success {
+    background: #85de27;
+    color: #4e6933; }
+  #alert-popout.caution {
+    background: yellow;
+    color: #2a2a2a; }
+  #alert-popout.warning {
+    background: orange;
+    color: #fefefe; }
+  #alert-popout.alert {
+    background: #f44336; }

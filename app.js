@@ -151,14 +151,24 @@ app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
 });
 
 app.put('/dashboard/ads/enable', checkAuthenticated, function (req, res, next) {
-    console.log('/dashboard/ads/enable called with IsActive: ' + req.body.IsActive + ' and Ad #' + req.body.AdKey);
     mysql.pool.query("UPDATE Ads SET IsActive = ? WHERE AdKey = ?;", [req.body.IsActive, req.body.AdKey], (error, results) => {
         if(error) {
             res.write(JSON.stringify(error));
             res.end();
         } else {
-            console.log("updated DB successfully - redirecting to dashboard.");
             res.send({ message: 'Successfully enabled ad.' });
+        }
+    });
+});
+
+app.delete('/dashboard/ads/delete', checkAuthenticated,(req, res, next) => {
+    mysql.pool.query("DELETE Ads, AdInstruments FROM Ads LEFT JOIN AdInstruments ON Ads.AdKey = AdInstruments.AdID WHERE Ads.AdKey = ?;",
+        [req.body.AdKey], (error, results) => {
+        if(error){
+            res.write(JSON.stringify(error));
+            res.end();
+        } else {
+            res.send({ message: 'Successfully deleted ad.' });
         }
     });
 });

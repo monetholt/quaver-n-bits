@@ -364,16 +364,17 @@ app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
                         //first format instrument/levelIDs sent in with form
                         var instruments = [];
 
+                        var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
                         for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
 
                             if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
-                                instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], profileKey]);
+                                instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], profileKey, timestamp, timestamp]);
                             }
                             else break;
                         }
 
                         //add the instruments
-                        conn.query(`INSERT INTO ProfileInstruments (InstrumentID, LevelID, ProfileID)  VALUES ?  `, [instruments],
+                        conn.query(`INSERT INTO ProfileInstruments (InstrumentID, LevelID, ProfileID, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
                             function (err, rows) {
 
                                 if (err) {

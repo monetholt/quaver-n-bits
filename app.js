@@ -283,10 +283,9 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
 // saves the info that is located in the Profiles header and returns true if update was successful
 app.put('/profile/header', checkAuthenticated,(req, res, next) => {
     try {
-        console.log("private? " + (req.body.privacySwitch.checked ? 1 : 0));
         mysql.pool.query(
             'UPDATE Profiles SET ZipCode = ?, ArtistName = ?, LastUpdated = NOW(), LookingForWork = ? WHERE UserID = ?',
-            [req.body.zipCode, req.body.artistName, (req.body.privacySwitch.checked ? 1 : 0), req.user.UserKey],
+            [req.body.zipCode, req.body.artistName, (req.body.privacySwitch), req.user.UserKey],
             function(err, result) {
                 if(err) {
                     throw(err);

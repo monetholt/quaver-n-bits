@@ -31,6 +31,7 @@
                         <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
                     </div>
                     <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>
+                    <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}"/>
                     <div id="edit-title-privacy-switch" class="switch" hidden>
                         <span>Are you currently looking for a spot in a band?</span><br>
                         <input class="switch-input" id="privacySwitch" type="checkbox" name="privacySwitch" {{#if profile.LookingForWork}}checked{{/if}}>

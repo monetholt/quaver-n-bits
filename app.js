@@ -102,11 +102,6 @@ app.get('/create-profile',checkAuthenticated,(req,res) => {
 });
 
 //any page requiring authentication needs to run checkAuthenticated first
-//PLACEHOLDER for landing page.
-app.get('/index', checkAuthenticated, function (req, res, next) {
-    res.render('index', { user: req.user });
-});
-
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     var callbackCount = 0;
     var context = {
@@ -114,9 +109,17 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
     };
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
         try {
-            if (results.length == 0 || results[0].ArtistName === null) {
+            if (results.length == 0)
+            {
+                //for now you are SOL
+                res.write("No profile created for this user");
+                res.end();
+            }
+            else if (results[0].ArtistName === null) {
+                req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
                 res.redirect('/create-profile');
             } else {
+                req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
                 context['profile'] = results;
                 getInstrumentsAndLevels(req, res, context, complete);
                 getAds(req, res, context, complete);
@@ -198,6 +201,7 @@ function getAds(req, res, context, complete) {
             });
         } else {
             complete();
+            complete(); //need to add another call to callback so we can render dashboard
             context['has_current_ads'] = false;
             context['has_prev_ads'] = false;
         }
@@ -340,18 +344,69 @@ app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
 
 app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
     try {
-        mysql.pool.query(
-            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
-            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
-            function(err, result) {
-                if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
-                    res.redirect('/dashboard');
-                } else {
-                    throw(new ReferenceError("No profile found"))
-                }
-            });
+        mysql.pool.getConnection(function (err, conn) {
+            if (err) throw (err);
+
+            var worksampleurl = req.body.WorkSample;
+
+            //create the profile
+            conn.query(
+                'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, Bio = ?, LastUpdated = NOW() WHERE UserID = ?',
+                [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.body.Bio, req.user.UserKey],
+                function (err, rows) {
+                    if (err) {
+                        conn.release();
+                        throw (err);
+                    }
+                    else if (rows.changedRows === 1) //now that profile is created, add instruments
+                    {
+                        var profileKey = req.session.ProfileID
+                        //first format instrument/levelIDs sent in with form
+                        var instruments = [];
+
+                        var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
+                        for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+
+                            if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
+                                instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], profileKey, timestamp, timestamp]);
+                            }
+                            else break;
+                        }
+
+                        //add the instruments
+                        conn.query(`INSERT INTO ProfileInstruments (InstrumentID, LevelID, ProfileID, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
+                            function (err, rows) {
+
+                                if (err) {
+                                    conn.release();
+                                    throw (err);
+                                }
+                                else
+                                {
+                                    if (worksampleurl && worksampleurl != "") //if user added a work sample, go add it
+                                    {
+                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?', [profileKey, worksampleurl],
+                                            function (err, rows) {
+                                                conn.release();
+
+                                                if (err) throw (err);
+                                                else res.redirect('/dashboard'); //otherwise send em to the dashboard
+                                            });
+                                    }
+                                    else {
+                                        conn.release();
+                                        res.redirect('/dashboard'); //otherwise send em to the dashboard
+                                    }
+                                }
+                            });
+
+                    }
+                    else {
+                        conn.release();
+                        throw (new ReferenceError("No profile created"));
+                    }
+                });
+        });
     } catch (err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
@@ -475,7 +530,7 @@ function checkAuthenticated(req, res, next) {
 //for pages accessible by non-authenticated users only
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        return res.redirect('/index'); //if authenticated, bump to dashboard page
+        return res.redirect('/dashboard'); //if authenticated, bump to dashboard page
     }
     next();
 }

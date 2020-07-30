@@ -451,26 +451,25 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
     }
 });
 
-<<<<<<< HEAD
 // inserts an instrument and associated level and returns true if the insert was successful
-app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
+app.post('/profile/instrument/add', checkAuthenticated, (req, res, next) => {
     try {
         mysql.pool.query(
             'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
             [req.body.ProfileKey, req.body.instrumentId, req.body.levelId],
-                function(err, result) {
-                if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+            function (err, result) {
+                if (err) {
+                    throw (err);
+                } else if (result.changedRows === 1) {
                     res.send(true);
                 } else {
-                    throw(new ReferenceError("Must save profile before adding instruments."));
+                    throw (new ReferenceError("Must save profile before adding instruments."));
                 }
-        });
-    } catch(err) {
+            });
+    } catch (err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
-=======
+});
 
 //TODO: it will submit, but there's nothing stopping the user from trying to click the button before Level has been selected, and currently no success message either.
 app.post('/create-profile',checkAuthenticated,(req, res, next) => {
@@ -484,7 +483,6 @@ app.post('/create-profile',checkAuthenticated,(req, res, next) => {
                 res.redirect('/create-profile');
             }
     });    
->>>>>>> dashboard
 
 });
 

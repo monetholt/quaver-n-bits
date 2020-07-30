@@ -5313,13 +5313,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #7dd926, #bed926);
+    background-image: -webkit-linear-gradient(to bottom right, #26d97d, #26cdd9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #7dd926, #bed926);
+    background-image: -moz-linear-gradient(to bottom right, #26d97d, #26cdd9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #7dd926, #bed926);
+    background-image: -o-linear-gradient(to bottom right, #26d97d, #26cdd9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #7dd926, #bed926);
+    background-image: linear-gradient(to bottom right, #26d97d, #26cdd9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5536,9 +5536,72 @@ main {
     border: 1px solid #eee;
     border-radius: 20px;
     overflow: hidden;
+    min-height: 500px;
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
     background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
     animation: 1s ease-out 0s 1 slideInFromLeft; }
+    .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay {
+      position: absolute;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      background: #fefefe;
+      border-radius: 20px;
+      height: 100%;
+      width: 100%;
+      transform: scale(1.01); }
+      .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header {
+        padding: 20px;
+        color: white !important;
+        background: #2196F3; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing {
+          display: flex;
+          justify-content: flex-end;
+          color: #6bffd6;
+          margin-bottom: 10px; }
+          .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing .ads-edit-editing-text {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid #66ffd8;
+            animation: 2s ease-out 0s infinite beacon; }
+            .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing .ads-edit-editing-text i {
+              padding-right: 10px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-save {
+          display: flex;
+          vertical-align: middle; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-cancel {
+          display: flex;
+          vertical-align: middle; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header label {
+          text-indent: 10px;
+          font-weight: bold;
+          font-family: "Maven Pro", sans-serif;
+          color: #fefefe; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .cell {
+          padding: 0 10px; }
+      .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body {
+        padding: 20px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .cell {
+          padding: 0 10px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body label {
+          text-indent: 10px;
+          font-weight: bold;
+          font-family: "Maven Pro", sans-serif;
+          color: #212121; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body textarea {
+          resize: none; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body button i {
+          padding-right: 10px; }
+      .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-footer {
+        position: absolute;
+        border-top: 1px solid #ddd;
+        padding: 20px 10px 0 10px;
+        width: 100%;
+        bottom: 0; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-footer .cell {
+          padding: 0 10px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-footer button i {
+          padding-right: 10px; }
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay {
       position: absolute;
       display: flex;
@@ -5620,6 +5683,7 @@ main {
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body {
       margin: 20px;
       padding: 20px;
+      height: 320px;
       border: 1px solid #ddd; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-instruments {
         padding: 0 20px;

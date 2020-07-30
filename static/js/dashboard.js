@@ -65,6 +65,52 @@ function createAd(thisAd, levels) {
     currentAd.id = 'display-ads-ad-' + thisAd.AdKey;
     currentAd.className = 'display-ads-ad';
     currentAd.innerHTML = `
+        <div class="display-ads-edit-overlay" hidden>
+            <div class="grid-x ads-edit-header">
+                <div class="cell medium-12 ads-edit-editing">
+                    <div class="ads-edit-editing-text">
+                        <i class="far fa-edit"></i>Editing Ad: <strong>${thisAd.Title}</strong>    
+                    </div>
+                </div>
+                <div class="cell medium-6 ads-edit-title">
+                    <label for="ads-edit-title-${thisAd.AdKey}">Title:</label>
+                    <input type="text" name="ads-edit-title-${thisAd.AdKey}" id="ads-edit-title-${thisAd.AdKey}" value="${thisAd.Title}">
+                </div>
+                <div class="cell medium-3 ads-edit-radius">
+                    <label for="ads-edit-radius-${thisAd.AdKey}">Search Radius:</label>
+                    <select name="ads-edit-radius-${thisAd.AdKey}" id="ads-edit-radius-${thisAd.AdKey}">
+                        <option value="Any" selected>Any</option>
+                        <option value="5">5 Miles</option>
+                        <option value="10">10 Miles</option>
+                        <option value="25">25 Miles</option>
+                        <option value="50">50 Miles</option>
+                        <option value="100">100 Miles</option>
+                    </select>
+                </div>
+                <div class="cell medium-3 ads-edit-loc">
+                    <label for="ads-edit-loc-${thisAd.AdKey}">Zip Code:</label>
+                    <input type="text" name="ads-edit-loc-${thisAd.AdKey}" id="ads-edit-loc-${thisAd.AdKey}" value="${thisAd.ZipCode}">
+                </div>
+            </div>
+            <div class="grid-x ads-edit-body">
+                <div class="cell medium-8 ads-edit-description">
+                    <label for="ads-edit-description-${thisAd.AdKey}">Description:</label>
+                    <textarea id="ads-edit-description-${thisAd.AdKey}" rows="5">${thisAd.Description}</textarea>
+                </div>
+                <div class="cell medium-4 ads-edit-instruments">
+                    <label for="ads-edit-instruments-${thisAd.AdKey}">Instruments:</label>
+                    <input type="text" name="ads-edit-instruments-${thisAd.AdKey}" id="ads-edit-instruments-${thisAd.AdKey}" value="${thisAd.Instrument}">
+                </div>
+            </div>
+            <div class="grid-x ads-edit-footer">
+                <div class="cell medium-6 ads-edit-save">
+                    <button class="button primary large expanded"><i class="fas fa-share"></i>Save Ad</button>
+                </div>
+                <div class="cell medium-6 ads-edit-cancel">
+                    <button class="button alert large expanded"><i class="far fa-window-close"></i>Cancel</button>
+                </div>
+            </div>
+        </div>
         <div class="display-ads-ad-overlay">
             ${thisAd.IsActive === 1 ? 
                 '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' +

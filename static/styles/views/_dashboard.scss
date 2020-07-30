@@ -118,9 +118,110 @@ $delete-red-hover: #e57373;
       border: 1px solid #eee;
       border-radius: 20px;
       overflow: hidden;
+      min-height: 500px;
       box-shadow: 0 0 5px 2px rgba(0,0,0,0.1);
       background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
       animation: 1s ease-out 0s 1 slideInFromLeft;
+
+      .display-ads-edit-overlay {
+        position: absolute;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        background: $white;
+        border-radius: 20px;
+        height: 100%;
+        width: 100%;
+        transform: scale(1.01); // Fix a little visual bug
+
+        .ads-edit-header {
+          padding: 20px;
+          color: white !important;
+          background: #2196F3;
+
+          .ads-edit-editing {
+            display: flex;
+            justify-content: flex-end;
+            color: #6bffd6;
+            margin-bottom: 10px;
+
+            .ads-edit-editing-text {
+              padding: 10px 20px;
+              border-radius: 50px;
+              border: 1px solid #66ffd8;
+              animation: 2s ease-out 0s infinite beacon;
+
+              i {
+                padding-right: 10px;
+              }
+            }
+          }
+
+          .ads-edit-save {
+            display: flex;
+            vertical-align: middle;
+          }
+
+          .ads-edit-cancel {
+            display: flex;
+            vertical-align: middle;
+          }
+
+          label {
+            text-indent: 10px;
+            font-weight: bold;
+            font-family: $header-font;
+            color: $white;
+          }
+
+          .cell {
+            padding: 0 10px;
+          }
+        }
+
+        .ads-edit-body {
+          padding: 20px;
+
+          .cell {
+            padding: 0 10px;
+          }
+
+          label {
+            text-indent: 10px;
+            font-weight: bold;
+            font-family: $header-font;
+            color: $dark-gray;
+          }
+
+          textarea {
+            resize: none;
+          }
+
+          button {
+            i {
+              padding-right: 10px;
+            }
+          }
+        }
+
+        .ads-edit-footer {
+          position: absolute;
+          border-top: 1px solid #ddd;
+          padding: 20px 10px 0 10px;
+          width: 100%;
+          bottom: 0;
+
+          .cell {
+            padding: 0 10px;
+          }
+
+          button {
+            i {
+              padding-right: 10px;
+            }
+          }
+        }
+      }
 
       .display-ads-ad-overlay {
         position: absolute;
@@ -224,6 +325,7 @@ $delete-red-hover: #e57373;
       .display-ads-ad-body {
         margin: 20px;
         padding: 20px;
+        height: 320px;
         border: 1px solid #ddd;
 
         .display-ads-ad-description {

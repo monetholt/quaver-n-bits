@@ -1,5 +1,22 @@
 {{>nav}}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
 <script src="/js/dashboard.js"></script>
+<style>
+    .delete-selection {
+        cursor: pointer;
+        float: right;
+        color: red;
+        font-weight: bold;
+    }
+
+    .instrument-selection-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: lightyellow;
+    }
+</style>
 <main>
     <div class="main-container main-current-ads">
         <div class="grid-x">
@@ -22,8 +39,10 @@
             <div id="no-current-ads" class="no-current-ads" hidden>
                 <div class="current-ads-text">
                     <h2>You don't have any ads! <i class="far fa-sad-cry"></i></h2>
-                    <p>Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
-                        can grow your network.</p>
+                    <p>
+                        Ads are the only way to connect with other musicians! Make sure you place an ad as soon as possible so you
+                        can grow your network.
+                    </p>
                 </div>
                 <div class="current-ads-cta">
                     <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-bullhorn"></i>Create An Ad!</button>
@@ -56,13 +75,20 @@
         </div>
     </div>
 </main>
+<div id="error-modal" class="reveal" data-reveal>
+    <h2 id="modalTitle">Error</h2>
+    <p id="error-msg" class="lead"></p>
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 <div class="reveal" id="modal-create-ad" data-reveal data-close-on-click="false" data-animation-in="fade-in" data-animation-out="fade-out">
     <h3>Let's Place An Ad!</h3>
     <p class="lead">Fill out the following info and we'll get your ad placed for you.</p>
     <button class="close-button" data-close aria-label="Close reveal" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
-    <form>
+    <form id="addAd" action="/dashboard/ads/create" method="post">
         <table>
             <tr>
                 <td>
@@ -71,7 +97,17 @@
             </tr>
             <tr>
                 <td>
-                    <input type="text" id="ad-title" />
+                    <input type="text" id="ad-title" name="ad-title" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="ad-radius">How far of a location radius would you like your ad to reach (in miles, maximum is 625 miles)? </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="number" name="ad-radius" min="0" max="625" />
                 </td>
             </tr>
             <tr>
@@ -86,25 +122,37 @@
             </tr>
             <tr>
                 <td>
-                    <label for="instruments">What you're looking for:</label>
+                    <label for="instrument-list">What you're looking for:</label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">
-                    <datalist id="instrument-list">
+                    <select id="instrument-list" style="width: 100%">
+                        <option></option>
                         {{#each instruments}}
-                        <option data-value="{{InstrumentKey}}" value="{{Instrument}}">
+                        <option value="{{this.InstrumentKey}}">{{this.Instrument}}</option>
                         {{/each}}
-                    </datalist>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <td>
                     <div id="instrument-selection">
-
+                        <select id="level-list-main" class="selection-level" style="display: none">
+                            {{#each levels}}
+                            <option value="{{this.LevelKey}}">{{this.Level}}</option>
+                            {{/each}}
+                        </select>
                     </div>
                 </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="error-msg-ad" style="color: red;"></div>
+                </td>
+            </tr>
+            <tr>
+                <div id="instrument-selections" style="display:none"></div>
             </tr>
             <tr>
                 <td>

@@ -187,13 +187,11 @@ function getAds(req, res, context, complete) {
                } else if(rows.length > 0) {
                     for(let ad of ads){
                         ad['instruments'] = rows.filter(row => row.AdId == ad['AdKey']);
-                        console.log(ad);
                     }
                     context['current_ads'] = ads.filter(ad => ad.IsActive === 1);
                     context['has_current_ads'] = (context['current_ads'].length > 0);
                     context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
                     context['has_prev_ads'] = (context['prev_ads'].length > 0);
-                    console.log(context);
                     complete();
                } else {
                    complete();
@@ -285,9 +283,10 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
 // saves the info that is located in the Profiles header and returns true if update was successful
 app.put('/profile/header', checkAuthenticated,(req, res, next) => {
     try {
+        console.log("private? " + (req.body.privacySwitch.checked ? 1 : 0));
         mysql.pool.query(
-            'UPDATE Profiles SET ZipCode = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
-            [req.body.zipCode, req.body.artistName, req.user.UserKey],
+            'UPDATE Profiles SET ZipCode = ?, ArtistName = ?, LastUpdated = NOW(), LookingForWork = ? WHERE UserID = ?',
+            [req.body.zipCode, req.body.artistName, (req.body.privacySwitch.checked ? 1 : 0), req.user.UserKey],
             function(err, result) {
                 if(err) {
                     throw(err);

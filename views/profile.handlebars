@@ -30,6 +30,14 @@
                         <label for="edit-title-loc-input">Zip Code:</label>
                         <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
                     </div>
+                    <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>
+                    <div id="edit-title-privacy-switch" class="switch" hidden>
+                        <span>Are you currently looking for a spot in a band?</span><br>
+                        <input class="switch-input" id="privacySwitch" type="checkbox" name="privacySwitch" {{#if profile.LookingForWork}}checked{{/if}}>
+                        <label class="switch-paddle" for="privacySwitch">
+                            <span class="show-for-sr">Are you currently looking for a spot in a band?</span>
+                        </label>
+                    </div>
                     <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
                 </div>
             </div>

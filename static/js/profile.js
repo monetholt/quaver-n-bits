@@ -9,11 +9,13 @@ function bindButtons() {
             endpoint: 'header',
             req: {
                 zipCode: "",
-                artistName: ""
+                artistName: "",
+                privacySwitch: "",
             },
             items: [
                 ['profile-header-title-text', 'edit-title-text', 'artistName'],
-                ['profile-header-title-loc', 'edit-title-loc', 'zipCode']
+                ['profile-header-title-loc', 'edit-title-loc', 'zipCode'],
+                ['profile-head-title-privacy', 'edit-title-privacy-switch', 'privacySwitch']
             ]
         },
         about: {

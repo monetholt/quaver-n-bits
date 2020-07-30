@@ -95,58 +95,109 @@ function createAd(thisAd, levels) {
     return currentAd;
 }
 
-function checkSelected() {
-    let val = document.getElementById("instruments").value;
-    let opts = document.getElementById('instrument-list').childNodes;
-    for (let i = 0; i < opts.length; i++) {
-        if (opts[i].value === val) {
-            addSelection(val);
-            break;
+
+//when passed an instrument id + name, will add a new section under the instrument select so the user can select level or delete.
+//will show user an error if they try to add the same instrument twice
+function addSelection(id, inst) {
+    var selectionDiv = $("#instrument-selection"); //grab section below instrument select 
+
+    var thisId = id + "-" + Date.now();
+
+    selectionDiv.append("<div class='instrument-selection-item' id='" + thisId +"'></div>"); //add a new 'box' for this selected instrument
+
+    var thisSelection = selectionDiv.find("#" + thisId);
+
+    thisSelection.append("<div class='delete-selection'>X</div>"); //add the icon to delete this section
+    var levelSelect = $("#level-list-main").clone(); //copy the existing level selector so this instrument can have its own
+    levelSelect.attr("id", "#level-" + thisId); //set the id for the level select + unhide it
+    levelSelect.css("display", "block");
+
+    thisSelection.append("<div class='instrument-selection-text'>" + inst + "</div>");
+    thisSelection.append(levelSelect);
+    thisSelection.append("<input placeholder='Quantity' type='number' class='selection-quantity'  id='quantity-" + thisId+"' min='1' max='99' />");
+
+}
+
+$(document).ready(function () {
+
+    //set up the instrument to use select2 for easy searching+selecting. This seemed closest to the datalist we were using
+    $('#instrument-list').select2({
+        placeholder: "Select an instrument"
+    }).on('select2:select', function (e) {
+        //whenever we select a new instrument, add it to the section below to select level
+        var selectedOption = $("#instrument-list").select2('data')[0];
+        addSelection(selectedOption.id, (selectedOption.text));
+    });
+
+    //click event to remove selected instruments.
+    $("body").on("click", ".delete-selection", function () {
+        $(this).parent().remove();
+    });
+
+    $("#addAd").submit(function (e) {
+        e.preventDefault();
+        $("#error-msg-ad").html("");
+
+        var form = this;
+
+        //get all selected instruments
+        var selectedInstruments = $(".instrument-selection-item");
+
+        //make sure the user chose at least one
+        if (selectedInstruments.length < 1) {
+            $("#error-msg-ad").html("Please select at least one instrument");
         }
-    }
-}
+        else {
 
-function addSelection(inst) {
-    let selection = document.getElementById("instrument-selection");
-    let item = document.createElement('div');
-    item.className = 'instrument-selection-item';
-    item.id = inst;
-    item.innerHTML = `
-            <div class="instrument-selection-text">${inst}</div>
-            <div class="grid-x">
-                <div class="cell medium-7">
-                    <select class="selection-level" name="selection-level" id="selection-level-${inst.toLowerCase()}">
-                        <option disabled selected value> -- Skill Level -- </option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                        <option value="Expert">Expert</option>
-                        <option value="Master">Master</option>
-                    </select>
-                </div>
-                <div class="cell medium-1"></div>
-                <div class="cell medium-4">
+            //gather IDs + make sure levels are all selected
+            var errorMsg = ""; //this will be non-blank if we find an error
+            var selected = [];
+            var idlevelcombos = []; //
 
-                    <input placeholder="Quantity" type="number" class="instrument-selection-quantity" name="instrument-selection-quantity" id="instrument-selection-quantity-${inst}" min="1" max="99" />
-
-                </div>
-            </div>
-            <div class="delete-selection" onclick="remove(this)">X</div>
-        `;
-
-    selection.appendChild(item);
-}
-
-function remove(item) {
-    item.parentNode.remove();
-}
-
-var instCount = 0;
+            selectedInstruments.each(function () {
+                var instID = $(this).attr("id").split("-")[0]; //get the instrument ID
+                var levelID = $(this).find("select.selection-level").val(); //get the levelID
+                var quantity = $(this).find("input.selection-quantity").val(); //get the quantity
 
 
-function addInstrument(inst) {
-    var element = document.getElementById('instrument-list' + instCount);
-    var cloned = element.cloneNode(true);
-    cloned.id = 'instrument-list' + ++instCount;
-    document.getElementById("instrument-selection-quantity-${inst}").appendChild(cloned);
-}
+                if (levelID < 1) { //this instrument doesnt have a level selected
+                    errorMsg = "Please select an experience level for each instrument";
+                    return false;
+                }
+                else if (quantity == "" || quantity < 1) {
+                    errorMsg = "Please select a quantity for each instrument";
+                    return false;
+                }
+                else if ($.inArray(instID + "-" + levelID, idlevelcombos) !== -1)
+                {
+                    errorMsg = "Hey, if you select more than one of the same instrument you need to select different levels for each";
+                    return false;
+                }
+                else
+                {
+                    selected.push([instID, levelID, quantity]); //add the ids to our data array
+                    idlevelcombos.push(instID+"-"+levelID); //add the ids combo to our lookup
+
+                }
+            });
+
+            if (errorMsg != "") { //if we found an error, show it
+
+                $("#error-msg-ad").html(errorMsg);
+            }
+            else {
+                //transfer over selected ids to hidden inputs in create form
+                $("#instrument-selections").html("");
+                $.each(selected, function (i, vals) {
+                    $("#instrument-selections").append("<input type='text' name='InstrumentID-" + i + "' value='" + vals[0] + "'>");
+                    $("#instrument-selections").append("<input type='text' name='LevelID-" + i + "' value='" + vals[1] + "'>");
+                    $("#instrument-selections").append("<input type='text' name='Quantity-" + i + "' value='" + vals[2] + "'>");
+
+                });
+
+                form.submit(); // submit the form if everything is good!
+            }
+        }
+    });
+
+});

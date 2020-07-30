@@ -117,9 +117,12 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
             }
             else if (results[0].ArtistName === null) {
                 req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
+                req.session.Profile = results[0]; //put profile in the session
                 res.redirect('/create-profile');
             } else {
                 req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
+                req.session.Profile = results[0]; //put profile in the session
+
                 context['profile'] = results;
                 getInstrumentsAndLevels(req, res, context, complete);
                 getAds(req, res, context, complete);
@@ -535,17 +538,59 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
 
 //for storing data from ad creation, use req.body[] because otherwise it is read in as a subtraction
 //added form action and method, also changed from datalist to regular select.
- app.post('/dashboard/ads/update', checkAuthenticated, (req, res, next) => {
-   var inserts = [req.user.UserKey, req.body["ad-title"], req.body["ad-text"], req.body["instrument-list"], req.body["selection-level"], req.body["instrument-selection-quantity"], req.user.UserKey, req.body["ad-radius"]];
-   var sql = `INSERT INTO Ads (UserID, Title, Description, Instrument, LevelID, Quantity, ZipCode, LocationRadius, DatePosted, Deleted, DateCreated, LastUpdated, IsActive) VALUES (?, ?, ?, ?, (SELECT LevelKey FROM LevelLookup WHERE Level = ?), ?, (SELECT ZipCode FROM Profiles WHERE UserID = ?), ?, NOW(), '0', NOW(), NOW(), '1')`;
-   sql = mysql.pool.query(sql, inserts, function(error, results, fields){
-            if(error){
-                res.write(JSON.stringify(error));
-                res.end();
-            }else{
-                res.redirect('/dashboard/ads'); // successfully posted data to the database, redirecting to dashboard
-            }
-   });
+ app.post('/dashboard/ads/create', checkAuthenticated, (req, res, next) => {
+     try {
+         mysql.pool.getConnection(function (err, conn) {
+             if (err) throw (err);
+
+             //create the ad
+             conn.query(
+                 'INSERT INTO Ads SET UserID = ?, Title = ?, Description = ?,  ZipCode = ?, LocationRadius = ?, DatePosted = NOW(), Deleted = ?, IsActive = ?, DateCreated = NOW(), LastUpdated = NOW() ',
+                 [req.user.UserKey, req.body["ad-title"], req.body["ad-text"], req.session.Profile.ZipCode, req.body["ad-radius"], '0', '1'],
+                 function (err, rows) {
+                     if (err) {
+                         conn.release();
+                         res.write(JSON.stringify(err));
+                         res.end();
+                     }
+                     else if (rows.insertId > 0) //now that ad is created, add instruments
+                     {
+                         var adKey = rows.insertId;
+
+                         //first format instrument/levelIDs sent in with form
+                         var instruments = [];
+
+                         var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
+                         for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+
+                             if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
+                                 instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], req.body["Quantity-" + i], adKey, timestamp, timestamp]);
+                             }
+                             else break;
+                         }
+
+                         //add the instruments
+                         conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
+                             function (err, rows) {
+                                 conn.release();
+
+                                 if (err) {
+                                     res.write(JSON.stringify(err));
+                                     res.end();
+                                 } else res.redirect('/dashboard'); // successfully posted data to the database, redirecting to dashboard
+
+                             });
+
+                     }
+                     else {
+                         conn.release();
+                         throw (new ReferenceError("No Ad created"));
+                     }
+                 });
+         });
+     } catch (err) {
+         res.redirect(utils.profileUpdateErrorRedirect());
+     }
 });
     
 

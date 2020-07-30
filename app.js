@@ -145,7 +145,6 @@ app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
     function complete() {
         callbackCount++;
         if (callbackCount >= 3) {
-            console.log("context from /dashboard/ads: ", context);
             res.send(context);
         }
     }
@@ -183,13 +182,11 @@ function getAds(req, res, context, complete) {
                } else if(rows.length > 0) {
                     for(let ad of ads){
                         ad['instruments'] = rows.filter(row => row.AdId == ad['AdKey']);
-                        console.log(ad);
                     }
                     context['current_ads'] = ads.filter(ad => ad.IsActive === 1);
                     context['has_current_ads'] = (context['current_ads'].length > 0);
                     context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
                     context['has_prev_ads'] = (context['prev_ads'].length > 0);
-                    console.log(context);
                     complete();
                } else {
                    complete();

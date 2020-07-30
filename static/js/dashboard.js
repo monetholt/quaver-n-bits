@@ -59,8 +59,9 @@ function createAd(thisAd) {
     let currentAd = document.createElement('div');
     currentAd.id = 'display-ads-ad-' + thisAd.AdKey;
     currentAd.className = 'display-ads-ad';
+    console.log("The time coming in for this ad: ", thisAd.DatePosted);
     currentAd.innerHTML = `
-        <div class="display-ads-edit-overlay" hidden>
+        <div id="display-ads-edit-overlay-${thisAd.AdKey}" class="display-ads-edit-overlay" hidden>
             <div class="grid-x ads-edit-header">
                 <div class="cell medium-12 ads-edit-editing">
                     <div class="ads-edit-editing-text">
@@ -94,22 +95,24 @@ function createAd(thisAd) {
                 </div>
                 <div class="cell medium-4 ads-edit-instruments">
                     <label for="ads-edit-instruments-${thisAd.AdKey}">Instruments:</label>
-                    <input type="text" name="ads-edit-instruments-${thisAd.AdKey}" id="ads-edit-instruments-${thisAd.AdKey}" value="${thisAd.Instrument}">
+                    <ul>
+                        ${ createInstrumentList(thisAd.instruments) }
+                    </ul>
                 </div>
             </div>
             <div class="grid-x ads-edit-footer">
-                <div class="cell medium-6 ads-edit-save">
-                    <button class="button primary large expanded"><i class="fas fa-share"></i>Save Ad</button>
+                <div class="cell medium-3 ads-edit-cancel">
+                    <button class="button alert large expanded" onclick="toggleEditAdView(${thisAd.AdKey})"><i class="far fa-window-close"></i>Cancel</button>
                 </div>
-                <div class="cell medium-6 ads-edit-cancel">
-                    <button class="button alert large expanded"><i class="far fa-window-close"></i>Cancel</button>
+                <div class="cell medium-9 ads-edit-save">
+                    <button class="button primary large expanded"><i class="fas fa-share"></i>Save Ad</button>
                 </div>
             </div>
         </div>
         <div class="display-ads-ad-overlay">
             ${thisAd.IsActive === 1 ? 
                 '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' +
-                '<button class="button secondary large"><i class="far fa-edit"></i>Edit Ad</button>' +
+                '<button class="button secondary large" onclick="toggleEditAdView(' + thisAd.AdKey + ')"><i class="far fa-edit"></i>Edit Ad</button>' +
                 '<button class="button warning large"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>':
                 '<button class="button secondary large"><i class="fas fa-sync"></i>Enable Ad</button>'
             }
@@ -117,11 +120,11 @@ function createAd(thisAd) {
         <div class="grid-x display-ads-ad-header">
             <div class="cell medium-6 display-ads-ad-title">
                 <h2>${thisAd.Title}</h2>
-                <h5>${thisAd.DatePosted === thisAd.LastUpdated ? "Posted" : "Updated"} ${moment(thisAd.DatePosted).fromNow()}</h5>
+                <h5>${thisAd.DatePosted === thisAd.LastUpdated ? "Posted" : "Updated"} ${moment(thisAd.DatePosted).subtract(7, 'hours').add(5, 'minutes').fromNow()}</h5>
             </div>
             <div class="cell medium-6 display-ads-ad-loc">
                 <div class="display-ads-ad-loc-display">
-                    ${thisAd.IsActive === 1 ? '<i class="fas fa-broadcast-tower"></i> Within <strong>' + thisAd.LocationRadius + '</strong> miles of <strong>' + thisAd.ZipCode + '</strong>' : '<i class="fas fa-microphone-alt-slash"></i>This ad is currently <strong>inactive</strong>.'}                            
+                    ${thisAd.IsActive === 1 ? '<i class="fas fa-broadcast-tower"></i> Within <strong>' + (thisAd.LocationRadius === 0 ? 'Any' : thisAd.LocationRadius) + '</strong> miles of <strong>' + thisAd.ZipCode + '</strong>' : '<i class="fas fa-microphone-alt-slash"></i>This ad is currently <strong>inactive</strong>.'}                            
                 </div>
             </div>
         </div>
@@ -139,6 +142,11 @@ function createAd(thisAd) {
         </div>
         `;
     return currentAd;
+}
+
+function toggleEditAdView(id){
+    let thisView = document.getElementById(`display-ads-edit-overlay-${id}`);
+    thisView.hidden = !thisView.hidden;
 }
 
 function createInstrumentList(instruments) {

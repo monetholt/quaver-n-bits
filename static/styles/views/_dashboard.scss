@@ -9,6 +9,16 @@
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
 @keyframes zoomInAndOut {
   0% {
     transform: scale(1);
@@ -63,7 +73,7 @@
     opacity: 0.4;
   }
   50% {
-    opacity: 0.8;
+    opacity: 1;
   }
   100% {
     opacity: 0.4;
@@ -123,32 +133,38 @@ $delete-red-hover: #e57373;
       background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
       animation: 1s ease-out 0s 1 slideInFromLeft;
 
+      @include breakpoint(small only) {
+        min-height: 1000px;
+      }
+
+      .beacon-border {
+        animation: 2s ease-out 0s infinite beacon;
+      }
       .display-ads-edit-overlay {
         position: absolute;
         align-items: center;
         justify-content: center;
         z-index: 2;
         background: $white;
-        border-radius: 20px;
         height: 100%;
         width: 100%;
-        transform: scale(1.01); // Fix a little visual bug
+        animation: 0.5s ease-out 0s 1 fadeIn;
 
         .ads-edit-header {
           padding: 20px;
           color: white !important;
-          background: #2196F3;
+          background: #4a4a4a;
 
           .ads-edit-editing {
-            display: flex;
-            justify-content: flex-end;
-            color: #6bffd6;
+            text-align: center;
+            color: #ffeb3b;
             margin-bottom: 10px;
 
             .ads-edit-editing-text {
               padding: 10px 20px;
               border-radius: 50px;
-              border: 1px solid #66ffd8;
+              border: 1px solid #ffeb3b;
+              background: #ffeb3b21;
               animation: 2s ease-out 0s infinite beacon;
 
               i {

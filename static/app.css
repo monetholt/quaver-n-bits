@@ -5313,13 +5313,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #26d97d, #26cdd9);
+    background-image: -webkit-linear-gradient(to bottom right, #26d980, #26d94a);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #26d97d, #26cdd9);
+    background-image: -moz-linear-gradient(to bottom right, #26d980, #26d94a);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #26d97d, #26cdd9);
+    background-image: -o-linear-gradient(to bottom right, #26d980, #26d94a);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #26d97d, #26cdd9);
+    background-image: linear-gradient(to bottom right, #26d980, #26d94a);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5466,6 +5466,12 @@ main {
     opacity: 1;
     transform: translateX(0); } }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
 @keyframes zoomInAndOut {
   0% {
     transform: scale(1); }
@@ -5498,7 +5504,7 @@ main {
   0% {
     opacity: 0.4; }
   50% {
-    opacity: 0.8; }
+    opacity: 1; }
   100% {
     opacity: 0.4; } }
 
@@ -5540,29 +5546,33 @@ main {
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
     background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
     animation: 1s ease-out 0s 1 slideInFromLeft; }
+    @media print, screen and (max-width: 39.99875em) {
+      .main-current-ads .current-ads-container .display-ads-ad {
+        min-height: 1000px; } }
+    .main-current-ads .current-ads-container .display-ads-ad .beacon-border {
+      animation: 2s ease-out 0s infinite beacon; }
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay {
       position: absolute;
       align-items: center;
       justify-content: center;
       z-index: 2;
       background: #fefefe;
-      border-radius: 20px;
       height: 100%;
       width: 100%;
-      transform: scale(1.01); }
+      animation: 0.5s ease-out 0s 1 fadeIn; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header {
         padding: 20px;
         color: white !important;
-        background: #2196F3; }
+        background: #4a4a4a; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing {
-          display: flex;
-          justify-content: flex-end;
-          color: #6bffd6;
+          text-align: center;
+          color: #ffeb3b;
           margin-bottom: 10px; }
           .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing .ads-edit-editing-text {
             padding: 10px 20px;
             border-radius: 50px;
-            border: 1px solid #66ffd8;
+            border: 1px solid #ffeb3b;
+            background: #ffeb3b21;
             animation: 2s ease-out 0s infinite beacon; }
             .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing .ads-edit-editing-text i {
               padding-right: 10px; }

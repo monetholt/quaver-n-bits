@@ -103,7 +103,6 @@ app.get('/create-profile',checkAuthenticated,(req,res) => {
 
 //any page requiring authentication needs to run checkAuthenticated first
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
-    var callbackCount = 0;
     var context = {
         user: req.user
     };
@@ -126,10 +125,7 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
                 context['profile'] = results;
                 getInstrumentsAndLevels(req, res, context, complete);
                 function complete() {
-                    callbackCount++;
-                    if (callbackCount >= 2) {
-                        res.render('dashboard', context);
-                    }
+                    res.render('dashboard', context);
                 }
             }
         } catch(err) {

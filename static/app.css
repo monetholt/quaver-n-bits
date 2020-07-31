@@ -5331,13 +5331,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d926c1, #6526d9);
+    background-image: -webkit-linear-gradient(to bottom right, #d926af, #d92647);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d926c1, #6526d9);
+    background-image: -moz-linear-gradient(to bottom right, #d926af, #d92647);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d926c1, #6526d9);
+    background-image: -o-linear-gradient(to bottom right, #d926af, #d92647);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d926c1, #6526d9);
+    background-image: linear-gradient(to bottom right, #d926af, #d92647);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5476,13 +5476,6 @@ main {
     animation: 0.5s ease 0s 1 changeToEdit;
     content: "\f058"; }
 
-.switch, .switch.primary {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding-right: 10px;
-  padding-bottom: 60px; }
-  
 @keyframes slideInFromLeft {
   0% {
     opacity: 0;

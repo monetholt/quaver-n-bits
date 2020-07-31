@@ -23,6 +23,10 @@
 
 <script type="text/javascript">
 
+    // Global states for the converted SoundCloud link.
+    let soundCloudLinkWasConverted = false;
+    let convertedSoundCloudLink = '';
+
     //copped this from our friend stack overflow:https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
     //when passed a url will return true if valid youtube link:
     function validateYouTubeUrl(url) {
@@ -40,14 +44,61 @@
         } else return false;
     }
 
+
     //followed the youtube fn, but this time for soundcloud. Copped regex from here:https://stackoverflow.com/questions/61486337/regex-for-soundcloud-url
     function validateSoundCloudUrl(url) {
-        if (url != undefined || url != '') {
+
+        // If we already validated & converted this URL and it didn't change, we're good.
+        if (soundCloudLinkWasConverted && convertedSoundCloudLink === url) {
+            return true;
+        }
+
+        // Otherwise, if there's something there and it wasn't previously converted, check if it's a SoundCloud link.
+        if (url != undefined || url != '' || !soundCloudLinkWasConverted) {
             var regExp = /^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/.*$/;
             var match = url.match(regExp);
             if (match) {
-                // Do anything for being valid
-                return true;
+                // If this a valid SoundCloud track link, then show user we're converting the link.
+                document.getElementById('worksample-soundcloud-converting').hidden = false;
+                document.getElementById('worksample-soundcloud-converted').hidden = true;
+                document.getElementById('worksample-soundcloud-invalid').hidden = true;
+
+                // Since it's from SoundCloud, grab the track ID and format it for embedding.
+                // Use our super secret CORS escape hatch to make the request since we're 1337 h4x0R2.
+                let req = new XMLHttpRequest();
+                req.open('GET', `https://cors-anywhere.herokuapp.com/${url}`, true);
+                req.addEventListener('load', () => {
+                    let res = req.responseText;
+                    if (req.status < 400) {
+
+                        // If we got something back, look for the track ID and construct an embedded link from it.
+                        let number = res.match(/soundcloud:\/\/sounds:(\d{9})/);
+
+                        // Hide the loading check.
+                        document.getElementById('worksample-soundcloud-converting').hidden = true;
+
+                        // If a valid ID was found, let the user know and convert the URL for display.
+                        if (number && 1 in number) {
+                            let iframe = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${number[1]}`;
+
+                            // Show the user we've finished our conversion and insert it into the worksample input.
+                            document.getElementById('worksample-soundcloud-converted').hidden = false;
+                            document.getElementById('worksample-entered').value = iframe;
+
+                            // Flag that this URL's value and that it was converted.
+                            soundCloudLinkWasConverted = true;
+                            convertedSoundCloudLink = iframe;
+                            return true;
+                        }
+
+                        document.getElementById('worksample-soundcloud-invalid').hidden = false;
+                        return false;
+
+                    } else {
+                        return false;
+                    }
+                });
+                req.send(null);
             }
             else return false;
 
@@ -168,7 +219,7 @@
             if (url != "") //blank is ok!
             {
                 if (!validateSoundCloudUrl(url) && !validateYouTubeUrl(url)) {
-                    $("#error-msg").html("Please enter a valid soundcloud or YouTube url.");
+                    $("#error-msg").html("Please enter a valid SoundCloud or YouTube URL.");
                     $('#error-modal').foundation('open');
                 }
                 else {
@@ -258,9 +309,10 @@
 
                     <p>Enter a Soundcloud or Youtube URL to show off your talent. You can update your profile to add more samples later.</p>
 
-                    <input id="worksample-entered" type="text" value="" placeholder="Soundcloud or Youtube url"/>
-
-                
+                    <input id="worksample-entered" type="text" value="" placeholder="Soundcloud or Youtube url" onchange="validateSoundCloudUrl(this.value)" />
+                    <div id="worksample-soundcloud-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting SoundCloud link for embedding.</div>
+                    <div id="worksample-soundcloud-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to display!</div>
+                    <div id="worksample-soundcloud-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid SoundCloud track. Make sure the URL leads to a track.</div>
                     <div class="toolbar toolbar-bottom" role="toolbar" style="text-align: right;">
                         <button class="button success" type="button" id="step-2-finish">Next</button>
                     </div>

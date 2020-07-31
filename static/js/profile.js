@@ -9,11 +9,13 @@ function bindButtons() {
             endpoint: 'header',
             req: {
                 zipCode: "",
-                artistName: ""
+                artistName: "",
+                privacySwitch: ""
             },
             items: [
-                ['profile-header-title-text', 'edit-title-text', 'artistName'],
-                ['profile-header-title-loc', 'edit-title-loc', 'zipCode']
+                ['profile-header-title-text', 'edit-title-text', 'artistName', false],
+                ['profile-header-title-loc', 'edit-title-loc', 'zipCode', false],
+                ['profile-head-title-privacy', 'edit-title-privacy-switch', 'privacySwitch', (obj => obj.childNodes[4].checked ? 1 : 0), 'profile-head-title-privacy-value', ['You are currently looking for a spot in a band.', 'You are not currently looking for a spot in a band.']]
             ]
         },
         about: {
@@ -24,7 +26,7 @@ function bindButtons() {
                 bio: ""
             },
             items: [
-                ['profile-about-text', 'edit-about-text', 'bio']
+                ['profile-about-text', 'edit-about-text', 'bio', false]
             ]
         },
         social: {
@@ -62,21 +64,26 @@ function bindButtons() {
 
             for (let j=0; j < key.items.length; j++) {
                 displayText = document.getElementById(key.items[j][0]);
-                editText = document.getElementById(key.items[j][1]);
+                editObj = document.getElementById(key.items[j][1]);
                 displayText.hidden = !displayText.hidden;
-                editText.hidden = !editText.hidden;
+                editObj.hidden = !editObj.hidden;
+                editObjValue = key.items[j][3] === false ? editObj.lastElementChild.value : key.items[j][3](editObj);
+                compareTo = key.items[j].length >= 5 ? document.getElementById(key.items[j][4]).value : displayText.textContent;
 
                 if(!key.isEditing) {
                     button.classList.add('edit-button-animate-in');
-                    editText.classList.add('edit-text-anim');
+                    editObj.classList.add('edit-text-anim');
                 } else {
-                    key.req[key.items[j][2]] = editText.lastElementChild.value;
-                    if (displayText.textContent !== editText.lastElementChild.value) {
+                    key.req[key.items[j][2]] = editObjValue;
+                    if (compareTo !== editObjValue) {
                         valuesChanged = true;
-                        displayText.textContent = editText.lastElementChild.value;
+                        compareTo = editObjValue;
+                        if(key.items[j].length >= 6) {
+                            displayText.textContent = editObjValue === 1 ? key.items[j][5][0] : key.items[j][5][1];
+                        }
                     }
                     button.classList.remove('edit-button-animate-in');
-                    editText.classList.remove('edit-text-anim');
+                    editObj.classList.remove('edit-text-anim');
                 }
 
                 button.blur();

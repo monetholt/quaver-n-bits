@@ -103,7 +103,6 @@ app.get('/create-profile',checkAuthenticated,(req,res) => {
 
 //any page requiring authentication needs to run checkAuthenticated first
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
-    var callbackCount = 0;
     var context = {
         user: req.user
     };
@@ -117,17 +116,16 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
             }
             else if (results[0].ArtistName === null) {
                 req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
+                req.session.Profile = results[0]; //put profile in the session
                 res.redirect('/create-profile');
             } else {
                 req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
+                req.session.Profile = results[0]; //put profile in the session
+
                 context['profile'] = results;
                 getInstrumentsAndLevels(req, res, context, complete);
-                getAds(req, res, context, complete);
                 function complete() {
-                    callbackCount++;
-                    if (callbackCount >= 3) {
-                        res.render('dashboard', context);
-                    }
+                    res.render('dashboard', context);
                 }
             }
         } catch(err) {
@@ -138,21 +136,46 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
 });
 
 app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
-   mysql.pool.query("SELECT * FROM Ads WHERE userID = ?;", [req.user.UserKey], (error, resultsAds) => {
-       if (error) {
-           res.write(JSON.stringify(error));
-           res.end();
-       }
-       mysql.pool.query("SELECT LevelKey, Level FROM LevelLookup;", (error, resultsLevels) => {
-           if (error) {
-               res.write(JSON.stringify(error));
-               res.end();
-           }
+    let callbackCount = 0;
+    let context = {
+        user: req.user
+    };
+    getInstrumentsAndLevels(req, res, context, complete);
+    getAds(req, res, context, complete);
+    function complete() {
+        callbackCount++;
+        if (callbackCount >= 3) {
+            res.send(context);
+        }
+    }
+});
 
-           res.send({ads: resultsAds, levels: resultsLevels});
-       });
+app.put('/dashboard/ads/enable', checkAuthenticated, function (req, res, next) {
+    mysql.pool.query("UPDATE Ads SET IsActive = ? WHERE AdKey = ?;", [req.body.IsActive, req.body.AdKey], (error, results) => {
+        if(error) {
+            res.write(JSON.stringify(error));
+            res.end();
+        } else {
+            res.send({ message: 'Successfully enabled ad.' });
+        }
+    });
+});
 
-   });
+app.delete('/dashboard/ads/delete', checkAuthenticated,(req, res, next) => {
+    mysql.pool.query("DELETE Ads, AdInstruments FROM Ads LEFT JOIN AdInstruments ON Ads.AdKey = AdInstruments.AdID WHERE Ads.AdKey = ?;",
+        [req.body.AdKey], (error, results) => {
+        if(error){
+            res.write(JSON.stringify(error));
+            res.end();
+        } else {
+            res.send({ message: 'Successfully deleted ad.' });
+        }
+    });
+});
+
+// Delete an ad and its respective adsInstruments columns from the db.
+app.delete('/dashboard/ads', checkAuthenticated, function (req, res, next) {
+
 });
 
 function getInstrumentsAndLevels(req, res, context, complete) {
@@ -205,6 +228,7 @@ function getAds(req, res, context, complete) {
         }
     });
 }
+
 
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
 //landing page does not need authentication, in fact we do not allow logged in users to access
@@ -449,23 +473,38 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
 });
 
 // inserts an instrument and associated level and returns true if the insert was successful
-app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
+app.post('/profile/instrument/add', checkAuthenticated, (req, res, next) => {
     try {
         mysql.pool.query(
             'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
             [req.body.ProfileKey, req.body.instrumentId, req.body.levelId],
-                function(err, result) {
-                if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+            function (err, result) {
+                if (err) {
+                    throw (err);
+                } else if (result.changedRows === 1) {
                     res.send(true);
                 } else {
-                    throw(new ReferenceError("Must save profile before adding instruments."));
+                    throw (new ReferenceError("Must save profile before adding instruments."));
                 }
-        });
-    } catch(err) {
+            });
+    } catch (err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
+});
+
+//TODO: it will submit, but there's nothing stopping the user from trying to click the button before Level has been selected, and currently no success message either.
+app.post('/create-profile',checkAuthenticated,(req, res, next) => {
+    var sql = `INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, LastUpdated, CreateDate) VALUES (?, (SELECT InstrumentKey FROM InstrumentLookup WHERE Instrument = ?), (SELECT LevelKey FROM LevelLookup WHERE Level = ?), NOW(), NOW())`;
+    var inserts = [req.user.UserKey, req.body["instrument-list"], req.body["selection-level"]];
+    sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }else{
+                res.redirect('/create-profile');
+            }
+    });
+
 });
 
 app.get('/profile/worksamples', checkAuthenticated, (req, res, next) => {
@@ -514,6 +553,65 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
+
+//for storing data from ad creation, use req.body[] because otherwise it is read in as a subtraction
+//added form action and method, also changed from datalist to regular select.
+ app.post('/dashboard/ads/create', checkAuthenticated, (req, res, next) => {
+     try {
+         mysql.pool.getConnection(function (err, conn) {
+             if (err) throw (err);
+
+             //create the ad
+             conn.query(
+                 'INSERT INTO Ads SET UserID = ?, Title = ?, Description = ?,  ZipCode = ?, LocationRadius = ?, DatePosted = NOW(), Deleted = ?, IsActive = ?, DateCreated = NOW(), LastUpdated = NOW() ',
+                 [req.user.UserKey, req.body["ad-title"], req.body["ad-text"], req.session.Profile.ZipCode, req.body["ad-radius"], '0', '1'],
+                 function (err, rows) {
+                     if (err) {
+                         conn.release();
+                         res.write(JSON.stringify(err));
+                         res.end();
+                     }
+                     else if (rows.insertId > 0) //now that ad is created, add instruments
+                     {
+                         var adKey = rows.insertId;
+
+                         //first format instrument/levelIDs sent in with form
+                         var instruments = [];
+
+                         var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
+                         for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+
+                             if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
+                                 instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], req.body["Quantity-" + i], adKey, timestamp, timestamp]);
+                             }
+                             else break;
+                         }
+
+                         //add the instruments
+                         conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
+                             function (err, rows) {
+                                 conn.release();
+
+                                 if (err) {
+                                     res.write(JSON.stringify(err));
+                                     res.end();
+                                 } else res.redirect('/dashboard'); // successfully posted data to the database, redirecting to dashboard
+
+                             });
+
+                     }
+                     else {
+                         conn.release();
+                         throw (new ReferenceError("No Ad created"));
+                     }
+                 });
+         });
+     } catch (err) {
+         res.redirect(utils.profileUpdateErrorRedirect());
+     }
+});
+
+
 
 //for pages accessible by authenticated users only
 function checkAuthenticated(req, res, next) {

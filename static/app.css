@@ -5313,13 +5313,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #2c26d9, #26d96b);
+    background-image: -webkit-linear-gradient(to bottom right, #d926c1, #6526d9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #2c26d9, #26d96b);
+    background-image: -moz-linear-gradient(to bottom right, #d926c1, #6526d9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #2c26d9, #26d96b);
+    background-image: -o-linear-gradient(to bottom right, #d926c1, #6526d9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #2c26d9, #26d96b);
+    background-image: linear-gradient(to bottom right, #d926c1, #6526d9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5466,6 +5466,20 @@ main {
     opacity: 1;
     transform: translateX(0); } }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@keyframes zoomInAndOut {
+  0% {
+    transform: scale(1); }
+  50% {
+    transform: scale(1.2); }
+  100% {
+    transform: scale(1); } }
+
 @keyframes rockBackAndForth {
   0% {
     transform: rotateZ(0); }
@@ -5488,11 +5502,28 @@ main {
 
 @keyframes beacon {
   0% {
-    opacity: 0.4; }
+    opacity: 1; }
   50% {
-    opacity: 0.8; }
+    opacity: 0.4; }
   100% {
-    opacity: 0.4; } }
+    opacity: 1; } }
+
+@keyframes burningDumpster {
+  0% {
+    color: #fefefe; }
+  10% {
+    transform: scale(1.1); }
+  25% {
+    color: #faff00; }
+  50% {
+    color: #ff9a00; }
+  75% {
+    color: #faff00;
+    transform: scale(1.1); }
+  90% {
+    transform: scale(1); }
+  100% {
+    color: #fefefe; } }
 
 .main-current-ads .current-ads-label {
   font-family: "Maven Pro", sans-serif;
@@ -5528,9 +5559,76 @@ main {
     border: 1px solid #eee;
     border-radius: 20px;
     overflow: hidden;
+    min-height: 500px;
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
     background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
     animation: 1s ease-out 0s 1 slideInFromLeft; }
+    @media print, screen and (max-width: 39.99875em) {
+      .main-current-ads .current-ads-container .display-ads-ad {
+        min-height: 1000px; } }
+    .main-current-ads .current-ads-container .display-ads-ad .beacon-border {
+      animation: 2s ease-out 0s infinite beacon; }
+    .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay {
+      position: absolute;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      background: #fefefe;
+      height: 100%;
+      width: 100%;
+      animation: 0.5s ease-out 0s 1 fadeIn; }
+      .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header {
+        padding: 20px;
+        color: white !important;
+        background: #4a4a4a; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing {
+          text-align: center;
+          color: #ffeb3b;
+          margin-bottom: 10px; }
+          .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing .ads-edit-editing-text {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid #ffeb3b;
+            background: #ffeb3b21;
+            animation: 2s ease-out 0s infinite beacon; }
+            .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-editing .ads-edit-editing-text i {
+              padding-right: 10px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-save {
+          display: flex;
+          vertical-align: middle; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .ads-edit-cancel {
+          display: flex;
+          vertical-align: middle; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header label {
+          text-indent: 10px;
+          font-weight: bold;
+          font-family: "Maven Pro", sans-serif;
+          color: #fefefe; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .cell {
+          padding: 0 10px; }
+      .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body {
+        padding: 20px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .cell {
+          padding: 0 10px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body label {
+          text-indent: 10px;
+          font-weight: bold;
+          font-family: "Maven Pro", sans-serif;
+          color: #212121; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body textarea {
+          resize: none; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body button i {
+          padding-right: 10px; }
+      .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-footer {
+        position: absolute;
+        border-top: 1px solid #ddd;
+        padding: 20px 10px 0 10px;
+        width: 100%;
+        bottom: 0; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-footer .cell {
+          padding: 0 10px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-footer button i {
+          padding-right: 10px; }
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay {
       position: absolute;
       display: flex;
@@ -5548,6 +5646,7 @@ main {
       transition: 0.3s ease-out; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button {
         opacity: 0;
+        margin: 0 10px;
         -webkit-transform: translateY(-50%);
         -moz-transform: translateY(-50%);
         -ms-transform: translateY(-50%);
@@ -5559,8 +5658,14 @@ main {
         transition: 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button i {
           padding-right: 10px; }
-        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover i {
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-search {
           animation: 0.3s ease-out 0s 1 rockBackAndForth; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-edit {
+          animation: 0.5s ease-out 0s 1 zoomInAndOut; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-microphone-alt-slash {
+          animation: 1s ease-out 0s 1 beacon; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-dumpster-fire {
+          animation: 1s ease-out 0s 1 burningDumpster; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay:hover {
         background: rgba(0, 0, 0, 0.5); }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay:hover .button {
@@ -5569,6 +5674,11 @@ main {
           -ms-transform: translateY(0);
           transform: translateY(0);
           opacity: 1; }
+      @media print, screen and (max-width: 39.99875em) {
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay {
+          flex-direction: column; }
+          .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button {
+            margin: 10px 0; } }
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-header {
       background: #4a4a4a;
       padding: 20px; }
@@ -5602,7 +5712,10 @@ main {
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body {
       margin: 20px;
       padding: 20px;
+      height: 320px;
       border: 1px solid #ddd; }
+      .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-description {
+        padding-right: 20px; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-instruments {
         padding: 0 20px;
         border-left: 1px solid #ddd; }
@@ -5679,6 +5792,7 @@ main {
       transition: 0.3s ease-out; }
       .main-previous-ads .previous-ads-container .display-ads-ad .display-ads-ad-overlay .button {
         opacity: 0;
+        margin: 0 10px;
         -webkit-transform: translateY(-50%);
         -moz-transform: translateY(-50%);
         -ms-transform: translateY(-50%);
@@ -5733,6 +5847,8 @@ main {
       margin: 20px;
       padding: 20px;
       border: 1px solid #666; }
+      .main-previous-ads .previous-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-description {
+        padding-right: 20px; }
       .main-previous-ads .previous-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-instruments {
         padding: 0 20px;
         border-left: 1px solid #666; }
@@ -5925,3 +6041,47 @@ nav {
     top: 0;
     right: 20px;
     padding-top: 10px; }
+
+@keyframes inAndOut {
+  0% {
+    transform: translateY(0%); }
+  10% {
+    transform: translateY(-100%); }
+  90% {
+    transform: translateY(-100%); }
+  100% {
+    transform: translateY(0%); } }
+
+#alert-popout {
+  position: fixed;
+  display: flex;
+  bottom: -50px;
+  left: 0;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  z-index: 999;
+  background: #212121;
+  color: #fefefe;
+  font-size: 16px;
+  animation: 2.5s ease-out 0.1s 1 inAndOut; }
+  #alert-popout i {
+    padding-right: 10px; }
+  #alert-popout span {
+    font-weight: bold;
+    text-decoration: underline;
+    padding: 0 4px; }
+  #alert-popout.hidden {
+    display: none; }
+  #alert-popout.success {
+    background: #85de27;
+    color: #4e6933; }
+  #alert-popout.caution {
+    background: yellow;
+    color: #2a2a2a; }
+  #alert-popout.warning {
+    background: orange;
+    color: #fefefe; }
+  #alert-popout.alert {
+    background: #f44336; }

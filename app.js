@@ -102,29 +102,30 @@ app.get('/create-profile',checkAuthenticated,(req,res) => {
 });
 
 //any page requiring authentication needs to run checkAuthenticated first
-//PLACEHOLDER for landing page.
-app.get('/index', checkAuthenticated, function (req, res, next) {
-    res.render('index', { user: req.user });
-});
-
 app.get('/dashboard', checkAuthenticated, function (req, res, next) {
-    var callbackCount = 0;
     var context = {
         user: req.user
     };
     mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
         try {
-            if (results.length == 0 || results[0].ArtistName === null) {
+            if (results.length == 0)
+            {
+                //for now you are SOL
+                res.write("No profile created for this user");
+                res.end();
+            }
+            else if (results[0].ArtistName === null) {
+                req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
+                req.session.Profile = results[0]; //put profile in the session
                 res.redirect('/create-profile');
             } else {
+                req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
+                req.session.Profile = results[0]; //put profile in the session
+
                 context['profile'] = results;
                 getInstrumentsAndLevels(req, res, context, complete);
-                getAds(req, res, context, complete);
                 function complete() {
-                    callbackCount++;
-                    if (callbackCount >= 3) {
-                        res.render('dashboard', context);
-                    }
+                    res.render('dashboard', context);
                 }
             }
         } catch(err) {
@@ -132,6 +133,49 @@ app.get('/dashboard', checkAuthenticated, function (req, res, next) {
             res.end();
         }
     });
+});
+
+app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
+    let callbackCount = 0;
+    let context = {
+        user: req.user
+    };
+    getInstrumentsAndLevels(req, res, context, complete);
+    getAds(req, res, context, complete);
+    function complete() {
+        callbackCount++;
+        if (callbackCount >= 3) {
+            res.send(context);
+        }
+    }
+});
+
+app.put('/dashboard/ads/enable', checkAuthenticated, function (req, res, next) {
+    mysql.pool.query("UPDATE Ads SET IsActive = ? WHERE AdKey = ?;", [req.body.IsActive, req.body.AdKey], (error, results) => {
+        if(error) {
+            res.write(JSON.stringify(error));
+            res.end();
+        } else {
+            res.send({ message: 'Successfully enabled ad.' });
+        }
+    });
+});
+
+app.delete('/dashboard/ads/delete', checkAuthenticated,(req, res, next) => {
+    mysql.pool.query("DELETE Ads, AdInstruments FROM Ads LEFT JOIN AdInstruments ON Ads.AdKey = AdInstruments.AdID WHERE Ads.AdKey = ?;",
+        [req.body.AdKey], (error, results) => {
+        if(error){
+            res.write(JSON.stringify(error));
+            res.end();
+        } else {
+            res.send({ message: 'Successfully deleted ad.' });
+        }
+    });
+});
+
+// Delete an ad and its respective adsInstruments columns from the db.
+app.delete('/dashboard/ads', checkAuthenticated, function (req, res, next) {
+
 });
 
 function getInstrumentsAndLevels(req, res, context, complete) {
@@ -145,6 +189,7 @@ function getInstrumentsAndLevels(req, res, context, complete) {
     });
 }
 
+// TODO (Nate): Rework this function to replace what's in '/dashboard/ads' for async request.
 function getAds(req, res, context, complete) {
     let sql = "SELECT `Value` FROM UserSettings WHERE UserID = ? AND SettingID = (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder');"
     mysql.pool.query(sql, [context.user.UserKey], (error, rows) => {
@@ -187,6 +232,7 @@ function getAds(req, res, context, complete) {
                 });
             } else {
                 complete();
+                complete(); //need to add another call to callback so we can render dashboard
                 context['has_current_ads'] = false;
                 context['has_prev_ads'] = false;
             }
@@ -206,6 +252,7 @@ app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
             }
         });
 });
+
 
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
 //landing page does not need authentication, in fact we do not allow logged in users to access
@@ -281,6 +328,46 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
     }
 });
 
+// saves the info that is located in the Profiles header and returns true if update was successful
+app.put('/profile/header', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET ZipCode = ?, ArtistName = ?, LastUpdated = NOW(), LookingForWork = ? WHERE UserID = ?',
+            [req.body.zipCode, req.body.artistName, (req.body.privacySwitch), req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+// saves the info that is located in the Profiles about/bio and returns true if update was successful
+app.put('/profile/about', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET Bio = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.bio, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
 // saves the info that is located in the Profiles table and returns true if the update was successful
 app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
     try {
@@ -303,18 +390,69 @@ app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
 
 app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
     try {
-        mysql.pool.query(
-            'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
-            [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
-            function(err, result) {
-                if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
-                    res.redirect('/dashboard');
-                } else {
-                    throw(new ReferenceError("No profile found"))
-                }
-            });
+        mysql.pool.getConnection(function (err, conn) {
+            if (err) throw (err);
+
+            var worksampleurl = req.body.WorkSample;
+
+            //create the profile
+            conn.query(
+                'UPDATE Profiles SET ZipCode = ?, Phone = ?, Website = ?, LookingForWork = ?, ArtistName = ?, Bio = ?, LastUpdated = NOW() WHERE UserID = ?',
+                [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.body.Bio, req.user.UserKey],
+                function (err, rows) {
+                    if (err) {
+                        conn.release();
+                        throw (err);
+                    }
+                    else if (rows.changedRows === 1) //now that profile is created, add instruments
+                    {
+                        var profileKey = req.session.ProfileID
+                        //first format instrument/levelIDs sent in with form
+                        var instruments = [];
+
+                        var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
+                        for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+
+                            if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
+                                instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], profileKey, timestamp, timestamp]);
+                            }
+                            else break;
+                        }
+
+                        //add the instruments
+                        conn.query(`INSERT INTO ProfileInstruments (InstrumentID, LevelID, ProfileID, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
+                            function (err, rows) {
+
+                                if (err) {
+                                    conn.release();
+                                    throw (err);
+                                }
+                                else
+                                {
+                                    if (worksampleurl && worksampleurl != "") //if user added a work sample, go add it
+                                    {
+                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?', [profileKey, worksampleurl],
+                                            function (err, rows) {
+                                                conn.release();
+
+                                                if (err) throw (err);
+                                                else res.redirect('/dashboard'); //otherwise send em to the dashboard
+                                            });
+                                    }
+                                    else {
+                                        conn.release();
+                                        res.redirect('/dashboard'); //otherwise send em to the dashboard
+                                    }
+                                }
+                            });
+
+                    }
+                    else {
+                        conn.release();
+                        throw (new ReferenceError("No profile created"));
+                    }
+                });
+        });
     } catch (err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
@@ -358,26 +496,69 @@ app.get('/profile/levels',checkAuthenticated,(req, res, next) => {
     }
 });
 
-//TODO: potentially accept an array of instruments?
-app.post('/profile/instrument/add',checkAuthenticated,(req, res, next) => {
+// inserts an instrument and associated level and returns true if the insert was successful
+app.post('/profile/instrument/add', checkAuthenticated, (req, res, next) => {
     try {
         mysql.pool.query(
             'INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, CreateDate) VALUES (?, ?, ?, NOW())',
             [req.body.ProfileKey, req.body.instrumentId, req.body.levelId],
-                function(err, result) {
+            function (err, result) {
+                if (err) {
+                    throw (err);
+                } else if (result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw (new ReferenceError("Must save profile before adding instruments."));
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+//TODO: it will submit, but there's nothing stopping the user from trying to click the button before Level has been selected, and currently no success message either.
+app.post('/create-profile',checkAuthenticated,(req, res, next) => {
+    var sql = `INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, LastUpdated, CreateDate) VALUES (?, (SELECT InstrumentKey FROM InstrumentLookup WHERE Instrument = ?), (SELECT LevelKey FROM LevelLookup WHERE Level = ?), NOW(), NOW())`;
+    var inserts = [req.user.UserKey, req.body["instrument-list"], req.body["selection-level"]];
+    sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }else{
+                res.redirect('/create-profile');
+            }
+    });
+
+});
+
+app.get('/profile/worksamples', checkAuthenticated, (req, res, next) => {
+    try {
+        mysql.pool.query(
+            'SELECT ProfileKey FROM Profiles WHERE UserID = ?',
+            [req.user.UserKey],
+            function(err, rows) {
                 if(err) {
                     throw(err);
-                } else if(result.changedRows === 1) {
-
                 } else {
-
+                    let profileKey = rows[0]['ProfileKey'];
+                    mysql.pool.query(
+                    'SELECT SampleKey, SampleLocation FROM WorkSamples WHERE ProfileID = ?',
+                    [profileKey],
+                    function(err, rows) {
+                        if (err) {
+                            throw(err);
+                        } else {
+                            res.send(rows);
+                        }
+                    });
                 }
-        });
+            });
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
 
+// updates an instrument and associated level and returns true if the update was successful
 app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
@@ -387,15 +568,74 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
                 if(err) {
                     throw(err);
                 } else if(result.changedRows === 1) {
-
+                    res.send(true);
                 } else {
-
+                    throw(new ReferenceError("No such instrument for this user"));
                 }
         });
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
+
+//for storing data from ad creation, use req.body[] because otherwise it is read in as a subtraction
+//added form action and method, also changed from datalist to regular select.
+ app.post('/dashboard/ads/create', checkAuthenticated, (req, res, next) => {
+     try {
+         mysql.pool.getConnection(function (err, conn) {
+             if (err) throw (err);
+
+             //create the ad
+             conn.query(
+                 'INSERT INTO Ads SET UserID = ?, Title = ?, Description = ?,  ZipCode = ?, LocationRadius = ?, DatePosted = NOW(), Deleted = ?, IsActive = ?, DateCreated = NOW(), LastUpdated = NOW() ',
+                 [req.user.UserKey, req.body["ad-title"], req.body["ad-text"], req.session.Profile.ZipCode, req.body["ad-radius"], '0', '1'],
+                 function (err, rows) {
+                     if (err) {
+                         conn.release();
+                         res.write(JSON.stringify(err));
+                         res.end();
+                     }
+                     else if (rows.insertId > 0) //now that ad is created, add instruments
+                     {
+                         var adKey = rows.insertId;
+
+                         //first format instrument/levelIDs sent in with form
+                         var instruments = [];
+
+                         var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
+                         for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+
+                             if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
+                                 instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], req.body["Quantity-" + i], adKey, timestamp, timestamp]);
+                             }
+                             else break;
+                         }
+
+                         //add the instruments
+                         conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
+                             function (err, rows) {
+                                 conn.release();
+
+                                 if (err) {
+                                     res.write(JSON.stringify(err));
+                                     res.end();
+                                 } else res.redirect('/dashboard'); // successfully posted data to the database, redirecting to dashboard
+
+                             });
+
+                     }
+                     else {
+                         conn.release();
+                         throw (new ReferenceError("No Ad created"));
+                     }
+                 });
+         });
+     } catch (err) {
+         res.redirect(utils.profileUpdateErrorRedirect());
+     }
+});
+
+
 
 //for pages accessible by authenticated users only
 function checkAuthenticated(req, res, next) {
@@ -410,7 +650,7 @@ function checkAuthenticated(req, res, next) {
 //for pages accessible by non-authenticated users only
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-        return res.redirect('/index'); //if authenticated, bump to dashboard page
+        return res.redirect('/dashboard'); //if authenticated, bump to dashboard page
     }
     next();
 }

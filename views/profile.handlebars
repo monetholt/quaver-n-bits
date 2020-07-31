@@ -1,3 +1,4 @@
+<script src="/js/profile.js"></script>
 {{>nav}}
 <main>
     <div class="main-container main-profile">
@@ -6,56 +7,94 @@
         <p>{{message}}</p>
     {{/if}}
 
-    <div class="profile-header">
-        <div class="profile-header-intro">
-            <img class="profile-header-image" src="/img/profile-img.jpg" />
-            <div class="profile-header-title">
-                {{#if profile.ArtistName}}
-                    <h1>{{profile.ArtistName}}</h1>
-                {{else}}
-                    <h1>{{user.FirstName}} {{user.LastName}}</h1>
-                {{/if}}
-                <h6>Joined {{user.CreateDate}}</h6>
+        <div class="profile-header">
+            <div class="profile-edit-button"><button id="edit-header" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+            <div class="profile-header-intro">
+                <img class="profile-header-image" src="/img/profile-img.jpg" />
+                <div class="profile-header-title">
+                    {{#if profile.ArtistName}}
+                        <h1 id="profile-header-title-text">{{profile.ArtistName}}</h1>
+                        <div id="edit-title-text" hidden>
+                            <label for="edit-title-text-input">Display Name:</label>
+                            <input type="text" id="edit-title-text-input" value="{{profile.ArtistName}}">
+                        </div>
+                    {{else}}
+                        <h1 id="profile-header-title-text">{{user.FirstName}} {{user.LastName}}</h1>
+                        <div id="edit-title-text" hidden>
+                            <label for="edit-title-text-input">Display Name:</label>
+                            <input type="text" id="edit-title-text-input" value="{{user.FirstName}} {{user.LastName}}">
+                        </div>
+                    {{/if}}
+                    <h6 id="profile-header-title-loc">{{profile.ZipCode}}</h6>
+                    <div id="edit-title-loc" hidden>
+                        <label for="edit-title-loc-input">Zip Code:</label>
+                        <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
+                    </div>
+                    <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>
+                    <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}"/>
+                    <div id="edit-title-privacy-switch" class="switch" hidden>
+                        <span>Are you currently looking for a spot in a band?</span><br>
+                        <input class="switch-input" id="privacySwitch" type="checkbox" name="privacySwitch" {{#if profile.LookingForWork}}checked{{/if}}>
+                        <label class="switch-paddle" for="privacySwitch">
+                            <span class="show-for-sr">Are you currently looking for a spot in a band?</span>
+                        </label>
+                    </div>
+                    <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="profile-about grid-x">
-        <div class="cell medium-8">
-            <h2>About Me:</h2>
-            <p>Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition. Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.</p>
-            <p>Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.</p>
-            <p>Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.</p>
+        <div class="profile-info grid-x">
+            <div class="cell medium-8 profile-about">
+                <div class="profile-edit-button"><button id="edit-about" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                <h2>About Me:</h2>
+                <div id="profile-about-text">{{profile.Bio}}</div>
+                <div id="edit-about-text" hidden>
+                    <textarea id="edit-about-text-input" cols="80" rows="10">{{profile.Bio}}</textarea>
+                </div>
+            </div>
+            <div class="cell medium-4 profile-meta">
+                <div class="profile-instruments">
+                    <div class="profile-edit-button"><button id="edit-instruments" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                    <h2>What I Play:</h2>
+                    <ul>
+                        {{#each instruments}}
+                            <li>{{Instrument}} ({{Level}})</li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="profile-social">
+                    <div class="profile-edit-button"><button id="edit-social" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                    <h2>Social:</h2>
+                    {{#if profile.Website}}
+                        <a id="profile-social-website" href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>Website</a>
+                        <label for="edit-website-text">Website: </label>
+                        <input type="text" id="edit-website-text" value="{{profile.Website}}" />
+                    {{/if}}
+                </div>
+            </div>
         </div>
-        <div class="cell medium-4">
-            <div class="profile-instruments">
-                <h2>What I Play:</h2>
-                <ul>
-                    {{#each instruments}}
-                        <li>{{Instrument}} ({{Level}})</li>
+        <div class="profile-media grid-x">
+            <div class="cell medium-6">
+                <div class="profile-edit-button"><button id="edit-video" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                <h2>Videos:</h2>
+                    [Coming Soon - Profile Videos!]
+            </div>
+            <div class="cell medium-6">
+                <div class="profile-edit-button"><button id="edit-music" class="button"><i class="fas fa-pencil-alt"></i></button></div>
+                <h2>Music:</h2>
+                {{#if workSamples}}
+                    {{#each workSamples}}
+                        <iframe id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/milklab" title="milklab" target="_blank" style="color: #cccccc; text-decoration: none;">milklab</a> · <a href="https://soundcloud.com/milklab/nate-kimball-orchestra-namaste" title="Nate Kimball Orchestra - Namaste" target="_blank" style="color: #cccccc; text-decoration: none;">Nate Kimball Orchestra - Namaste</a></div>
                     {{/each}}
-                </ul>
-            </div>
-            <div class="profile-social">
-                <h2>Social:</h2>
-                {{#if profile.Website}}
-                    <a href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>Website</a>
+                {{else}}
+                    [Coming Soon - Profile Music!]
                 {{/if}}
             </div>
-        </div>
-    </div>
-    <div class="profile-media grid-x">
-        <div class="cell medium-6">
-            <h2>Videos:</h2>
-                [Coming Soon - Profile Videos!]
-        </div>
-        <div class="cell medium-6">
-            <h2>Music:</h2>
-                [Coming Soon - Profile Music!]
         </div>
     </div>
 </main>
 
-<!--        -->
+
 <!--<table>-->
 <!--    <tr>-->
 <!--        <th>Name</th>-->

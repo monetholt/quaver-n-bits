@@ -93,12 +93,11 @@ function createAd(thisAd) {
                 </div>
                 <div class="cell medium-6 ads-edit-title">
                     <label for="ads-edit-title-${thisAd.AdKey}">Title:</label>
-                    <input type="text" name="ads-edit-title-${thisAd.AdKey}" id="ads-edit-title-${thisAd.AdKey}" value="${thisAd.Title}">
+                    <input type="text" name="ads-edit-title" id="ads-edit-title-${thisAd.AdKey}" value="${thisAd.Title}">
                 </div>
                 <div class="cell medium-3 ads-edit-radius">
                     <label for="ads-edit-radius-${thisAd.AdKey}">Search Radius:</label>
-                    <select name="ads-edit-radius-${thisAd.AdKey}" id="ads-edit-radius-${thisAd.AdKey}">
-                        <option value="Any" selected>Any</option>
+                    <select name="ads-edit-radius" id="ads-edit-radius-${thisAd.AdKey}">
                         <option value="5">5 Miles</option>
                         <option value="10">10 Miles</option>
                         <option value="25">25 Miles</option>
@@ -108,13 +107,13 @@ function createAd(thisAd) {
                 </div>
                 <div class="cell medium-3 ads-edit-loc">
                     <label for="ads-edit-loc-${thisAd.AdKey}">Zip Code:</label>
-                    <input type="text" name="ads-edit-loc-${thisAd.AdKey}" id="ads-edit-loc-${thisAd.AdKey}" value="${thisAd.ZipCode}">
+                    <input type="text" name="ads-edit-loc" id="ads-edit-loc-${thisAd.AdKey}" value="${thisAd.ZipCode}">
                 </div>
             </div>
             <div class="grid-x ads-edit-body">
                 <div class="cell medium-8 ads-edit-description">
                     <label for="ads-edit-description-${thisAd.AdKey}">Description:</label>
-                    <textarea id="ads-edit-description-${thisAd.AdKey}" rows="5">${thisAd.Description}</textarea>
+                    <textarea name="ads-edit-description" id="ads-edit-description-${thisAd.AdKey}" rows="5">${thisAd.Description}</textarea>
                 </div>
                 <div class="cell medium-4 ads-edit-instruments">
                     <label for="ads-edit-instruments-${thisAd.AdKey}">Instruments:</label>
@@ -128,7 +127,7 @@ function createAd(thisAd) {
                     <button class="button alert large expanded" onclick="toggleEditAdView(${thisAd.AdKey})"><i class="far fa-window-close"></i>Cancel</button>
                 </div>
                 <div class="cell medium-9 ads-edit-save">
-                    <button class="button primary large expanded"><i class="fas fa-share"></i>Save Ad</button>
+                    <button data-ad-id="${thisAd.AdKey}" class="ads-edit-save-btn button primary large expanded"><i class="fas fa-share"></i>Save Ad</button>
                 </div>
             </div>
         </div>
@@ -345,6 +344,67 @@ $(document).ready(function () {
 
                 form.submit(); // submit the form if everything is good!
             }
+        }
+    });
+
+
+    //on update ad save btn click
+    $("body").on("click", ".ads-edit-save-btn", function (e) {
+        var adID = $(this).attr("data-ad-id"); //get the id of the ad we are trying to update
+        var editForm = $("#display-ads-edit-overlay-"+adID); //grab the form so we can get the values.
+
+        var newTitle = editForm.find("[name='ads-edit-title']").val() == undefined ? "": editForm.find("[name='ads-edit-title']").val().trim(); //get those values
+        var radius = editForm.find("[name='ads-edit-radius']").val();
+        var zipcode = editForm.find("[name='ads-edit-loc']").val() == undefined ? "" : editForm.find("[name='ads-edit-loc']").val().trim();
+        var description = editForm.find("[name='ads-edit-description']").val() == undefined  ? "" : editForm.find("[name='ads-edit-description']").val().trim();
+
+        //do some validation
+        if (newTitle == "") {
+            showAlert("warning", "fa fa-exclamation-triangle", "Please enter a title before saving your ad.");
+        }
+        else if (radius < 1) {
+            showAlert("warning", "fa fa-exclamation-triangle", "Please select a radius before saving your ad.");
+        }
+        else if (zipcode == "") {
+            showAlert("warning", "fa fa-exclamation-triangle", "Please enter a zipcode.");
+        }
+        else {
+            //if no errors, go ahead and send to server to save.
+            $.ajax({
+                type: "POST",
+                url: "/dashboard/ads/edit",
+                data: {
+                    "ad-id": adID,
+                    "ad-title": newTitle,
+                    "ad-radius": radius,
+                    "ad-zip": zipcode,
+                    "ad-text": description,
+                },
+                success: function (data, textStatus, jqXHR) {
+                    //data - response from server
+                    if (data.success == 1) {
+                        showAlert("successs", "far fa-check-circle", "Ad saved!");
+
+                        //update data for this ad:
+                        allAds[adID]['Title'] = newTitle;
+                        allAds[adID]['Radius'] = radius;
+                        allAds[adID]['ZipCode'] = zipcode;
+                        allAds[adID]['Description'] = description;
+
+                        $("#display-ads-ad-" + adID).remove(); //delete the current ad from the list
+
+                        $("#current-ads").prepend(createAd(allAds[adID])); //create a new version and at it at the top
+
+                    }
+                    else {
+                        showAlert("warning", "fa fa-exclamation-triangle", "Error saving ad.");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    showAlert("warning", "fa fa-exclamation-triangle", "Error saving ad.");
+                },
+                dataType: 'json'
+            });
         }
     });
 

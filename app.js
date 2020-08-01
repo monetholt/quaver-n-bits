@@ -150,6 +150,34 @@ app.get('/dashboard/ads', checkAuthenticated, function (req, res, next) {
     }
 });
 
+app.put('/dashboard/ads/enable', checkAuthenticated, function (req, res, next) {
+    mysql.pool.query("UPDATE Ads SET IsActive = ? WHERE AdKey = ?;", [req.body.IsActive, req.body.AdKey], (error, results) => {
+        if(error) {
+            res.write(JSON.stringify(error));
+            res.end();
+        } else {
+            res.send({ message: 'Successfully enabled ad.' });
+        }
+    });
+});
+
+app.delete('/dashboard/ads/delete', checkAuthenticated,(req, res, next) => {
+    mysql.pool.query("DELETE Ads, AdInstruments FROM Ads LEFT JOIN AdInstruments ON Ads.AdKey = AdInstruments.AdID WHERE Ads.AdKey = ?;",
+        [req.body.AdKey], (error, results) => {
+        if(error){
+            res.write(JSON.stringify(error));
+            res.end();
+        } else {
+            res.send({ message: 'Successfully deleted ad.' });
+        }
+    });
+});
+
+// Delete an ad and its respective adsInstruments columns from the db.
+app.delete('/dashboard/ads', checkAuthenticated, function (req, res, next) {
+
+});
+
 function getInstrumentsAndLevels(req, res, context, complete) {
     mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
         if(error) {
@@ -163,43 +191,67 @@ function getInstrumentsAndLevels(req, res, context, complete) {
 
 // TODO (Nate): Rework this function to replace what's in '/dashboard/ads' for async request.
 function getAds(req, res, context, complete) {
-    mysql.pool.query("SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, a.DateCreated, " +
-        "a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC", [context.user.UserKey], (error, rows) => {
-        if(error) {
+    let sql = "SELECT `Value` FROM UserSettings WHERE UserID = ? AND SettingID = (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder');"
+    mysql.pool.query(sql, [context.user.UserKey], (error, rows) => {
+        if (error) {
             throw(error);
-        } else if(rows.length > 0) {
-            var ads = rows;
-            complete();
-            var ad_ids = jp.query(ads, "$..AdKey");
-            mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level\n" +
-                "FROM AdInstruments ai\n" +
-                "LEFT JOIN InstrumentLookup i ON i.InstrumentKey = ai.InstrumentID\n" +
-                "LEFT JOIN LevelLookup l ON l.LevelKey = ai.LevelID\n" +
-                "WHERE ai.AdID IN(?)\n" +
-                "ORDER BY ai.AdID;", [ad_ids], (error, rows) => {
-               if(error) {
-                   throw(error);
-               } else if(rows.length > 0) {
-                    for(let ad of ads){
-                        ad['instruments'] = rows.filter(row => row.AdId == ad['AdKey']);
-                    }
-                    context['current_ads'] = ads.filter(ad => ad.IsActive === 1);
-                    context['has_current_ads'] = (context['current_ads'].length > 0);
-                    context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
-                    context['has_prev_ads'] = (context['prev_ads'].length > 0);
-                    complete();
-               } else {
-                   complete();
-               }
-            });
+        } else if (rows.length > 0) {
+            sql = "SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, " +
+                "a.DateCreated, a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY " + rows[0]['Value'];
         } else {
-            complete();
-            complete(); //need to add another call to callback so we can render dashboard
-            context['has_current_ads'] = false;
-            context['has_prev_ads'] = false;
+            sql = "SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, " +
+                "a.DateCreated, a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC";
         }
+        mysql.pool.query(sql, [context.user.UserKey], (error, rows) => {
+            if (error) {
+                throw(error);
+            } else if (rows.length > 0) {
+                var ads = rows;
+                complete();
+                var ad_ids = jp.query(ads, "$..AdKey");
+                mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level\n" +
+                    "FROM AdInstruments ai\n" +
+                    "LEFT JOIN InstrumentLookup i ON i.InstrumentKey = ai.InstrumentID\n" +
+                    "LEFT JOIN LevelLookup l ON l.LevelKey = ai.LevelID\n" +
+                    "WHERE ai.AdID IN(?)\n" +
+                    "ORDER BY ai.AdID;", [ad_ids], (error, rows) => {
+                    if (error) {
+                        throw(error);
+                    } else if (rows.length > 0) {
+                        for (let ad of ads) {
+                            ad['instruments'] = rows.filter(row => row.AdId == ad['AdKey']);
+                        }
+                        context['current_ads'] = ads.filter(ad => ad.IsActive === 1);
+                        context['has_current_ads'] = (context['current_ads'].length > 0);
+                        context['prev_ads'] = ads.filter(ad => ad.IsActive === 0);
+                        context['has_prev_ads'] = (context['prev_ads'].length > 0);
+                        complete();
+                    } else {
+                        complete();
+                    }
+                });
+            } else {
+                complete();
+                complete(); //need to add another call to callback so we can render dashboard
+                context['has_current_ads'] = false;
+                context['has_prev_ads'] = false;
+            }
+        });
     });
 }
+
+
+app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
+    mysql.pool.query(
+        "INSERT INTO UserSettings (UserID, SettingKey, `Value`) VALUES (?, (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder'), ?)",
+        [req.user.UserKey, req.body.sortOrder], (error, rows) => {
+            if (error) {
+                throw(error);
+            } else if (rows.length > 0) {
+                res.send(true);
+            }
+        });
+});
 
 
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
@@ -280,8 +332,8 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
 app.put('/profile/header', checkAuthenticated,(req, res, next) => {
     try {
         mysql.pool.query(
-            'UPDATE Profiles SET ZipCode = ?, ArtistName = ?, LastUpdated = NOW() WHERE UserID = ?',
-            [req.body.zipCode, req.body.artistName, req.user.UserKey],
+            'UPDATE Profiles SET ZipCode = ?, ArtistName = ?, LastUpdated = NOW(), LookingForWork = ? WHERE UserID = ?',
+            [req.body.zipCode, req.body.artistName, (req.body.privacySwitch), req.user.UserKey],
             function(err, result) {
                 if(err) {
                     throw(err);

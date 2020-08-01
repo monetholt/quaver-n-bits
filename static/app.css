@@ -5277,6 +5277,24 @@ main {
       #profile-form .instrument-selection-item .delete-selection:hover {
         background: #e57373; }
 
+#worksample-soundcloud-converting {
+  color: #03a9f4;
+  animation: 0.5s ease-out 0s 1 slideInFromTop; }
+  #worksample-soundcloud-converting i {
+    margin-right: 10px; }
+
+#worksample-soundcloud-converted {
+  color: #4caf50;
+  animation: 0.5s ease-out 0s 1 slideInFromTop; }
+  #worksample-soundcloud-converted i {
+    margin-right: 10px; }
+
+#worksample-soundcloud-invalid {
+  color: #f44336;
+  animation: 0.5s ease-out 0s 1 slideInFromTop; }
+  #worksample-soundcloud-invalid i {
+    margin-right: 10px; }
+
 @keyframes slideInFromLeft {
   0% {
     opacity: 0;
@@ -5313,13 +5331,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #26d980, #26d94a);
+    background-image: -webkit-linear-gradient(to bottom right, #d926c1, #6526d9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #26d980, #26d94a);
+    background-image: -moz-linear-gradient(to bottom right, #d926c1, #6526d9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #26d980, #26d94a);
+    background-image: -o-linear-gradient(to bottom right, #d926c1, #6526d9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #26d980, #26d94a);
+    background-image: linear-gradient(to bottom right, #d926c1, #6526d9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5502,11 +5520,28 @@ main {
 
 @keyframes beacon {
   0% {
-    opacity: 0.4; }
-  50% {
     opacity: 1; }
+  50% {
+    opacity: 0.4; }
   100% {
-    opacity: 0.4; } }
+    opacity: 1; } }
+
+@keyframes burningDumpster {
+  0% {
+    color: #fefefe; }
+  10% {
+    transform: scale(1.1); }
+  25% {
+    color: #faff00; }
+  50% {
+    color: #ff9a00; }
+  75% {
+    color: #faff00;
+    transform: scale(1.1); }
+  90% {
+    transform: scale(1); }
+  100% {
+    color: #fefefe; } }
 
 .main-current-ads .current-ads-label {
   font-family: "Maven Pro", sans-serif;
@@ -5646,7 +5681,9 @@ main {
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-edit {
           animation: 0.5s ease-out 0s 1 zoomInAndOut; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-microphone-alt-slash {
-          animation: 0.3s ease-out 0s 1 beacon; }
+          animation: 1s ease-out 0s 1 beacon; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay .button:hover .fa-dumpster-fire {
+          animation: 1s ease-out 0s 1 burningDumpster; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay:hover {
         background: rgba(0, 0, 0, 0.5); }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-overlay:hover .button {
@@ -5695,6 +5732,8 @@ main {
       padding: 20px;
       height: 320px;
       border: 1px solid #ddd; }
+      .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-description {
+        padding-right: 20px; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-instruments {
         padding: 0 20px;
         border-left: 1px solid #ddd; }
@@ -5826,6 +5865,8 @@ main {
       margin: 20px;
       padding: 20px;
       border: 1px solid #666; }
+      .main-previous-ads .previous-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-description {
+        padding-right: 20px; }
       .main-previous-ads .previous-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-instruments {
         padding: 0 20px;
         border-left: 1px solid #666; }
@@ -6018,3 +6059,47 @@ nav {
     top: 0;
     right: 20px;
     padding-top: 10px; }
+
+@keyframes inAndOut {
+  0% {
+    transform: translateY(0%); }
+  10% {
+    transform: translateY(-100%); }
+  90% {
+    transform: translateY(-100%); }
+  100% {
+    transform: translateY(0%); } }
+
+#alert-popout {
+  position: fixed;
+  display: flex;
+  bottom: -50px;
+  left: 0;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  z-index: 999;
+  background: #212121;
+  color: #fefefe;
+  font-size: 16px;
+  animation: 2.5s ease-out 0.1s 1 inAndOut; }
+  #alert-popout i {
+    padding-right: 10px; }
+  #alert-popout span {
+    font-weight: bold;
+    text-decoration: underline;
+    padding: 0 4px; }
+  #alert-popout.hidden {
+    display: none; }
+  #alert-popout.success {
+    background: #85de27;
+    color: #4e6933; }
+  #alert-popout.caution {
+    background: yellow;
+    color: #2a2a2a; }
+  #alert-popout.warning {
+    background: orange;
+    color: #fefefe; }
+  #alert-popout.alert {
+    background: #f44336; }

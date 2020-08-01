@@ -30,6 +30,15 @@
                         <label for="edit-title-loc-input">Zip Code:</label>
                         <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
                     </div>
+                    <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>
+                    <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}"/>
+                    <div id="edit-title-privacy-switch" class="switch" hidden>
+                        <span>Are you currently looking for a spot in a band?</span><br>
+                        <input class="switch-input" id="privacySwitch" type="checkbox" name="privacySwitch" {{#if profile.LookingForWork}}checked{{/if}}>
+                        <label class="switch-paddle" for="privacySwitch">
+                            <span class="show-for-sr">Are you currently looking for a spot in a band?</span>
+                        </label>
+                    </div>
                     <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
                 </div>
             </div>
@@ -75,7 +84,7 @@
                 <h2>Music:</h2>
                 {{#if workSamples}}
                     {{#each workSamples}}
-                        <iframe id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/milklab" title="milklab" target="_blank" style="color: #cccccc; text-decoration: none;">milklab</a> · <a href="https://soundcloud.com/milklab/nate-kimball-orchestra-namaste" title="Nate Kimball Orchestra - Namaste" target="_blank" style="color: #cccccc; text-decoration: none;">Nate Kimball Orchestra - Namaste</a></div>
+                        <iframe id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
                     {{/each}}
                 {{else}}
                     [Coming Soon - Profile Music!]

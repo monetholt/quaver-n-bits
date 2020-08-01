@@ -80,3 +80,28 @@ $delete-red-hover: #e57373;
     }
   }
 }
+
+#worksample-soundcloud-converting {
+  color: #03a9f4;
+  animation: 0.5s ease-out 0s 1 slideInFromTop;
+    i {
+      margin-right: 10px;
+    }
+}
+
+#worksample-soundcloud-converted {
+  color: #4caf50;
+  animation: 0.5s ease-out 0s 1 slideInFromTop;
+
+  i {
+    margin-right: 10px;
+  }
+}
+
+#worksample-soundcloud-invalid {
+  color: #f44336;
+  animation: 0.5s ease-out 0s 1 slideInFromTop;
+  i {
+    margin-right: 10px;
+  }
+}

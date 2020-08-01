@@ -16,6 +16,10 @@
 //     req.send(null);
 // });
 
+// Global placeholder for state.
+let allAds = {}
+
+// Initial ad fetch when /dashboard is rendered.
 document.addEventListener('DOMContentLoaded', (event) => {
     let req = new XMLHttpRequest();
     req.open('GET', '/dashboard/ads', true);
@@ -28,6 +32,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let currentAds = document.getElementById('current-ads');
                 for (let ad in res.current_ads) {
                         currentAds.appendChild(createAd(res.current_ads[ad]));
+                        allAds[res.current_ads[ad]['AdKey']] = res.current_ads[ad];
                 }
             } else {
                 document.getElementById('current-ads-loading').hidden = true;
@@ -39,11 +44,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let previousAds = document.getElementById('previous-ads');
                 for (let ad in res.prev_ads) {
                     previousAds.appendChild(createAd(res.prev_ads[ad]));
+                    allAds[res.prev_ads[ad]['AdKey']] = res.prev_ads[ad];
                 }
             } else {
                 document.getElementById('previous-ads-loading').hidden = true;
                 document.getElementById('no-previous-ads').hidden = false;
             }
+
+            console.log(allAds);
         } else {
             console.log("WHOOPS!");
         }
@@ -55,11 +63,26 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.send(null);
 });
 
+// Show an alert with type (either "success" or "warning"). Pass a template string to display that formatted text.
+function showAlert(type, icon, text) {
+    let alert = document.getElementById('alert-popout');
+    alert.innerHTML = `<i class="${icon}"></i>${text}`;
+    alert.hidden = false;
+    alert.classList.add(type);
+    alert.classList.remove('hidden');
+    setTimeout(
+        function() {
+            alert.classList.add('hidden');
+            alert.classList.remove(type);
+        }, 2500);
+}
+
+// The function that creates & assembles the HTML for the div element containing a new ad.
+// Returns a <div> element (ad).
 function createAd(thisAd) {
     let currentAd = document.createElement('div');
     currentAd.id = 'display-ads-ad-' + thisAd.AdKey;
     currentAd.className = 'display-ads-ad';
-    console.log("The time coming in for this ad: ", thisAd.DatePosted);
     currentAd.innerHTML = `
         <div id="display-ads-edit-overlay-${thisAd.AdKey}" class="display-ads-edit-overlay" hidden>
             <div class="grid-x ads-edit-header">
@@ -113,9 +136,10 @@ function createAd(thisAd) {
             ${thisAd.IsActive === 1 ? 
                 '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' +
                 '<button class="button secondary large" onclick="toggleEditAdView(' + thisAd.AdKey + ')"><i class="far fa-edit"></i>Edit Ad</button>' +
-                '<button class="button warning large"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>':
-                '<button class="button secondary large"><i class="fas fa-sync"></i>Enable Ad</button>'
+                '<button class="button warning large" onclick="toggleEnableAd(' + thisAd.AdKey + ')"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>' :
+                '<button class="button secondary large" onclick="toggleEnableAd(' + thisAd.AdKey + ')"><i class="fas fa-sync"></i>Enable Ad</button>'
             }
+            <button class="button alert large" onclick="deleteAd(${thisAd.AdKey})"><i class="fas fa-dumpster-fire"></i>Delete Ad</button>
         </div>
         <div class="grid-x display-ads-ad-header">
             <div class="cell medium-6 display-ads-ad-title">
@@ -144,9 +168,72 @@ function createAd(thisAd) {
     return currentAd;
 }
 
+// Toggles the edit ad view (duh).
 function toggleEditAdView(id){
     let thisView = document.getElementById(`display-ads-edit-overlay-${id}`);
     thisView.hidden = !thisView.hidden;
+}
+
+// Send a request to /dashboard/ads/enable to toggle the state of "IsActive" for this ad.
+// Updates the UI by removing the node from where it was and appending it to where it should be.
+// Alerts the user with a success message after it's done, or error message if something bad happened.
+function toggleEnableAd(id) {
+    let payload = {AdKey: id, IsActive: allAds[id].IsActive === 1 ? 0 : 1 };
+
+    let req = new XMLHttpRequest();
+    req.open('PUT', `/dashboard/ads/enable`, true);
+    req.addEventListener('load', () => {
+        if (req.status < 400) {
+            // Update the state.
+            allAds[id].IsActive = allAds[id].IsActive === 1 ? 0 : 1;
+
+            // Remove the ad from where it was.
+            let oldAd = document.getElementById(`display-ads-ad-${id}`);
+            oldAd.parentNode.removeChild(oldAd);
+
+            // Recreate it and put it where it should be, alerting the user.
+            if (allAds[id].IsActive === 1) {
+                document.getElementById('current-ads').appendChild(createAd(allAds[id]));
+                showAlert("success", "far fa-check-circle", `Your ad <span>${allAds[id]['Title']}</span> is now enabled.`);
+            } else {
+                document.getElementById('previous-ads').appendChild(createAd(allAds[id]));
+                showAlert("caution", "fas fa-microphone-alt-slash", `Your ad <span>${allAds[id]['Title']}</span> is now disabled.`);
+            }
+        } else {
+            // Ohgodnonono.
+            showAlert("alert", "fa-exclamation-triangle", `Something went wrong trying to update <span>${allAds[id]['Title']}</span>. Please try again later.`)
+        }
+    });
+    req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    req.send(JSON.stringify(payload));
+}
+
+function updateAd(id) {
+
+}
+
+// Sends a request to /dashboard/ads/delete to remove this ad and its associated instruments from the user's account.
+// Updates the UI by removing the element from its parent.
+// Shows a success/failure notification to the user.
+function deleteAd(id) {
+    let req = new XMLHttpRequest();
+    req.open('DELETE', `/dashboard/ads/delete`, true);
+    req.addEventListener('load', () => {
+        if (req.status < 400) {
+            // Target deleted ad and remove from view.
+            let oldAd = document.getElementById(`display-ads-ad-${id}`);
+            oldAd.parentNode.removeChild(oldAd);
+
+            // Show alert to user, then update state.
+            showAlert("warning", "fas fa-dumpster-fire", `Your ad <span>${allAds[id]['Title']}</span> has been deleted.`);
+            delete allAds[id];
+        } else {
+            // Whoopsie.
+            showAlert("alert", "fa-exclamation-triangle", `Something went wrong trying to delete <span>${allAds[id]['Title']}</span>. Please try again later.`)
+        }
+    });
+    req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    req.send(JSON.stringify({AdKey: id}));
 }
 
 function createInstrumentList(instruments) {

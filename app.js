@@ -190,35 +190,50 @@ app.post('/dashboard/ads/edit', checkAuthenticated, (req, res, next) => {
                     }
                     else if (rows.changedRows === 1) //now that ad is updated, do any instruments updates
                     {
-                        conn.release();
-                        res.send({ success: 1, message: 'Successfully updated ad.' });
+                        var adKey = req.body["ad-id"];
 
-            //            //var adKey = req.body["ad-id"];
+                        //delete current instruments
+                        conn.query(`DELETE FROM AdInstruments WHERE AdId = ? `, [adKey],
+                            function (err, rows) {
 
-            //            ////first format instrument/levelIDs sent in with form
-            //            //var instruments = [];
+                                if (err) {
+                                    conn.release();
+                                    res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
+                                    res.end();
+                                } else {
 
-            //            //var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
-            //            //for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+                                    //first format instrument/levelIDs sent in with form
+                                    var instruments = [];
 
-            //            //    if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
-            //            //        instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], req.body["Quantity-" + i], adKey, timestamp, timestamp]);
-            //            //    }
-            //            //    else break;
-            //            //}
+                                    var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
+                                    for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
 
-            //            ////add the instruments
-            //            //conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
-            //            //    function (err, rows) {
-            //            //        conn.release();
+                                        if (Object.prototype.hasOwnProperty.call(req.body, "instruments[" + i + "][InstrumentKey]") &&
+                                            req.body["instruments[" + i + "][InstrumentKey]"] > 0) {
 
-            //            //        if (err) {
-            //            //            res.write(JSON.stringify(err));
-            //            //            res.end();
-            //            //        } else res.send({ message: 'Successfully updated ad.' });
+                                            instruments.push([
+                                                req.body["instruments[" + i + "][InstrumentKey]"],
+                                                req.body["instruments[" + i + "][LevelKey]"],
+                                                req.body["instruments[" + i + "][Quantity]"],
+                                                adKey, timestamp, timestamp]);
 
-            //            //    });
+                                        }
+                                        else break;
+                                    }
 
+                                    ////add the instruments
+                                    conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
+                                        function (err, rows) {
+                                            conn.release();
+
+                                            if (err) {
+                                                res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
+                                                res.end();
+                                            } else res.send({ success: 1, message: 'Successfully updated ad.' });
+
+                                        });
+                                }
+                            });
                     }
                     else {
                         conn.release();
@@ -253,7 +268,7 @@ function getAds(req, res, context, complete) {
             var ads = rows;
             complete();
             var ad_ids = jp.query(ads, "$..AdKey");
-            mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level\n" +
+            mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level, ai.Quantity\n" +
                 "FROM AdInstruments ai\n" +
                 "LEFT JOIN InstrumentLookup i ON i.InstrumentKey = ai.InstrumentID\n" +
                 "LEFT JOIN LevelLookup l ON l.LevelKey = ai.LevelID\n" +

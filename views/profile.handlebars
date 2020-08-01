@@ -25,21 +25,22 @@
                             <input type="text" id="edit-title-text-input" value="{{user.FirstName}} {{user.LastName}}">
                         </div>
                     {{/if}}
-                    <h6 id="profile-header-title-loc">{{profile.ZipCode}}</h6>
+                    <h6 id="profile-header-title-loc"><i class="fas fa-map-marker-alt"></i>{{profile.ZipCode}}</h6>
                     <div id="edit-title-loc" hidden>
                         <label for="edit-title-loc-input">Zip Code:</label>
                         <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
                     </div>
+                    <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
                     <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>
-                    <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}"/>
+                    <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}">
                     <div id="edit-title-privacy-switch" class="switch" hidden>
                         <span>Are you currently looking for a spot in a band?</span><br>
                         <input class="switch-input" id="privacySwitch" type="checkbox" name="privacySwitch" {{#if profile.LookingForWork}}checked{{/if}}>
                         <label class="switch-paddle" for="privacySwitch">
-                            <span class="show-for-sr">Are you currently looking for a spot in a band?</span>
+                            <h6 class="show-for-sr">Are you currently looking for a spot in a band?</h6>
                         </label>
                     </div>
-                    <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
+
                 </div>
             </div>
         </div>
@@ -47,10 +48,10 @@
             <div class="cell medium-8 profile-about">
                 <div class="profile-edit-button"><button id="edit-about" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>About Me:</h2>
-                <div id="profile-about-text">{{profile.Bio}}</div>
-                <div id="edit-about-text" hidden>
-                    <textarea id="edit-about-text-input" cols="80" rows="10">{{profile.Bio}}</textarea>
-                </div>
+                    <div id="profile-about-text">{{profile.Bio}}</div>
+                    <div id="edit-about-text" hidden>
+                        <textarea id="edit-about-text-input" cols="80" rows="10">{{profile.Bio}}</textarea>
+                    </div>
             </div>
             <div class="cell medium-4 profile-meta">
                 <div class="profile-instruments">
@@ -77,7 +78,9 @@
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-video" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>Videos:</h2>
-                    [Coming Soon - Profile Videos!]
+                <div class="responsive-embed widescreen">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/lFW8ihz6ELI" frameborder="0" allowfullscreen></iframe>
+                </div>
             </div>
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-music" class="button"><i class="fas fa-pencil-alt"></i></button></div>

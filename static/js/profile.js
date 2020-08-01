@@ -116,6 +116,29 @@ function bindButtons() {
     // document.getElementById('submitForm').addEventListener('click', e => {
 }
 
+
+/*
+This is how we are going to get track ID from Soundcloud URLs for each track -
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    let req = new XMLHttpRequest();
+    let url = 'https://soundcloud.com/milklab/nate-kimball-orchestra-namaste';
+    req.open('GET', `https://cors-anywhere.herokuapp.com/${url}`, true);
+    req.addEventListener('load', () => {
+        let res = req.responseText;
+        if (req.status < 400) {
+            // console.log(res);
+            console.log("YAY!");
+            let number = res.match(/soundcloud:\/\/sounds:(\d{9})/);
+            console.log(number[1]);
+            let iframe = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${number[1]}`;
+            console.log(iframe);
+        }
+    });
+    req.send(null);
+});
+*/
+
 window.addEventListener('DOMContentLoaded', () => {
     let req = new XMLHttpRequest();
     req.open('GET', `/profile/worksamples`, true);
@@ -129,3 +152,4 @@ window.addEventListener('DOMContentLoaded', () => {
     req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
     req.send(null);
 });
+

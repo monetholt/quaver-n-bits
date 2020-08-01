@@ -5277,6 +5277,24 @@ main {
       #profile-form .instrument-selection-item .delete-selection:hover {
         background: #e57373; }
 
+#worksample-soundcloud-converting {
+  color: #03a9f4;
+  animation: 0.5s ease-out 0s 1 slideInFromTop; }
+  #worksample-soundcloud-converting i {
+    margin-right: 10px; }
+
+#worksample-soundcloud-converted {
+  color: #4caf50;
+  animation: 0.5s ease-out 0s 1 slideInFromTop; }
+  #worksample-soundcloud-converted i {
+    margin-right: 10px; }
+
+#worksample-soundcloud-invalid {
+  color: #f44336;
+  animation: 0.5s ease-out 0s 1 slideInFromTop; }
+  #worksample-soundcloud-invalid i {
+    margin-right: 10px; }
+
 @keyframes slideInFromLeft {
   0% {
     opacity: 0;
@@ -5313,13 +5331,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #2647d9, #d92c26);
+    background-image: -webkit-linear-gradient(to bottom right, #d926af, #d92647);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #2647d9, #d92c26);
+    background-image: -moz-linear-gradient(to bottom right, #d926af, #d92647);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #2647d9, #d92c26);
+    background-image: -o-linear-gradient(to bottom right, #d926af, #d92647);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #2647d9, #d92c26);
+    background-image: linear-gradient(to bottom right, #d926af, #d92647);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {

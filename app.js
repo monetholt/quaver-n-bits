@@ -368,6 +368,78 @@ app.put('/profile/about', checkAuthenticated,(req, res, next) => {
     }
 });
 
+app.put('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+   try {
+       mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Music"',
+           [req.body.workSampleTextInput, req.session.ProfileID],
+           function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+       });
+   } catch(err) {
+       res.redirect(utils.profileUpdateErrorRedirect());
+   }
+});
+
+app.post('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('INSERT INTO WorkSamples (ProfileID, SampleLocation, SampleType) VALUES (?, ?, "Music")',
+            [req.session.ProfileID, req.body.workSampleTextInput],
+            function (err, result) {
+               if(err) {
+                   throw(err);
+               } else if(results.affectedRows === 1) {
+                   res.send(true);
+               } else {
+                   throw(new ReferenceError("No profile found"));
+               }
+        });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.put('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Video"',
+            [req.body.workSampleTextInput, req.session.ProfileID],
+            function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.post('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('INSERT INTO WorkSamples (ProfileID, SampleLocation, SampleType) VALUES (?, ?, "Video")',
+            [req.session.ProfileID, req.body.workSampleTextInput],
+            function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(results.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
 // saves the info that is located in the Profiles table and returns true if the update was successful
 app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
     try {

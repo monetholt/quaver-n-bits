@@ -5331,13 +5331,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d926af, #d92647);
+    background-image: -webkit-linear-gradient(to bottom right, #cad926, #2644d9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d926af, #d92647);
+    background-image: -moz-linear-gradient(to bottom right, #cad926, #2644d9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d926af, #d92647);
+    background-image: -o-linear-gradient(to bottom right, #cad926, #2644d9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d926af, #d92647);
+    background-image: linear-gradient(to bottom right, #cad926, #2644d9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5475,6 +5475,9 @@ main {
   .edit-button-animate-in .fas:before {
     animation: 0.5s ease 0s 1 changeToEdit;
     content: "\f058"; }
+
+.has-tip {
+  border-bottom: solid 1px transparent; }
 
 @keyframes slideInFromLeft {
   0% {
@@ -5626,6 +5629,9 @@ main {
           padding: 0 10px; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body {
         padding: 20px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .ads-edit-instruments {
+          max-height: 200px;
+          overflow: scroll; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .cell {
           padding: 0 10px; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body label {

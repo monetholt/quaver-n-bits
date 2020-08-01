@@ -516,21 +516,6 @@ app.post('/profile/instrument/add', checkAuthenticated, (req, res, next) => {
     }
 });
 
-//TODO: it will submit, but there's nothing stopping the user from trying to click the button before Level has been selected, and currently no success message either.
-app.post('/create-profile',checkAuthenticated,(req, res, next) => {
-    var sql = `INSERT INTO ProfileInstruments (ProfileID, InstrumentID, LevelID, LastUpdated, CreateDate) VALUES (?, (SELECT InstrumentKey FROM InstrumentLookup WHERE Instrument = ?), (SELECT LevelKey FROM LevelLookup WHERE Level = ?), NOW(), NOW())`;
-    var inserts = [req.user.UserKey, req.body["instrument-list"], req.body["selection-level"]];
-    sql = mysql.pool.query(sql, inserts, function(error, results, fields){
-            if(error){
-                res.write(JSON.stringify(error));
-                res.end();
-            }else{
-                res.redirect('/create-profile');
-            }
-    });
-
-});
-
 app.get('/profile/worksamples', checkAuthenticated, (req, res, next) => {
     try {
         mysql.pool.query(

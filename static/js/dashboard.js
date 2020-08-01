@@ -117,8 +117,8 @@ function createAd(thisAd) {
                 </div>
                 <div class="cell medium-4 ads-edit-instruments">
                     <label for="ads-edit-instruments-${thisAd.AdKey}">Instruments:</label>
-                    <ul>
-                        ${ createInstrumentList(thisAd.instruments) }
+                    <ul class="ads-edit-instruments-section">
+                        
                     </ul>
                 </div>
             </div>
@@ -164,6 +164,8 @@ function createAd(thisAd) {
             </div> 
         </div>
         `;
+
+   $(currentAd).find(".ads-edit-instruments-section").append(createInstrumentListEditable(thisAd.AdKey, thisAd.instruments));
     return currentAd;
 }
 
@@ -241,6 +243,34 @@ function createInstrumentList(instruments) {
         list += `<li>${instruments[i]['Level']}-Level <strong>${instruments[i]['Instrument']}</strong></li>`;
     }
     return list;
+}
+
+
+function createInstrumentListEditable(adID, instruments) {
+    var instSelect = $("#instrument-list").clone(); //make a copy of the instrument selector
+    instSelect.attr("id", "instrument-list-" + adID).attr("name", "instrument-list"); //update id/name
+    instSelect.attr("data-select2-id", "").attr("class", "");
+
+    var html = $('<div></div>').append("<div class='inst-div'></div>");
+    html.find(".inst-div").append(instSelect); //put the instrument selector in its own div
+    html.append("<div class='instrument-selection-edit'></div>"); //underneath the selector will be our list of selected instruments
+
+    $.each(instruments, function (i, instrument) { //iterate through each existing instrument to ad it.
+       
+        var thisSelection = $("<div class='instrument-selection-item-edit' data-inst-id='" + instrument['InstrumentKey'] + "'></div>"); 
+        thisSelection.append("<div class='delete-selection'>X</div>");
+        thisSelection.append("<div class='instrument-selection-text'>" + instrument['Instrument'] + "</div>");
+
+        var levelSelect = $("#level-list-main").clone(); //make a copy of the level selector
+        levelSelect.attr("id", "level-list-" + adID).attr("name", "level-list").css("display", "inline-block"); //replace id/name and make it visible
+        levelSelect.val(instrument['LevelKey']); //set the value to whatever level this instrument currently is
+        thisSelection.append(levelSelect); //add it to this section
+
+        html.find(".instrument-selection-edit").append(thisSelection);
+    });
+
+
+    return html;
 }
 
 //when passed an instrument id + name, will add a new section under the instrument select so the user can select level or delete.

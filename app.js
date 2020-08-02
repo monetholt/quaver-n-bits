@@ -238,13 +238,15 @@ function getAds(req, res, context, complete) {
 
 
 app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
+    // checks whether the UserID exists in the table
     mysql.pool.query("SELECT UserID FROM UserSettings WHERE UserID = ?;", [req.user.UserKey], (error, results) => {
            if (results.length == 0) {
-                //there is no sortOrder in table for this user
+                //there is no sortOrder in table for this user so we create a new one 
                 mysql.pool.query("INSERT INTO UserSettings (UserID, SettingID, `Value`) VALUES (?, (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder'), ?);", [req.user.UserKey, req.body.sortOrder], (error, results) => {
                    return res.redirect('\dashboard');
                 });
             } else {
+                // a sortOrder that is not the default exists already so we just update the Value in the backend
                 mysql.pool.query("UPDATE UserSettings SET `Value` = ? WHERE UserID = ?;", [req.body.sortOrder, req.user.UserKey], (error, results) => {
                    return res.redirect('\dashboard');
                 });

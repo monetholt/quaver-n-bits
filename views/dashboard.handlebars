@@ -42,6 +42,11 @@
                 <button class="button" onclick="filterSelection('a.LocationRadius DESC')"> Descending Location Radius </button>
                 <button class="button" onclick="filterSelection('a.DateCreated ASC')"> Ascending Date Created </button>
                 <button class="button" onclick="filterSelection('a.DateCreated DESC')"> Descending Date Created </button> -->
+
+<!-- the stuff above was just me playing around with function and buttons, can be disregarded or deleted -->
+<!-- below is the actual form for sorting ads based on the filter, currently there's nothing that shows which filter they are set to, and I might have flipped 
+     some of the ASC and DESC, but those are easy fixes. Things were breaking and fixing themselves and I was working on it from like 3am to 5am and then I lost internet 
+     so not really sure if I fixed the changes or not, plz double-check, k tanks -->
                 <form id="sort" action="/adSortOrder" method="post">
                    <select name="sortOrder">
                         <option value="a.Title ASC" selected> Ascending Title</option>

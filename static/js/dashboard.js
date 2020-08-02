@@ -173,7 +173,11 @@ function toggleEditAdView(id){
     let thisView = document.getElementById(`display-ads-edit-overlay-${id}`);
     thisView.hidden = !thisView.hidden;
 }
-/*
+
+// this was me playing around with using a function to XMLHTTPrequest the 
+// post function but it didn't make sense when all of the adds had to reload
+// so this function can be deleted if we want 
+/* 
 function filterSelection(sortFilter) {
      let payload = {sortOrder: sortFilter};
 }

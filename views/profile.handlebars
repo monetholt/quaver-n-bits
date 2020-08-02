@@ -121,16 +121,26 @@
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-video" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>Videos:</h2>
-                <div class="responsive-embed widescreen">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/lFW8ihz6ELI" frameborder="0" allowfullscreen></iframe>
-                </div>
+                {{#if workSamples}}
+                    {{#each workSamples}}
+                        {{#if (eq SampleType "Video")}}
+                            <div class="responsive-embed widescreen">
+                                <iframe id="video-{{SampleKey}}" width="560" height="315" src="{{SampleLocation}}" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        {{/if}}
+                    {{/each}}
+                {{else}}
+                    [Coming Soon - Profile Videos!]
+                {{/if}}
             </div>
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-music" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>Music:</h2>
                 {{#if workSamples}}
                     {{#each workSamples}}
-                        <iframe id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
+                        {{#if (eq SampleType "Music")}}
+                            <iframe id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
+                        {{/if}}
                     {{/each}}
                 {{else}}
                     [Coming Soon - Profile Music!]

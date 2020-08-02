@@ -26,20 +26,40 @@
     // Global states for the converted SoundCloud link.
     let soundCloudLinkWasConverted = false;
     let convertedSoundCloudLink = '';
+    let youTubeLinkWasConverted = false;
+    let convertedYouTubeLink = '';
 
     //copped this from our friend stack overflow:https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
     //when passed a url will return true if valid youtube link:
     function validateYouTubeUrl(url) {
-        if (url != undefined || url != '') {
-            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+        // If we already validated & converted this URL and it didn't change, we're good.
+        if (youTubeLinkWasConverted && convertedYouTubeLink === url) {
+            return true;
+        }
+
+        if (url != undefined || url != '' || !youTubeLinkWasConverted) {
+            var regExp = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
             var match = url.match(regExp);
-            if (match && match[2].length == 11) {
+            console.log(match[1]);
+            if (match && match[1].length == 11) {
                 // Do anything for being valid
-                return true;
+                console.log("This is a youtube link");
+                document.getElementById('worksample-soundcloud-converted').hidden = false;
+                document.getElementById('worksample-entered').value = 'https://www.youtube.com/embed/' + match[1] + '?autoplay=0';
+                document.getElementById('sampletype').value = "Video";
                 // if need to change the url to embed url then use below line
                 //$('#ytplayerSide').attr('src', 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0');
+
+                // Flag that this URL's value and that it was converted.
+                youTubeLinkWasConverted = true;
+                convertedYouTubeLink = 'https://www.youtube.com/embed/' + match[1] + '?autoplay=0';
+
+                return true;
             }
-            else return false;
+            else {
+                document.getElementById('worksample-soundcloud-converted').hidden = true;
+                return false;
+            }
 
         } else return false;
     }
@@ -84,6 +104,7 @@
                             // Show the user we've finished our conversion and insert it into the worksample input.
                             document.getElementById('worksample-soundcloud-converted').hidden = false;
                             document.getElementById('worksample-entered').value = iframe;
+                            document.getElementById('sampletype').value = "Music";
 
                             // Flag that this URL's value and that it was converted.
                             soundCloudLinkWasConverted = true;
@@ -221,15 +242,17 @@
                 if (!validateSoundCloudUrl(url) && !validateYouTubeUrl(url)) {
                     $("#error-msg").html("Please enter a valid SoundCloud or YouTube URL.");
                     $('#error-modal').foundation('open');
+                    $('#sampletype').val("");
                 }
                 else {
                     //all good
-                    $("#worksample").val(url) //blank out url
+                    $("#worksample").val(url);
                     $('#smartwizard').smartWizard("stepState", [2], "enable");
                     $('#smartwizard').smartWizard("goToStep", 2); //if all is good, go to next step
                 }
             }
             else {
+                $('#sampletype').val("");
                 $("#worksample").val(""); //blank out url
                 $('#smartwizard').smartWizard("stepState", [2], "enable");
                 $('#smartwizard').smartWizard("goToStep", 2); //if all is good, go to next step
@@ -309,7 +332,7 @@
 
                     <p>Enter a Soundcloud or Youtube URL to show off your talent. You can update your profile to add more samples later.</p>
 
-                    <input id="worksample-entered" type="text" value="" placeholder="Soundcloud or Youtube url" onchange="validateSoundCloudUrl(this.value)" />
+                    <input id="worksample-entered" type="text" value="" placeholder="Soundcloud or Youtube url" onchange="validateSoundCloudUrl(this.value); validateYouTubeUrl(this.value)" />
                     <div id="worksample-soundcloud-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting SoundCloud link for embedding.</div>
                     <div id="worksample-soundcloud-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to display!</div>
                     <div id="worksample-soundcloud-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid SoundCloud track. Make sure the URL leads to a track.</div>
@@ -400,6 +423,7 @@
                         <div id="instrument-selections" style="display:none"></div>
                         <div id="work-sample-input" style="display:none">
                             <input type="text" id="worksample" name="WorkSample" value="">
+                            <input hidden type="text" id="sampletype" name="SampleType" value="">
                         </div>
                         <div class="create-profile">
                             <button class="button success large expanded" id="createProfileButton" type="submit">Create Your Profile</button>

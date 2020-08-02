@@ -44,11 +44,13 @@ function bindButtons() {
         video: {
             isEditing: false,
             button: 'edit-video',
+            endpoint: 'worksamples/video', //post for insert, put for update
             items: false
         },
         music: {
             isEditing: false,
             button: 'edit-music',
+            endpoint: 'worksamples/music', //post for insert, put for update
             items: false
         }
     }

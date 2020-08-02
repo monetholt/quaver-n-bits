@@ -390,6 +390,7 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                     instruments: rows[1],
                     workSamples: rows[2]
                 };
+                console.log(context);
                 res.render('profile', context);
             } else {
                 throw(new ReferenceError("No profile found"));
@@ -436,6 +437,78 @@ app.put('/profile/about', checkAuthenticated,(req, res, next) => {
                 }
             });
     } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.put('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+   try {
+       mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Music"',
+           [req.body.workSampleTextInput, req.session.ProfileID],
+           function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+       });
+   } catch(err) {
+       res.redirect(utils.profileUpdateErrorRedirect());
+   }
+});
+
+app.post('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('INSERT INTO WorkSamples (ProfileID, SampleLocation, SampleType) VALUES (?, ?, "Music")',
+            [req.session.ProfileID, req.body.workSampleTextInput],
+            function (err, result) {
+               if(err) {
+                   throw(err);
+               } else if(results.affectedRows === 1) {
+                   res.send(true);
+               } else {
+                   throw(new ReferenceError("No profile found"));
+               }
+        });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.put('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Video"',
+            [req.body.workSampleTextInput, req.session.ProfileID],
+            function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.post('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('INSERT INTO WorkSamples (ProfileID, SampleLocation, SampleType) VALUES (?, ?, "Video")',
+            [req.session.ProfileID, req.body.workSampleTextInput],
+            function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(results.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
@@ -503,7 +576,7 @@ app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
                                 {
                                     if (worksampleurl && worksampleurl != "") //if user added a work sample, go add it
                                     {
-                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?', [profileKey, worksampleurl],
+                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?, SampleType = ?', [profileKey, worksampleurl, req.body.SampleType],
                                             function (err, rows) {
                                                 conn.release();
 
@@ -716,4 +789,3 @@ function checkNotAuthenticated(req, res, next) {
 app.listen(port, function(){
     console.log('Express started on port ' + port + '; press Ctrl-C to terminate.')
 });
-

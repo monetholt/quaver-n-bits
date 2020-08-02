@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.addEventListener('load', () => {
         let res = JSON.parse(req.responseText);
         if (req.status < 400) {
-            console.log(res);
             if (res.has_current_ads) {
                 document.getElementById('current-ads-loading').hidden = true;
                 let currentAds = document.getElementById('current-ads');
@@ -50,8 +49,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 document.getElementById('previous-ads-loading').hidden = true;
                 document.getElementById('no-previous-ads').hidden = false;
             }
-
-            console.log(allAds);
         } else {
             console.log("WHOOPS!");
         }
@@ -93,12 +90,11 @@ function createAd(thisAd) {
                 </div>
                 <div class="cell medium-6 ads-edit-title">
                     <label for="ads-edit-title-${thisAd.AdKey}">Title:</label>
-                    <input type="text" name="ads-edit-title-${thisAd.AdKey}" id="ads-edit-title-${thisAd.AdKey}" value="${thisAd.Title}">
+                    <input type="text" name="ads-edit-title" id="ads-edit-title-${thisAd.AdKey}" value="${thisAd.Title}">
                 </div>
                 <div class="cell medium-3 ads-edit-radius">
                     <label for="ads-edit-radius-${thisAd.AdKey}">Search Radius:</label>
-                    <select name="ads-edit-radius-${thisAd.AdKey}" id="ads-edit-radius-${thisAd.AdKey}">
-                        <option value="Any" selected>Any</option>
+                    <select name="ads-edit-radius" id="ads-edit-radius-${thisAd.AdKey}">
                         <option value="5">5 Miles</option>
                         <option value="10">10 Miles</option>
                         <option value="25">25 Miles</option>
@@ -108,17 +104,17 @@ function createAd(thisAd) {
                 </div>
                 <div class="cell medium-3 ads-edit-loc">
                     <label for="ads-edit-loc-${thisAd.AdKey}">Zip Code:</label>
-                    <input type="text" name="ads-edit-loc-${thisAd.AdKey}" id="ads-edit-loc-${thisAd.AdKey}" value="${thisAd.ZipCode}">
+                    <input type="text" name="ads-edit-loc" id="ads-edit-loc-${thisAd.AdKey}" value="${thisAd.ZipCode}">
                 </div>
             </div>
             <div class="grid-x ads-edit-body">
                 <div class="cell medium-8 ads-edit-description">
                     <label for="ads-edit-description-${thisAd.AdKey}">Description:</label>
-                    <textarea id="ads-edit-description-${thisAd.AdKey}" rows="5">${thisAd.Description}</textarea>
+                    <textarea name="ads-edit-description" id="ads-edit-description-${thisAd.AdKey}" rows="5">${thisAd.Description}</textarea>
                 </div>
-                <div class="cell medium-4 ads-edit-instruments">
+                <div class="cell medium-4 ads-edit-instruments" onclick="selectInstrumentsEdit(${thisAd.AdKey})">
                     <label for="ads-edit-instruments-${thisAd.AdKey}">Instruments:</label>
-                    <ul>
+                    <ul class="ads-edit-instruments-section">
                         ${ createInstrumentList(thisAd.instruments) }
                     </ul>
                 </div>
@@ -128,7 +124,7 @@ function createAd(thisAd) {
                     <button class="button alert large expanded" onclick="toggleEditAdView(${thisAd.AdKey})"><i class="far fa-window-close"></i>Cancel</button>
                 </div>
                 <div class="cell medium-9 ads-edit-save">
-                    <button class="button primary large expanded"><i class="fas fa-share"></i>Save Ad</button>
+                    <button data-ad-id="${thisAd.AdKey}" class="ads-edit-save-btn button primary large expanded" onclick="updateAd(${thisAd.AdKey})"><i class="fas fa-share"></i>Save Ad</button>
                 </div>
             </div>
         </div>
@@ -165,6 +161,7 @@ function createAd(thisAd) {
             </div> 
         </div>
         `;
+
     return currentAd;
 }
 
@@ -209,7 +206,64 @@ function toggleEnableAd(id) {
 }
 
 function updateAd(id) {
+    var editForm = $("#display-ads-edit-overlay-" + id); //grab the form so we can get the values.
 
+    var newTitle = editForm.find("[name='ads-edit-title']").val() == undefined ? "" : editForm.find("[name='ads-edit-title']").val().trim(); //get those values
+    var radius = editForm.find("[name='ads-edit-radius']").val();
+    var zipcode = editForm.find("[name='ads-edit-loc']").val() == undefined ? "" : editForm.find("[name='ads-edit-loc']").val().trim();
+    var description = editForm.find("[name='ads-edit-description']").val() == undefined ? "" : editForm.find("[name='ads-edit-description']").val().trim();
+
+    //do some validation
+    if (newTitle == "") {
+        showAlert("warning", "fa fa-exclamation-triangle", "Please enter a title before saving your ad.");
+    }
+    else if (radius < 1) {
+        showAlert("warning", "fa fa-exclamation-triangle", "Please select a radius before saving your ad.");
+    }
+    else if (zipcode == "") {
+        showAlert("warning", "fa fa-exclamation-triangle", "Please enter a zipcode.");
+    }
+    else {
+        let selectedInstruments = getEditInstruments(id); //instruments in the ad form
+
+        //if no errors, go ahead and send to server to save.
+        $.ajax({
+            type: "POST",
+            url: "/dashboard/ads/edit",
+            data: {
+                "ad-id": id,
+                "ad-title": newTitle,
+                "ad-radius": radius,
+                "ad-zip": zipcode,
+                "ad-text": description,
+                "instruments": selectedInstruments,
+            },
+            success: function (data, textStatus, jqXHR) {
+                //data - response from server
+                if (data.success == 1) {
+                    showAlert("successs", "far fa-check-circle", "Ad saved!");
+
+                    //update data for this ad:
+                    allAds[id]['Title'] = newTitle;
+                    allAds[id]['Radius'] = radius;
+                    allAds[id]['ZipCode'] = zipcode;
+                    allAds[id]['Description'] = description;
+                    allAds[id]['instruments'] = selectedInstruments;
+
+
+                    $("#display-ads-ad-" + id).remove(); //delete the current ad from the list
+                    $("#current-ads").prepend(createAd(allAds[id])); //create a new version and at it at the top
+                }
+                else {
+                    showAlert("warning", "fa fa-exclamation-triangle", "Error saving ad.");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                showAlert("warning", "fa fa-exclamation-triangle", "Error saving ad.");
+            },
+            dataType: 'json'
+        });
+    }
 }
 
 // Sends a request to /dashboard/ads/delete to remove this ad and its associated instruments from the user's account.
@@ -239,15 +293,169 @@ function deleteAd(id) {
 function createInstrumentList(instruments) {
     let list = ``;
     for (let i in instruments) {
-        list += `<li>${instruments[i]['Level']}-Level <strong>${instruments[i]['Instrument']}</strong></li>`;
+        list += `<li><span class='inst-list-quantity' data-val='${instruments[i]['Quantity']}'>${instruments[i]['Quantity']}</span> 
+                <span class='inst-list-level' data-val='${instruments[i]['LevelKey']}'>${instruments[i]['Level']}-Level</span> 
+                <span class='inst-list-inst' data-val='${instruments[i]['InstrumentKey']}'><strong>${instruments[i]['Instrument']}</strong></span></li>`;
     }
     return list;
 }
 
+//abandoned but leaving this in here in case we want to change the ui to not have ad edit instruments be in a popup
+//to use we would have to put this line before return statement in createAd(): $(currentAd).find(".ads-edit-instruments-section").append(createInstrumentListEditable(thisAd.AdKey, thisAd.instruments));
+//function createInstrumentListEditable(adID, instruments) {
+//    var instSelect = $("#instrument-list").clone(); //make a copy of the instrument selector
+//    instSelect.attr("id", "instrument-list-" + adID).attr("name", "instrument-list"); //update id/name
+//    instSelect.attr("data-select2-id", "").attr("class", "");
+
+//    var html = $('<div></div>').append("<div class='inst-div'></div>");
+//    html.find(".inst-div").append(instSelect); //put the instrument selector in its own div
+//    html.append("<div class='instrument-selection-edit'></div>"); //underneath the selector will be our list of selected instruments
+
+//    $.each(instruments, function (i, instrument) { //iterate through each existing instrument to ad it.
+       
+//        var thisSelection = $("<div class='instrument-selection-item-edit' data-inst-id='" + instrument['InstrumentKey'] + "'></div>"); 
+//        thisSelection.append("<div class='delete-selection'>X</div>");
+//        thisSelection.append("<div class='instrument-selection-text'>" + instrument['Instrument'] + "</div>");
+
+//        var levelSelect = $("#level-list-main").clone(); //make a copy of the level selector
+//        levelSelect.attr("id", "level-list-" + adID).attr("name", "level-list").css("display", "inline-block"); //replace id/name and make it visible
+//        levelSelect.val(instrument['LevelKey']); //set the value to whatever level this instrument currently is
+//        thisSelection.append(levelSelect); //add it to this section
+
+//        html.find(".instrument-selection-edit").append(thisSelection);
+//    });
+
+
+//    return html;
+//}
+
+
+
+//returns a list of the instruments in the edit form of the passed id
+function getEditInstruments(id) {
+    //Go to the edit form for this add and grab all instruments
+    let adInstruments = $("#display-ads-edit-overlay-" + id).find(".ads-edit-instruments-section").find("li");
+
+    let instrumentList = [];
+
+    //add instruments to array
+    adInstruments.each(function () {
+        let instID = $(this).find(".inst-list-inst").attr("data-val");
+        let levelID = $(this).find(".inst-list-level").attr("data-val");
+        let quantity = $(this).find(".inst-list-quantity").attr("data-val");
+        let instName = $(this).find(".inst-list-inst").text();
+        let levelName = $(this).find(".inst-list-level").text().split("-")[0];
+
+        instrumentList.push({
+            "InstrumentKey": instID,
+            "LevelKey": levelID,
+            "Quantity": quantity,
+            "Instrument": instName,
+            "Level": levelName
+        });
+    });
+
+    //return list of instruments
+    return instrumentList;
+}
+
+
+//clears and resets the edit instrument popup
+function clearInstrumentsEditForm() {
+    $("#instrument-selection-edit").html(""); //clear out any selected instruments
+    $("#instrument-section-edit-btn").attr("data-id", 0).unbind(); //clear out any id and event attached to this form.
+    $("#error-msg-edit").html(""); //clear out any error msg
+}
+
+
+//populates edit instrument form with instruments in the passed ad's edit form
+function populateInstrumentsEditForm(id) {
+    
+    let instruments = getEditInstruments(id); //get instrument data from edit form
+
+    $.each(instruments, function (i, instrument) {
+        var sectionID = addSelection(instrument.InstrumentKey, instrument.Instrument, "edit"); //add this instrument to the form
+        $("#" + sectionID).find("#level-" + sectionID).val(instrument.LevelKey); //set the level
+        $("#" + sectionID).find("#quantity-" + sectionID).val(instrument.Quantity); //set the quantity
+    });
+}
+
+
+function selectInstrumentsEdit(id) {
+    clearInstrumentsEditForm(); //make sure any stale info is cleared from form
+    populateInstrumentsEditForm(id); //populate form with this ad info
+
+    //add event on save to put instruments back into main form.
+    $("#instrument-section-edit-btn").attr("data-id", id).click(function () {
+
+        $("#error-msg-edit").html(""); //clear out any error msg
+
+        var selectedInstruments = $("#modal-edit-ad-instruments").find(".instrument-selection-item"); //get all selected instruments
+
+        //make sure the user chose at least one
+        if (selectedInstruments.length < 1) {
+            $("#error-msg-edit").html("Please select at least one instrument");
+        }
+        else
+        {
+            //gather IDs + make sure levels are all selected
+            var errorMsg = ""; //this will be non-blank if we find an error
+            var selected = [];
+            var idlevelcombos = []; //instrument/level combo must be unique so create an array to check
+
+            selectedInstruments.each(function () {
+                var instID = $(this).attr("id").split("-")[0]; //get the instrument ID
+                var levelID = $(this).find("select.selection-level").val(); //get the levelID
+                var quantity = $(this).find("input.selection-quantity").val(); //get the quantity
+                var instrumentName = $(this).find(".instrument-selection-text").text();
+                var levelName = $(this).find("select.selection-level").find("option:selected").text();
+
+
+                if (levelID < 1) { //this instrument doesnt have a level selected
+                    errorMsg = "Please select an experience level for each instrument";
+                    return false;
+                }
+                else if (quantity == "" || quantity < 1) {
+                    errorMsg = "Please select a quantity for each instrument";
+                    return false;
+                }
+                else if ($.inArray(instID + "-" + levelID, idlevelcombos) !== -1) {
+                    errorMsg = "Hey, if you select more than one of the same instrument you need to select different levels for each";
+                    return false;
+                }
+                else {
+                    selected.push({
+                        "InstrumentKey": instID,
+                        "LevelKey": levelID,
+                        "Quantity": quantity,
+                        "Instrument": instrumentName,
+                        "Level": levelName
+                    }); //add the ids to our data array
+
+                    idlevelcombos.push(instID + "-" + levelID); //add the ids combo to our lookup
+                }
+            });
+
+            if (errorMsg != "") { //if we found an error, show it
+
+                $("#error-msg-edit").html(errorMsg);
+            }
+            else {
+                let instrumentHtml = createInstrumentList(selected); //otherwise convert selections back to text and put in ad edit form
+                $("#display-ads-edit-overlay-" + id).find(".ads-edit-instruments-section").html(instrumentHtml);
+
+                $("#modal-edit-ad-instruments").foundation('close'); //close popup
+            }
+        }
+    });
+
+    $("#modal-edit-ad-instruments").foundation('open'); //show form to user
+}
+
 //when passed an instrument id + name, will add a new section under the instrument select so the user can select level or delete.
 //will show user an error if they try to add the same instrument twice
-function addSelection(id, inst) {
-    var selectionDiv = $("#instrument-selection"); //grab section below instrument select
+function addSelection(id, inst, addOrEdit) {
+    var selectionDiv = $("#instrument-selection-" + addOrEdit); //grab section below instrument select
 
     var thisId = id + "-" + Date.now();
 
@@ -256,30 +464,35 @@ function addSelection(id, inst) {
     var thisSelection = selectionDiv.find("#" + thisId);
 
     thisSelection.append("<div class='delete-selection'>X</div>"); //add the icon to delete this section
-    var levelSelect = $("#level-list-main").clone(); //copy the existing level selector so this instrument can have its own
-    levelSelect.attr("id", "#level-" + thisId); //set the id for the level select + unhide it
-    levelSelect.css("display", "block");
+    var levelSelect = $("#level-list-main-" + addOrEdit).clone(); //copy the existing level selector so this instrument can have its own
+    levelSelect.attr("id", "level-" + thisId); //set the id for the level select + unhide it
+    levelSelect.css("display", "inline-block");
 
     thisSelection.append("<div class='instrument-selection-text'>" + inst + "</div>");
     thisSelection.append(levelSelect);
-    thisSelection.append("<input placeholder='Quantity' type='number' class='selection-quantity'  id='quantity-" + thisId+"' min='1' max='99' />");
+    thisSelection.append("<input placeholder='Quantity' type='number' class='selection-quantity'  id='quantity-" + thisId+"' value='1' min='1' max='99' />");
 
+    return thisId;
 }
 
 $(document).ready(function () {
 
     //set up the instrument to use select2 for easy searching+selecting. This seemed closest to the datalist we were using
-    $('#instrument-list').select2({
+    $('#instrument-list-add, #instrument-list-edit').select2({
         placeholder: "Select an instrument"
     }).on('select2:select', function (e) {
         //whenever we select a new instrument, add it to the section below to select level
-        var selectedOption = $("#instrument-list").select2('data')[0];
-        addSelection(selectedOption.id, (selectedOption.text));
+        var selectedOption = e.params.data;
+        addSelection(selectedOption.id, (selectedOption.text), $(this).attr("id").split("-")[2]);
     });
 
     //click event to remove selected instruments.
     $("body").on("click", ".delete-selection", function () {
         $(this).parent().remove();
+    });
+
+    $("#modal-edit-ad-instruments").on("closed.zf.reveal", function () {
+        clearInstrumentsEditForm();
     });
 
     $("#addAd").submit(function (e) {
@@ -289,7 +502,7 @@ $(document).ready(function () {
         var form = this;
 
         //get all selected instruments
-        var selectedInstruments = $(".instrument-selection-item");
+        var selectedInstruments = $("#modal-create-ad").find(".instrument-selection-item");
 
         //make sure the user chose at least one
         if (selectedInstruments.length < 1) {
@@ -347,5 +560,4 @@ $(document).ready(function () {
             }
         }
     });
-
 });

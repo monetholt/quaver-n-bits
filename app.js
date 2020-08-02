@@ -27,7 +27,10 @@ app.engine('handlebars', handlebars({
     defaultLayout: 'main',
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
-        moment: require('helper-moment')
+        moment: require('helper-moment'),
+        ifCond: (v1, v2) => {
+            return v1 === v2;
+        }
     }
 }));
 
@@ -318,6 +321,7 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                     instruments: rows[1],
                     workSamples: rows[2]
                 };
+                console.log(context);
                 res.render('profile', context);
             } else {
                 throw(new ReferenceError("No profile found"));
@@ -503,7 +507,7 @@ app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
                                 {
                                     if (worksampleurl && worksampleurl != "") //if user added a work sample, go add it
                                     {
-                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?', [profileKey, worksampleurl],
+                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?, SampleType = ?', [profileKey, worksampleurl, req.body.SampleType],
                                             function (err, rows) {
                                                 conn.release();
 
@@ -731,4 +735,3 @@ function checkNotAuthenticated(req, res, next) {
 app.listen(port, function(){
     console.log('Express started on port ' + port + '; press Ctrl-C to terminate.')
 });
-

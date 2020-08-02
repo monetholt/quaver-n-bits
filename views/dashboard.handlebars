@@ -25,6 +25,37 @@
             <div class="cell medium-10 current-ads-label">
                 <h1>Current Ads:</h1>
             </div>
+            <!-- On first load need to reference the UserSettings table -->
+            <!-- set active the selection in the Value table -->
+            <!-- and onclick update the Value so that it will be set to that by default for that person's account -->
+            <!-- set up the filterSelection JS to take the different selections and store it then async load the page -->
+            <!-- check how Nate did his async load for disable and enable ads and see if I can copy that setting for the sort order -->
+            <!-- I don't really understand the Settings table tbh you only need the UserID and the button they selected (in this case the Value) -->
+            <!-- kind of a janky button set up but this is so we can click on it and see the results, can make it look pretty later -->
+            <!-- not sure how to get it so the buttons are all next to each other next to Current Ads header -->
+                <div class="cell medium-1" id="sortingContainer">
+     <!--       <button class="button active" onclick="filterSelection('a.Title ASC')"> Ascending Title </button>
+                <button class="button" onclick="filterSelection('a.Title DESC')"> Descending Title </button>
+                <button class="button" onclick="filterSelection('a.DatePosted ASC')"> Most Recent </button>
+                <button class="button" onclick="filterSelection('a.DatePosted DESC')"> Least Recent </button>
+                <button class="button" onclick="filterSelection('a.LocationRadius ASC')"> Ascending Location Radius </button>
+                <button class="button" onclick="filterSelection('a.LocationRadius DESC')"> Descending Location Radius </button>
+                <button class="button" onclick="filterSelection('a.DateCreated ASC')"> Ascending Date Created </button>
+                <button class="button" onclick="filterSelection('a.DateCreated DESC')"> Descending Date Created </button> -->
+                <form id="sort" action="/adSortOrder" method="post">
+                   <select name="sortOrder">
+                        <option value="a.Title ASC" selected> Ascending Title</option>
+                        <option value="a.Title DESC"> Descending Title </option>
+                        <option value="a.DatePosted ASC"> Most Recent</option>
+                        <option value="a.DatePosted DESC">Least Recent </option>
+                        <option value="a.LocationRadius ASC"> Ascending Location Radius </option>
+                        <option value="a.LocationRadius DESC"> Descending Location Radius </option>
+                        <option value="a.DateCreated ASC"> Ascending Date Created</option>
+                        <option value="a.DateCreated DESC"> Descending Date Created </option>
+                        <input type="submit">
+                    </select>
+                 </form>
+                 </div>
             <div class="cell medium-2 create-ad-cta">
                 <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-plus"></i>New Ad</button>
             </div>

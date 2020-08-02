@@ -173,10 +173,6 @@ app.delete('/dashboard/ads/delete', checkAuthenticated,(req, res, next) => {
     });
 });
 
-// Delete an ad and its respective adsInstruments columns from the db.
-app.delete('/dashboard/ads', checkAuthenticated, function (req, res, next) {
-
-});
 
 function getInstrumentsAndLevels(req, res, context, complete) {
     mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
@@ -242,15 +238,20 @@ function getAds(req, res, context, complete) {
 
 
 app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
-    mysql.pool.query(
-        "INSERT INTO UserSettings (UserID, SettingKey, `Value`) VALUES (?, (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder'), ?)",
-        [req.user.UserKey, req.body.sortOrder], (error, rows) => {
-            if (error) {
-                throw(error);
-            } else if (rows.length > 0) {
-                res.send(true);
-            }
-        });
+    mysql.pool.query("SELECT UserID FROM UserSettings WHERE UserID = ?;", [req.user.UserKey], (error, results) => {
+           if (results.length == 0) {
+                //there is no sortOrder in table for this user
+                mysql.pool.query("INSERT INTO UserSettings (UserID, SettingID, `Value`) VALUES (?, (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder'), ?);", [req.user.UserKey, req.body.sortOrder], (error, results) => {
+                   return res.redirect('\dashboard');
+                });
+            } else {
+                mysql.pool.query("UPDATE UserSettings SET `Value` = ? WHERE UserID = ?;", [req.body.sortOrder, req.user.UserKey], (error, results) => {
+                   return res.redirect('\dashboard');
+                });
+
+            } 
+    });
+
 });
 
 

@@ -173,7 +173,11 @@ function toggleEditAdView(id){
     let thisView = document.getElementById(`display-ads-edit-overlay-${id}`);
     thisView.hidden = !thisView.hidden;
 }
-
+/*
+function filterSelection(sortFilter) {
+     let payload = {sortOrder: sortFilter};
+}
+*/
 // Send a request to /dashboard/ads/enable to toggle the state of "IsActive" for this ad.
 // Updates the UI by removing the node from where it was and appending it to where it should be.
 // Alerts the user with a success message after it's done, or error message if something bad happened.

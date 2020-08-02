@@ -5331,13 +5331,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d926af, #d92647);
+    background-image: -webkit-linear-gradient(to bottom right, #85d926, #d97726);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d926af, #d92647);
+    background-image: -moz-linear-gradient(to bottom right, #85d926, #d97726);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d926af, #d92647);
+    background-image: -o-linear-gradient(to bottom right, #85d926, #d97726);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d926af, #d92647);
+    background-image: linear-gradient(to bottom right, #85d926, #d97726);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5355,6 +5355,27 @@ main {
         margin: 0; }
       .main-profile .profile-header .profile-header-intro .profile-header-title i {
         padding-right: 10px; }
+      .main-profile .profile-header .profile-header-intro .profile-header-status {
+        display: inline-flex;
+        flex-grow: 1;
+        justify-content: flex-end; }
+        .main-profile .profile-header .profile-header-intro .profile-header-status #profile-head-title-privacy {
+          display: none; }
+        .main-profile .profile-header .profile-header-intro .profile-header-status .profile-head-title-privacy {
+          width: fit-content;
+          justify-self: baseline;
+          margin: 10px;
+          padding: 10px 20px;
+          display: inline-flex;
+          background: #4a4a4a33;
+          border: 1px solid #4a4a4a55;
+          border-radius: 50px; }
+          .main-profile .profile-header .profile-header-intro .profile-header-status .profile-head-title-privacy.hidden {
+            display: none; }
+          .main-profile .profile-header .profile-header-intro .profile-header-status .profile-head-title-privacy strong {
+            padding-left: 5px; }
+          .main-profile .profile-header .profile-header-intro .profile-header-status .profile-head-title-privacy i {
+            padding-left: 5px; }
   @media print, screen and (min-width: 64em) {
     .main-profile .profile-header .profile-header-intro {
       align-items: center;
@@ -5475,6 +5496,9 @@ main {
   .edit-button-animate-in .fas:before {
     animation: 0.5s ease 0s 1 changeToEdit;
     content: "\f058"; }
+
+.has-tip {
+  border-bottom: solid 1px transparent; }
 
 @keyframes slideInFromLeft {
   0% {
@@ -5626,6 +5650,9 @@ main {
           padding: 0 10px; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body {
         padding: 20px; }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .ads-edit-instruments {
+          max-height: 200px;
+          overflow: scroll; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .cell {
           padding: 0 10px; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body label {

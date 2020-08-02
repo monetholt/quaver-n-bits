@@ -223,6 +223,11 @@ $delete-red-hover: #e57373;
         .ads-edit-body {
           padding: 20px;
 
+          .ads-edit-instruments {
+            max-height: 200px;
+            overflow: scroll;
+          }
+
           .cell {
             padding: 0 10px;
           }

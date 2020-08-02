@@ -27,7 +27,10 @@ app.engine('handlebars', handlebars({
     defaultLayout: 'main',
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
-        moment: require('helper-moment')
+        moment: require('helper-moment'),
+        eq: (v1, v2) => {
+            return v1 === v2;
+        }
     }
 }));
 

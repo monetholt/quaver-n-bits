@@ -31,17 +31,17 @@
                         <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
                     </div>
                     <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
-                    <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>
+<!--                    <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>-->
                     <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}">
                     <div id="edit-title-privacy-switch" class="switch" hidden>
                         <span>Are you currently looking for a spot in a band?</span><br>
                         <span id="switch-privacy-tooltip"
                               data-tooltip class="top"
                               tabindex="2"
-                              title="Switching this {{#if profile.LookingForWork}}off{{else}}on{{/if}} will set your profile to {{#if profile.LookingForWork}}private{{else}}public{{/if}} so it will {{#if profile.LookingForWork}}no longer {{/if}}be viewable by other users."
+                              title="Switching this {{#if (eq profile.LookingForWork 1)}}off{{else}}on{{/if}} will set your profile to {{#if (eq profile.LookingForWork 1)}}private{{else}}public{{/if}} so it will {{#if (eq profile.LookingForWork 1)}}no longer {{/if}}be viewable by other users."
                               data-position="bottom"
                               data-alignment="left">
-                            <input class="switch-input" id="privacySwitch" type="checkbox" name="privacySwitch" {{#if profile.LookingForWork}}checked{{/if}}>
+                            <input class="switch-input" id="privacySwitch" type="checkbox" name="privacySwitch" {{#if (eq profile.LookingForWork 1)}}checked="true"{{/if}}>
                             <label class="switch-paddle" for="privacySwitch">
                                 <h6 class="show-for-sr">Are you currently looking for a spot in a band?</h6>
                             </label>
@@ -49,9 +49,15 @@
                         <script type="text/javascript">
                             let ps = document.getElementById('privacySwitch');
                             ps.addEventListener('click', () => {
-                                console.log('privacySwitch', ps);
-                                console.log('privacySwitch clicked! checked ? ', ps.getAttribute('checked'));
-                                ps.setAttribute('checked', ps.getAttribute('checked') ? false : true);
+                                if (ps.getAttribute('checked') === 'true') {
+                                    ps.setAttribute('checked', 'false');
+                                    document.getElementById('profile-head-title-privacy-private').classList.remove('hidden');
+                                    document.getElementById('profile-head-title-privacy-public').classList.add('hidden');
+                                } else {
+                                    ps.setAttribute('checked', 'true');
+                                    document.getElementById('profile-head-title-privacy-private').classList.add('hidden');
+                                    document.getElementById('profile-head-title-privacy-public').classList.remove('hidden');
+                                }
 
                                 // I hate foundation for making me do this hacky bs to reflow a damn tooltip title. This will probably break with some future foundation release.
                                 let $el = $('#switch-privacy-tooltip');
@@ -73,6 +79,11 @@
                             // });
                         </script>
                     </div>
+                </div>
+                <div class="profile-header-status">
+                    <div id="profile-head-title-privacy"></div>
+                    <div id="profile-head-title-privacy-private" class="profile-head-title-privacy {{#if (eq profile.LookingForWork 1)}}hidden{{/if}}" >Profile: <strong>Private<i class="fas fa-lock"></i></strong></div>
+                    <div id="profile-head-title-privacy-public" class="profile-head-title-privacy {{#if (eq profile.LookingForWork 0)}}hidden{{/if}}">Profile: <strong>Public<i class="fas fa-lock-open"></i></strong></div>
                 </div>
             </div>
         </div>

@@ -71,6 +71,11 @@ $social-links-underline: #48fe80;
         object-fit: cover;
       }
       .profile-header-title {
+
+        #edit-title-privacy-switch {
+          font-weight: normal;
+        }
+
         p:last-child {
           margin: 0;
         }

@@ -5331,13 +5331,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #26d9cd, #d926af);
+    background-image: -webkit-linear-gradient(to bottom right, #26d9d6, #d92644);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #26d9cd, #d926af);
+    background-image: -moz-linear-gradient(to bottom right, #26d9d6, #d92644);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #26d9cd, #d926af);
+    background-image: -o-linear-gradient(to bottom right, #26d9d6, #d92644);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #26d9cd, #d926af);
+    background-image: linear-gradient(to bottom right, #26d9d6, #d92644);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5351,6 +5351,8 @@ main {
         width: 250px;
         height: 250px;
         object-fit: cover; }
+      .main-profile .profile-header .profile-header-intro .profile-header-title #edit-title-privacy-switch {
+        font-weight: normal; }
       .main-profile .profile-header .profile-header-intro .profile-header-title p:last-child {
         margin: 0; }
       .main-profile .profile-header .profile-header-intro .profile-header-title i {

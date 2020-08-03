@@ -396,9 +396,13 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                     user: req.user,
                     profile: rows[0][0],
                     profileInstruments: rows[1],
-                    workSamples: rows[2]
+                    workSamples: {
+                        music: rows[2].filter(sample => sample.SampleType === "Music"),
+                        video: rows[2].filter(sample => sample.SampleType === "Video"),
+                    }
                 };
 
+                console.log(context.workSamples);
                 getInstrumentsAndLevels(req, res, context, complete);
 
                 function complete() {
@@ -555,12 +559,31 @@ app.post('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
             function (err, result) {
                if(err) {
                    throw(err);
-               } else if(results.affectedRows === 1) {
+               } else if(result.affectedRows === 1) {
                    res.send(true);
                } else {
                    throw(new ReferenceError("No profile found"));
                }
         });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.delete('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('DELETE FROM WorkSamples WHERE ProfileID=? AND SampleKey=?',
+            [req.session.ProfileID, req.body.sampleKey],
+            function (err, result) {
+                console.log(result);
+                if(err) {
+                    throw(err);
+                } else if(result.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
@@ -591,7 +614,7 @@ app.post('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
             function (err, result) {
                 if(err) {
                     throw(err);
-                } else if(results.affectedRows === 1) {
+                } else if(result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"));

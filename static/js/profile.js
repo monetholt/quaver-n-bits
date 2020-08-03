@@ -244,39 +244,62 @@ function bindButtons() {
         // Boolean to determine if we're in edit mode.
         let isEditingVideo = false;
 
-        let container = document.getElementById('profile-music-container');
-        let videos = container.getElementsByTagName('iframe');
+        let container = document.getElementById('profile-video-container');
+        let videos = container.getElementsByClassName('display-video-element');
 
         // Builds the current state of videos as keys (SampleKey) and values (SampleLocation)
         let req = {}
 
-        for (let video of videos) {
+        // Loop through the actual video iframes and build a reference to them, with SampleKey as ID and link as value.
+        for (let i=0; i < videos.length; i++) {
+            let video = videos[i].getElementsByTagName('iframe')[0];
             req[video.getAttribute('data-id')] = video.getAttribute('src');
         }
 
+        console.log("req: ", req);
         videoBtn.addEventListener('click', () => {
 
             // Boolean to determine if anything has changed.
             let valuesChanged = false;
 
             // Grab elements for display & edit.
-            let container = document.getElementById('profile-music-container');
-            let videos = container.getElementsByTagName('iframe');
-            let inputs = container.getElementsByTagName('input');
+            let container = document.getElementById('profile-video-container');
+            let videos = container.getElementsByClassName('display-video-element');
+            let inputs = container.getElementsByClassName('edit-video-element');
+
+            // Display for if there are no videos.
+            let noVideos = document.getElementById('no-videos');
+
+            // Grab div for attaching new videos.
+            let addVideo = document.getElementById('add-videos-text');
 
             // Toggle visibility of elements.
-            for (let video of videos) { video.hidden = !video.hidden }
-            for (let input of inputs) { input.hidden = !input.hidden }
+            // for (let video of videos) { video.hidden = !video.hidden }
+
+            addVideo.hidden = !addVideo.hidden;
 
             // If the user is about to edit, animate the edit button and edit elements.
             if (!isEditingVideo) {
 
                 videoBtn.classList.add('edit-button-animate-in');
-                for (let input of inputs) { input.classList.add('edit-text-anim') }
+                for (let input of inputs) {
+                    input.classList.add('edit-text-anim');
+                    input.classList.remove('hide');
+                }
+                addVideo.classList.add('edit-text-anim');
+                noVideos.hidden = true;
 
                 // Otherwise, check if social element changed.
             } else {
                 // TODO: Make the things happen when videos are edited.
+
+                videoBtn.classList.remove('edit-button-animate-in');
+                for (let input of inputs) {
+                    input.classList.remove('edit-text-anim');
+                    input.classList.add('hide');
+                }
+                addVideo.classList.remove('edit-text-anim');
+                noVideos.hidden = videos.length > 0 ? true : false;
             }
 
             // Remove focus from edit button because that causes odd issues.
@@ -298,7 +321,7 @@ function bindButtons() {
         req.open('PUT', `/profile/${endpoint}`, true);
         req.addEventListener('load', () => {
             if (req.status < 400) {
-                console.log("YAAAAS!");
+                console.log("DONE!");
             } else {
                 console.log("BAD." + req.statusText);
             }
@@ -306,6 +329,173 @@ function bindButtons() {
         req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
         req.send(JSON.stringify(payload));
     }
+}
+
+let soundCloudLinkWasConverted = false;
+let convertedSoundCloudLink = '';
+let youTubeLinkWasConverted = false;
+let convertedYouTubeLink = '';
+
+// Performs final validation check on the video URL, then sends it off to save to the DB while updating the UI.
+function addVideo() {
+    // Get the URL to be added to the work samples.
+    let url = document.getElementById('add-video-text').value;
+
+    // If we got it and it's valid, open a request and store it.
+    if (url && validateYouTubeUrl(url)) {
+        let req = new XMLHttpRequest();
+        req.open('POST', `/profile/worksamples/video`, true);
+        req.addEventListener('load', () => {
+            if (req.status < 400) {
+                showAlert("success", "far fa-check-circle", `Your video has been added! Refreshing the page.`);
+                document.getElementById('edit-video').click();
+                setTimeout(() => { location.reload(); }, 3000);
+            } else {
+                showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to add the video. Please try again later.`)
+            }
+        });
+        req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        req.send(JSON.stringify({ workSampleTextInput: url }));
+    } else {
+        showAlert("caution", "fas fa-exclamation-triangle", 'You entered an invalid URL. Make sure the URL is from YouTube.');
+    }
+}
+
+function deleteVideo(referrer=0) {
+    if (referrer > 0) {
+        let req = new XMLHttpRequest();
+        req.open('DELETE', `/profile/worksamples/video`, true);
+        req.addEventListener('load', () => {
+            if (req.status < 400) {
+                showAlert("success", "far fa-check-circle", `Your video was successfully deleted. Refreshing Page.`);
+                document.getElementById('edit-video').click();
+                setTimeout(() => {
+                    location.reload();
+                }, 2500);
+            } else {
+                showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to delete the video. Please try again later.`)
+            }
+        });
+        req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        req.send(JSON.stringify({sampleKey: referrer}));
+    } else {
+        showAlert("caution", "fas fa-exclamation-triangle", 'An invalid delete button was pressed. Try refreshing the page.');
+    }
+}
+
+function updateVideo() {
+
+}
+
+function showAlert(type, icon, text) {
+    let alert = document.getElementById('alert-popout');
+    alert.innerHTML = `<i class="${icon}"></i>${text}`;
+    alert.hidden = false;
+    alert.classList.add(type);
+    alert.classList.remove('hidden');
+    setTimeout(
+        function() {
+            alert.classList.add('hidden');
+            alert.classList.remove(type);
+        }, 2500);
+}
+
+// Copied over & edited from create-profile.
+function validateYouTubeUrl(url, referrer=false) {
+    // If we already validated & converted this URL and it didn't change, we're good.
+    if (youTubeLinkWasConverted && convertedYouTubeLink === url) {
+        return true;
+    }
+
+    if (url != undefined || url != '' || !youTubeLinkWasConverted) {
+        var regExp = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
+        var match = url.match(regExp);
+
+        if (match && match[1].length == 11) {
+            // Do anything for being valid
+            console.log("This is a youtube link");
+            document.getElementById(`worksample-youtube-converted${referrer ? '-' + referrer : ''}`).hidden = false;
+            document.getElementById(`worksample-youtube-invalid${referrer ? '-' + referrer : ''}`).hidden = true;
+            document.getElementById(`${referrer ? 'edit-video-text-' + referrer : 'add-video-text'}`).value = 'https://www.youtube.com/embed/' + match[1] + '?autoplay=0';
+
+            // if need to change the url to embed url then use below line
+            //$('#ytplayerSide').attr('src', 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0');
+
+            // Flag that this URL's value and that it was converted.
+            youTubeLinkWasConverted = true;
+            convertedYouTubeLink = 'https://www.youtube.com/embed/' + match[1] + '?autoplay=0';
+
+            return true;
+        }
+        else {
+            document.getElementById(`worksample-youtube-converted${referrer ? '-' + referrer : ''}`).hidden = true;
+            document.getElementById(`worksample-youtube-invalid${referrer ? '-' + referrer : ''}`).hidden = false;
+            return false;
+        }
+
+    } else return false;
+}
+
+
+// Copied over & edited from create-profile.
+function validateSoundCloudUrl(url) {
+
+    // If we already validated & converted this URL and it didn't change, we're good.
+    if (soundCloudLinkWasConverted && convertedSoundCloudLink === url) {
+        return true;
+    }
+
+    // Otherwise, if there's something there and it wasn't previously converted, check if it's a SoundCloud link.
+    if (url != undefined || url != '' || !soundCloudLinkWasConverted) {
+        var regExp = /^(https?:\/\/)?(www\.)?(soundcloud\.com|snd\.sc)\/.*$/;
+        var match = url.match(regExp);
+        if (match) {
+            // If this a valid SoundCloud track link, then show user we're converting the link.
+            document.getElementById('worksample-soundcloud-converting').hidden = false;
+            document.getElementById('worksample-soundcloud-converted').hidden = true;
+            document.getElementById('worksample-soundcloud-invalid').hidden = true;
+
+            // Since it's from SoundCloud, grab the track ID and format it for embedding.
+            // Use our super secret CORS escape hatch to make the request since we're 1337 h4x0R2.
+            let req = new XMLHttpRequest();
+            req.open('GET', `https://cors-anywhere.herokuapp.com/${url}`, true);
+            req.addEventListener('load', () => {
+                let res = req.responseText;
+                if (req.status < 400) {
+
+                    // If we got something back, look for the track ID and construct an embedded link from it.
+                    let number = res.match(/soundcloud:\/\/sounds:(\d{9})/);
+
+                    // Hide the loading check.
+                    document.getElementById('worksample-soundcloud-converting').hidden = true;
+
+                    // If a valid ID was found, let the user know and convert the URL for display.
+                    if (number && 1 in number) {
+                        let iframe = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${number[1]}`;
+
+                        // Show the user we've finished our conversion and insert it into the worksample input.
+                        document.getElementById('worksample-soundcloud-converted').hidden = false;
+                        document.getElementById('worksample-entered').value = iframe;
+                        document.getElementById('sampletype').value = "Music";
+
+                        // Flag that this URL's value and that it was converted.
+                        soundCloudLinkWasConverted = true;
+                        convertedSoundCloudLink = iframe;
+                        return true;
+                    }
+
+                    document.getElementById('worksample-soundcloud-invalid').hidden = false;
+                    return false;
+
+                } else {
+                    return false;
+                }
+            });
+            req.send(null);
+        }
+        else return false;
+
+    } else return false;
 }
 
 

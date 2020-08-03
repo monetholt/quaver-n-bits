@@ -25,6 +25,9 @@
             <div class="cell medium-10 current-ads-label">
                 <h1>Current Ads:</h1>
             </div>
+            <div class="sort-by-text">
+                    <p>Sort Ads by: </p>
+            </div>
             <!-- On first load need to reference the UserSettings table -->
             <!-- set active the selection in the Value table -->
             <!-- and onclick update the Value so that it will be set to that by default for that person's account -->
@@ -36,8 +39,8 @@
                 <div class="cell medium-1" id="sortingContainer">
      <!--       <button class="button active" onclick="filterSelection('a.Title ASC')"> Ascending Title </button>
                 <button class="button" onclick="filterSelection('a.Title DESC')"> Descending Title </button>
-                <button class="button" onclick="filterSelection('a.DatePosted ASC')"> Most Recent </button>
-                <button class="button" onclick="filterSelection('a.DatePosted DESC')"> Least Recent </button>
+                <button class="button" onclick="filterSelection('a.DatePosted ASC')"> Least Recent </button>
+                <button class="button" onclick="filterSelection('a.DatePosted DESC')"> Most Recent </button>
                 <button class="button" onclick="filterSelection('a.LocationRadius ASC')"> Ascending Location Radius </button>
                 <button class="button" onclick="filterSelection('a.LocationRadius DESC')"> Descending Location Radius </button>
                 <button class="button" onclick="filterSelection('a.DateCreated ASC')"> Ascending Date Created </button>
@@ -46,17 +49,17 @@
 <!-- the stuff above was just me playing around with function and buttons, can be disregarded or deleted -->
 <!-- below is the actual form for sorting ads based on the filter, currently there's nothing that shows which filter they are set to, and I might have flipped 
      some of the ASC and DESC, but those are easy fixes. Things were breaking and fixing themselves and I was working on it from like 3am to 5am and then I lost internet 
-     so not really sure if I fixed the changes or not, plz double-check, k tanks -->
+     so not really sure if I fixed the changes or not, changed the names so that it would make more sense -->
                 <form id="sort" action="/adSortOrder" method="post">
                    <select name="sortOrder">
                         <option value="a.Title ASC" selected> Ascending Title</option>
                         <option value="a.Title DESC"> Descending Title </option>
-                        <option value="a.DatePosted ASC"> Most Recent</option>
-                        <option value="a.DatePosted DESC">Least Recent </option>
-                        <option value="a.LocationRadius ASC"> Ascending Location Radius </option>
-                        <option value="a.LocationRadius DESC"> Descending Location Radius </option>
-                        <option value="a.DateCreated ASC"> Ascending Date Created</option>
-                        <option value="a.DateCreated DESC"> Descending Date Created </option>
+                        <option value="a.DatePosted ASC"> Least Recent</option>
+                        <option value="a.DatePosted DESC">Most Recent </option>
+                        <option value="a.LocationRadius ASC"> Closest from Location </option>
+                        <option value="a.LocationRadius DESC"> Farthest from Location </option>
+                        <option value="a.DateCreated ASC"> Least Recent Date Created</option>
+                        <option value="a.DateCreated DESC"> Most Recent Date Created </option>
                         <input type="submit">
                     </select>
                  </form>

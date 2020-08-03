@@ -194,9 +194,13 @@ function getAds(req, res, context, complete) {
         } else if (rows.length > 0) {
             sql = "SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, " +
                 "a.DateCreated, a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY " + rows[0]['Value'];
+            // set the sort value so that it can be read on refresh using the javascript in dashboard.js
+            context['sort'] = rows[0]['Value'];
         } else {
             sql = "SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, " +
                 "a.DateCreated, a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC";
+            // set the sort value so that it can be read on refresh using the javascript in dashboard.js
+            context['sort'] = "a.DatePosted DESC";
         }
         mysql.pool.query(sql, [context.user.UserKey], (error, rows) => {
             if (error) {
@@ -250,7 +254,6 @@ app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
                 mysql.pool.query("UPDATE UserSettings SET `Value` = ? WHERE UserID = ?;", [req.body.sortOrder, req.user.UserKey], (error, results) => {
                    return res.redirect('\dashboard');
                 });
-
             } 
     });
 

@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.addEventListener('load', () => {
         let res = JSON.parse(req.responseText);
         if (req.status < 400) {
+            $("[name='sortOrder']").val(res.sort);
             console.log(res);
             if (res.has_current_ads) {
                 document.getElementById('current-ads-loading').hidden = true;

@@ -15,7 +15,7 @@ function bindButtons() {
             items: [
                 ['profile-header-title-text', 'edit-title-text', 'artistName', false],
                 ['profile-header-title-loc', 'edit-title-loc', 'zipCode', false],
-                ['profile-head-title-privacy', 'edit-title-privacy-switch', 'privacySwitch', (obj => obj.childNodes[4].checked ? 1 : 0), 'profile-head-title-privacy-value', ['You are currently looking for a spot in a band.', 'You are not currently looking for a spot in a band.']]
+                ['profile-head-title-privacy', 'edit-title-privacy-switch', 'privacySwitch', (() => document.getElementById('privacySwitch').getAttribute('checked') === 'true' ? 1 : 0), 'profile-head-title-privacy-value', ['You are currently looking for a spot in a band.', 'You are not currently looking for a spot in a band.']]
             ]
         },
         about: {
@@ -44,11 +44,13 @@ function bindButtons() {
         video: {
             isEditing: false,
             button: 'edit-video',
+            endpoint: 'worksamples/video', //post for insert, put for update
             items: false
         },
         music: {
             isEditing: false,
             button: 'edit-music',
+            endpoint: 'worksamples/music', //post for insert, put for update
             items: false
         }
     }
@@ -112,6 +114,9 @@ function bindButtons() {
         }
     }
 
+    function handleText() {
+
+    }
 
     // document.getElementById('submitForm').addEventListener('click', e => {
 }

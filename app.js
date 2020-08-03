@@ -27,7 +27,10 @@ app.engine('handlebars', handlebars({
     defaultLayout: 'main',
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
-        moment: require('helper-moment')
+        moment: require('helper-moment'),
+        eq: (v1, v2) => {
+            return v1 === v2;
+        }
     }
 }));
 
@@ -173,6 +176,78 @@ app.delete('/dashboard/ads/delete', checkAuthenticated,(req, res, next) => {
     });
 });
 
+app.post('/dashboard/ads/edit', checkAuthenticated, (req, res, next) => {
+    try {
+        mysql.pool.getConnection(function (err, conn) {
+            if (err) throw (err);
+            //update the ad info
+            conn.query(
+                'UPDATE Ads SET Title = ?, Description = ?,  ZipCode = ?, LocationRadius = ?, DatePosted = NOW(), LastUpdated = NOW() WHERE AdKey = ? AND UserID = ?',
+                [req.body["ad-title"], req.body["ad-text"], req.body["ad-zip"], req.body["ad-radius"], req.body["ad-id"], req.user.UserKey],
+                function (err, rows) {
+                    if (err) {
+                        conn.release();
+                        res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
+                        res.end();
+                    }
+                    else if (rows.changedRows === 1) //now that ad is updated, do any instruments updates
+                    {
+                        var adKey = req.body["ad-id"];
+
+                        //delete current instruments
+                        conn.query(`DELETE FROM AdInstruments WHERE AdId = ? `, [adKey],
+                            function (err, rows) {
+
+                                if (err) {
+                                    conn.release();
+                                    res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
+                                    res.end();
+                                } else {
+
+                                    //first format instrument/levelIDs sent in with form
+                                    var instruments = [];
+
+                                    var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
+                                    for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+
+                                        if (Object.prototype.hasOwnProperty.call(req.body, "instruments[" + i + "][InstrumentKey]") &&
+                                            req.body["instruments[" + i + "][InstrumentKey]"] > 0) {
+
+                                            instruments.push([
+                                                req.body["instruments[" + i + "][InstrumentKey]"],
+                                                req.body["instruments[" + i + "][LevelKey]"],
+                                                req.body["instruments[" + i + "][Quantity]"],
+                                                adKey, timestamp, timestamp]);
+
+                                        }
+                                        else break;
+                                    }
+
+                                    ////add the instruments
+                                    conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
+                                        function (err, rows) {
+                                            conn.release();
+
+                                            if (err) {
+                                                res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
+                                                res.end();
+                                            } else res.send({ success: 1, message: 'Successfully updated ad.' });
+
+                                        });
+                                }
+                            });
+                    }
+                    else {
+                        conn.release();
+                        res.send({ success: 0,  message: 'Ad not found.' });
+                    }
+                });
+        });
+    } catch (err) {
+        res.write(JSON.stringify(err));
+        res.end();
+    }
+});
 
 function getInstrumentsAndLevels(req, res, context, complete) {
     mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
@@ -209,7 +284,7 @@ function getAds(req, res, context, complete) {
                 var ads = rows;
                 complete();
                 var ad_ids = jp.query(ads, "$..AdKey");
-                mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level\n" +
+                mysql.pool.query("SELECT ai.AdId, i.InstrumentKey, i.Instrument, l.LevelKey, l.Level, ai.Quantity\n" +
                     "FROM AdInstruments ai\n" +
                     "LEFT JOIN InstrumentLookup i ON i.InstrumentKey = ai.InstrumentID\n" +
                     "LEFT JOIN LevelLookup l ON l.LevelKey = ai.LevelID\n" +
@@ -324,6 +399,7 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                     instruments: rows[1],
                     workSamples: rows[2]
                 };
+                console.log(context);
                 res.render('profile', context);
             } else {
                 throw(new ReferenceError("No profile found"));
@@ -370,6 +446,78 @@ app.put('/profile/about', checkAuthenticated,(req, res, next) => {
                 }
             });
     } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.put('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+   try {
+       mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Music"',
+           [req.body.workSampleTextInput, req.session.ProfileID],
+           function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+       });
+   } catch(err) {
+       res.redirect(utils.profileUpdateErrorRedirect());
+   }
+});
+
+app.post('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('INSERT INTO WorkSamples (ProfileID, SampleLocation, SampleType) VALUES (?, ?, "Music")',
+            [req.session.ProfileID, req.body.workSampleTextInput],
+            function (err, result) {
+               if(err) {
+                   throw(err);
+               } else if(results.affectedRows === 1) {
+                   res.send(true);
+               } else {
+                   throw(new ReferenceError("No profile found"));
+               }
+        });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.put('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Video"',
+            [req.body.workSampleTextInput, req.session.ProfileID],
+            function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.post('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('INSERT INTO WorkSamples (ProfileID, SampleLocation, SampleType) VALUES (?, ?, "Video")',
+            [req.session.ProfileID, req.body.workSampleTextInput],
+            function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(results.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
 });
@@ -437,7 +585,7 @@ app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
                                 {
                                     if (worksampleurl && worksampleurl != "") //if user added a work sample, go add it
                                     {
-                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?', [profileKey, worksampleurl],
+                                        conn.query('INSERT INTO WorkSamples SET ProfileID = ?, SampleLocation = ?, SampleType = ?', [profileKey, worksampleurl, req.body.SampleType],
                                             function (err, rows) {
                                                 conn.release();
 
@@ -650,4 +798,3 @@ function checkNotAuthenticated(req, res, next) {
 app.listen(port, function(){
     console.log('Express started on port ' + port + '; press Ctrl-C to terminate.')
 });
-

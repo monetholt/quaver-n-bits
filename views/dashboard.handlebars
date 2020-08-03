@@ -4,21 +4,19 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
-<script src="/js/dashboard.js"></script>
 <style>
-    .delete-selection {
+    .cell.medium-4.ads-edit-instruments:hover {
+        background-color: lightyellow;
         cursor: pointer;
-        float: right;
-        color: red;
-        font-weight: bold;
+/*        border-radius: 20px;
+*/        /*border: 1px solid #cacaca;*/
+        cursor: pointer;
+        transition: background-color 0.8s ease;
     }
 
-    .instrument-selection-item {
-        padding: 10px;
-        margin-bottom: 10px;
-        background-color: lightyellow;
-    }
 </style>
+
+<script src="/js/dashboard.js"></script>
 <main>
     <div class="main-container main-current-ads">
         <div class="grid-x">
@@ -170,12 +168,12 @@
             </tr>
             <tr>
                 <td>
-                    <label for="instrument-list">What you're looking for:</label>
+                    <label for="instrument-list-add">What you're looking for:</label>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <select id="instrument-list" style="width: 100%" required>
+                    <select id="instrument-list-add" style="width: 100%" required>
                         <option></option>
                         {{#each instruments}}
                         <option value="{{this.InstrumentKey}}">{{this.Instrument}}</option>
@@ -185,8 +183,8 @@
             </tr>
             <tr>
                 <td>
-                    <div id="instrument-selection">
-                        <select id="level-list-main" class="selection-level" style="display: none" required>
+                    <div id="instrument-selection-add">
+                        <select id="level-list-main-add" class="selection-level" style="display: none" required>
                             {{#each levels}}
                             <option value="{{this.LevelKey}}">{{this.Level}}</option>
                             {{/each}}
@@ -205,17 +203,67 @@
             <tr>
                 <td>
                     <div class="grid-x">
-                        <div class="cell medium-7">
-                            <button type="submit" class="button primary expanded large">Let's rock!</button>
-                        </div>
-                        <div class="cell medium-1"></div>
                         <div class="cell medium-4">
                             <button type="button" class="button alert expanded large" data-close>Never mind.</button>
+                        </div>
+                        <div class="cell medium-1"></div>
+                        <div class="cell medium-7">
+                            <button type="submit" class="button primary expanded large">Let's rock!</button>
                         </div>
                     </div>
                 </td>
             </tr>
         </table>
     </form>
+</div>
+
+<div class="reveal" id="modal-edit-ad-instruments" data-reveal data-close-on-click="false" data-animation-in="fade-in" data-animation-out="fade-out">
+    <h3>Edit Instruments</h3>
+    <p class="lead"></p>
+    <button class="close-button" data-close aria-label="Close reveal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <table>
+        <tr>
+            <td>
+                <select id="instrument-list-edit" style="width: 100%" required>
+                    <option></option>
+                    {{#each instruments}}
+                    <option value="{{this.InstrumentKey}}">{{this.Instrument}}</option>
+                    {{/each}}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <select id="level-list-main-edit" class="selection-level" style="display: none" required>
+                    {{#each levels}}
+                    <option value="{{this.LevelKey}}">{{this.Level}}</option>
+                    {{/each}}
+                </select>
+                <div id="instrument-selection-edit">
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="error-msg-edit" style="color: red;"></div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="grid-x">
+                    <div class="cell medium-4">
+                        <button type="button" class="button alert expanded large" data-close>Cancel</button>
+                    </div>
+                    <div class="cell medium-1"></div>
+                    <div class="cell medium-7">
+                        <button id="instrument-section-edit-btn" data-id="0" class="button primary expanded large">Done</button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
 

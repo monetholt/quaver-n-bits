@@ -5331,13 +5331,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #85d926, #d97726);
+    background-image: -webkit-linear-gradient(to bottom right, #d9cd26, #d92682);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #85d926, #d97726);
+    background-image: -moz-linear-gradient(to bottom right, #d9cd26, #d92682);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #85d926, #d97726);
+    background-image: -o-linear-gradient(to bottom right, #d9cd26, #d92682);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #85d926, #d97726);
+    background-image: linear-gradient(to bottom right, #d9cd26, #d92682);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5499,6 +5499,69 @@ main {
 
 .has-tip {
   border-bottom: solid 1px transparent; }
+
+#modal-edit-instruments h3 {
+  font-weight: bold; }
+
+#modal-edit-instruments label {
+  font-size: 1.1rem; }
+
+#modal-edit-instruments .close-button {
+  padding: 0 !important;
+  color: #9e9e9e;
+  background: #ff000012;
+  height: 30px;
+  width: 30px;
+  -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  -webkit-transition: 0.2s ease;
+  -moz-transition: 0.2s ease;
+  -ms-transition: 0.2s ease;
+  -o-transition: 0.2s ease;
+  transition: 0.2s ease; }
+  #modal-edit-instruments .close-button:hover {
+    background: #ff00004f;
+    color: #2a2a2a; }
+
+#modal-edit-instruments #instruments {
+  text-indent: 10px; }
+
+#modal-edit-instruments .instrument-selection-item {
+  display: block;
+  position: relative;
+  margin: 10px 0;
+  padding: 10px 20px;
+  background: #ddd;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  animation: 0.5s ease-out 0s 1 slideInFromTop; }
+  #modal-edit-instruments .instrument-selection-item .medium-4 {
+    display: flex;
+    align-items: center; }
+  #modal-edit-instruments .instrument-selection-item .instrument-selection-text {
+    margin-right: 20px; }
+  #modal-edit-instruments .instrument-selection-item .selection-level {
+    text-indent: 10px;
+    margin: 10px 0;
+    display: inline-block;
+    width: 100%; }
+  #modal-edit-instruments .instrument-selection-item .delete-selection {
+    position: absolute;
+    margin: inherit;
+    top: 0;
+    right: 10px;
+    height: 25px;
+    text-align: center;
+    width: 25px;
+    color: white;
+    background: #f44336;
+    font-weight: bold;
+    border: 1px solid white;
+    border-radius: 20px;
+    cursor: pointer; }
+    #modal-edit-instruments .instrument-selection-item .delete-selection:hover {
+      background: #e57373; }
 
 @keyframes slideInFromLeft {
   0% {

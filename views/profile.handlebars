@@ -33,7 +33,7 @@
                         <label for="edit-title-loc-input">Zip Code:</label>
                         <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
                     </div>
-                    <h6>Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</h6>
+                    <div id="profile-header-joined-date">Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</div>
                     <!--                    <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>-->
                     <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}">
                     <div id="edit-title-privacy-switch" class="switch" hidden>
@@ -112,11 +112,16 @@
                 <div class="profile-social">
                     <div class="profile-edit-button"><button id="edit-social" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                     <h2>Social:</h2>
-                    {{#if profile.Website}}
-                    <a id="profile-social-website" href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>Website</a>
-                    <label for="edit-website-text">Website: </label>
-                    <input type="text" id="edit-website-text" value="{{profile.Website}}" />
-                    {{/if}}
+                    <div id="profile-social-website-filled" {{#if (eq profile.Website "")}}hidden{{/if}}>
+                        <a id="profile-social-website" href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>{{profile.Website}}</a>
+                    </div>
+                    <div id="profile-social-website-empty"{{#unless (eq profile.Website "")}}hidden{{/unless}}>
+                        <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
+                    </div>
+                    <div id="edit-social-website" hidden>
+                        <label for="edit-website-text">Website: </label>
+                        <input type="text" id="edit-website-text" value="{{profile.Website}}" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,30 +129,44 @@
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-video" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>Videos:</h2>
+                <div id="profile-video-container" {{#unless workSamples}}hidden{{/unless}}>
                 {{#if workSamples}}
-                {{#each workSamples}}
-                {{#if (eq SampleType "Video")}}
-                <div class="responsive-embed widescreen">
-                    <iframe id="video-{{SampleKey}}" width="560" height="315" src="{{SampleLocation}}" frameborder="0" allowfullscreen></iframe>
+                    {{#each workSamples}}
+                        {{#if (eq SampleType "Video")}}
+                        <div id="display-video-{{SampleKey}} class="responsive-embed widescreen">
+                            <iframe data-id="{{SampleKey}}" id="video-{{SampleKey}}" width="560" height="315" src="{{SampleLocation}}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <div id="edit-video-{{SampleKey}}">
+                            <label for="edit-video-text-{{SampleKey}}">Video #{{inc @index}}: </label>
+                            <input type="text" id="edit-video-text-{{SampleKey}}" value="{{SampleLocation}}" />
+                        </div>
+                        {{/if}}
+                    {{/each}}
+                {{/if}}
                 </div>
-                {{/if}}
-                {{/each}}
-                {{else}}
-                [Coming Soon - Profile Videos!]
-                {{/if}}
+                <div id="no-videos" {{#if workSamples}}hidden{{/if}}>
+                    <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
+                </div>
             </div>
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-music" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>Music:</h2>
+                <div id="profile-music-container" {{#unless workSamples}}hidden{{/unless}}>
                 {{#if workSamples}}
-                {{#each workSamples}}
-                {{#if (eq SampleType "Music")}}
-                <iframe id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
+                    {{#each workSamples}}
+                        {{#if (eq SampleType "Music")}}
+                        <iframe data-id="{{SampleKey}}" id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
+                        <div id="edit-music-{{SampleKey}}">
+                            <label for="edit-music-text-{{SampleKey}}">Track #{{inc @index}}: </label>
+                            <input type="text" id="edit-music-text-{{SampleKey}}" value="{{SampleLocation}}" />
+                        </div>
+                        {{/if}}
+                    {{/each}}
                 {{/if}}
-                {{/each}}
-                {{else}}
-                [Coming Soon - Profile Music!]
-                {{/if}}
+                </div>
+                <div id="no-music" {{#if workSamples}}hidden{{/if}}>
+                    <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
+                </div>
             </div>
         </div>
     </div>

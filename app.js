@@ -28,9 +28,8 @@ app.engine('handlebars', handlebars({
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
         moment: require('helper-moment'),
-        eq: (v1, v2) => {
-            return v1 === v2;
-        }
+        eq: (v1, v2) => { return v1 === v2; },
+        inc: val => { return parseInt(val) + 1; }
     }
 }));
 
@@ -440,6 +439,26 @@ app.put('/profile/about', checkAuthenticated,(req, res, next) => {
         mysql.pool.query(
             'UPDATE Profiles SET Bio = ?, LastUpdated = NOW() WHERE UserID = ?',
             [req.body.bio, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.changedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+// saves the info that is located in the Profiles website/social section and returns true if update was successful
+app.put('/profile/website', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET Website = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.website, req.user.UserKey],
             function(err, result) {
                 if(err) {
                     throw(err);

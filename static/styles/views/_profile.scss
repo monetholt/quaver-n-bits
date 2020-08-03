@@ -137,6 +137,10 @@ $social-links-underline: #48fe80;
 
     .profile-about {
       position: relative;
+
+      #profile-about-text {
+        white-space: pre-wrap;
+      }
     }
 
     .cell {

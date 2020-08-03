@@ -2,123 +2,310 @@ window.addEventListener('DOMContentLoaded', bindButtons);
 
 function bindButtons() {
 
-    let state = {
-        header: {
-            isEditing: false,
-            button: 'edit-header',
-            endpoint: 'header',
-            req: {
-                zipCode: "",
-                artistName: "",
-                privacySwitch: ""
-            },
-            items: [
-                ['profile-header-title-text', 'edit-title-text', 'artistName', false],
-                ['profile-header-title-loc', 'edit-title-loc', 'zipCode', false],
-                ['profile-head-title-privacy', 'edit-title-privacy-switch', 'privacySwitch', (() => document.getElementById('privacySwitch').getAttribute('checked') === 'true' ? 1 : 0), 'profile-head-title-privacy-value', ['You are currently looking for a spot in a band.', 'You are not currently looking for a spot in a band.']]
-            ]
-        },
-        about: {
-            isEditing: false,
-            button: 'edit-about',
-            endpoint: 'about',
-            req: {
-                bio: ""
-            },
-            items: [
-                ['profile-about-text', 'edit-about-text', 'bio', false]
-            ]
-        },
-        social: {
-            isEditing: false,
-            button: 'edit-social',
-            items: [
-                ['profile-social-website', 'edit-website-text']
-            ]
-        },
-        instruments: {
-            isEditing: false,
-            button: 'edit-instruments',
-            items: false
-        },
-        video: {
-            isEditing: false,
-            button: 'edit-video',
-            endpoint: 'worksamples/video', //post for insert, put for update
-            items: false
-        },
-        music: {
-            isEditing: false,
-            button: 'edit-music',
-            endpoint: 'worksamples/music', //post for insert, put for update
-            items: false
+    // Bind each edit button function when the DOM is loaded.
+    editHeader();
+    editAbout();
+    editSocial();
+    editVideo();
+
+    function editHeader() {
+
+        // Edit button for header content.
+        let headerEditBtn = document.getElementById('edit-header');
+
+        // Boolean to determine if we're in edit mode on the header.
+        let isEditingHeader = false;
+
+        // The request to build if edits are made. Defaults to current values.
+        let req = {
+            zipCode: document.getElementById('edit-title-loc-input').value,
+            artistName: document.getElementById('edit-title-text-input').value,
+            privacySwitch: document.getElementById('privacySwitch').getAttribute('checked') === 'true' ? 1 : 0
         }
-    }
 
-    // Create event listeners for edit buttons:
-    for (let i=0; i < Object.keys(state).length; i++) {
-        let key = state[Object.keys(state)[i]];
-        let button = document.getElementById(key.button);
+        headerEditBtn.addEventListener('click', () => {
 
-        button.addEventListener('click', e => {
-
+            // Boolean to determine if anything has changed.
             let valuesChanged = false;
 
-            for (let j=0; j < key.items.length; j++) {
-                displayText = document.getElementById(key.items[j][0]);
-                editObj = document.getElementById(key.items[j][1]);
-                displayText.hidden = !displayText.hidden;
-                editObj.hidden = !editObj.hidden;
-                editObjValue = key.items[j][3] === false ? editObj.lastElementChild.value : key.items[j][3](editObj);
-                compareTo = key.items[j].length >= 5 ? document.getElementById(key.items[j][4]).value : displayText.textContent;
+            // Grab all of the viewable elements in the header
+            let displayTitle = document.getElementById('profile-header-title-text');
+            let displayLoc = document.getElementById('profile-header-title-loc');
+            let displayPrivacy = document.getElementById('profile-head-title-privacy');
+            let joinedDate = document.getElementById('profile-header-joined-date');
 
-                if(!key.isEditing) {
-                    button.classList.add('edit-button-animate-in');
-                    editObj.classList.add('edit-text-anim');
-                } else {
-                    key.req[key.items[j][2]] = editObjValue;
-                    if (compareTo !== editObjValue) {
-                        valuesChanged = true;
-                        compareTo = editObjValue;
-                        if(key.items[j].length >= 6) {
-                            displayText.textContent = editObjValue === 1 ? key.items[j][5][0] : key.items[j][5][1];
-                        }
-                    }
-                    button.classList.remove('edit-button-animate-in');
-                    editObj.classList.remove('edit-text-anim');
+            // Grab all of the editable elements in the header
+            let editTitle = document.getElementById('edit-title-text');
+            let editLoc = document.getElementById('edit-title-loc');
+            let privacySwitch = document.getElementById('edit-title-privacy-switch');
+
+            // Toggle the visibility of all header elements (switch from 'view' to 'edit').
+            displayTitle.hidden = !displayTitle.hidden;
+            displayLoc.hidden = !displayLoc.hidden;
+            displayPrivacy.hidden = !displayPrivacy.hidden;
+            joinedDate.hidden = !joinedDate.hidden;
+            editTitle.hidden = !editTitle.hidden;
+            editLoc.hidden = !editLoc.hidden;
+            privacySwitch.hidden = !privacySwitch.hidden;
+
+            // If the user is about to edit, animate the edit button and edit elements.
+            if (!isEditingHeader) {
+                headerEditBtn.classList.add('edit-button-animate-in');
+                editTitle.classList.add('edit-text-anim');
+                editLoc.classList.add('edit-text-anim');
+                privacySwitch.classList.add('edit-text-anim');
+
+            // Otherwise, check each header element for change.
+            // If anything changed, flag the new state to be sent for storage in the database.
+            } else {
+
+                // Check & update the artist name.
+                let artistNameInput = document.getElementById('edit-title-text-input').value;
+                if (req.artistName !== artistNameInput) {
+                    valuesChanged = true;
+                    displayTitle.textContent = artistNameInput;
+                    req.artistName = artistNameInput;
                 }
 
-                button.blur();
+                // Check & update the zip code.
+                let zipCodeInput = document.getElementById('edit-title-loc-input').value;
+                if (req.zipCode !== zipCodeInput) {
+                    valuesChanged = true;
+                    displayLoc.innerHTML = `<i class="fas fa-map-marker-alt"></i>${zipCodeInput}`;
+                    req.zipCode = zipCodeInput;
+                }
+
+                // Check & update the privacy setting.
+                let privacySwitchState = document.getElementById('privacySwitch').getAttribute('checked') === 'true' ? 1 : 0;
+                if (req.privacySwitch !== privacySwitchState) {
+                    valuesChanged = true;
+                    displayLoc.innerHTML = `<i class="fas fa-map-marker-alt"></i>${zipCodeInput}`;
+                    req.privacySwitch = privacySwitchState;
+                    // The JS that's in the hanldebars file to switch the privacy paddle display could hypothetically go here, as well.
+                }
+
+                // Remove the animations on the way out.
+                headerEditBtn.classList.remove('edit-button-animate-in');
+                editTitle.classList.remove('edit-text-anim');
+                editLoc.classList.remove('edit-text-anim');
+                privacySwitch.classList.remove('edit-text-anim');
             }
 
-            key.isEditing = !key.isEditing;
+            // Remove focus from header button because that causes odd issues.
+            headerEditBtn.blur();
 
+            // Toggle editing mode.
+            isEditingHeader = !isEditingHeader
+
+            // If anything changed, send the request.
             if (valuesChanged) {
-                console.log("SOMETHING CHANGED - ALERT THE DATABASE! " + JSON.stringify(key.req));
-                openRequest(key.endpoint, key.req);
+                openRequest('header', req);
             }
         });
+    }
 
-        function openRequest(endpoint, payload) {
-            let req = new XMLHttpRequest();
-            req.open('PUT', `/profile/${endpoint}`, true);
-            req.addEventListener('load', () => {
-                if (req.status < 400) {
-                    console.log("YAAAAS!");
-                } else {
-                    console.log("BAD." + req.statusText);
-                }
-            });
-            req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-            req.send(JSON.stringify(payload));
+    function editAbout() {
+        // Edit button for about section.
+        let aboutBtn = document.getElementById('edit-about');
+
+        // Boolean to determine if we're in edit mode.
+        let isEditingAbout = false;
+
+        // The request to build if edits are made. Defaults to current values.
+        let req = {
+            bio: document.getElementById('edit-about-text-input').value,
         }
+
+        aboutBtn.addEventListener('click', () => {
+
+            // Boolean to determine if anything has changed.
+            let valuesChanged = false;
+
+            // Grab the display & edit elements in about.
+            let displayBio = document.getElementById('profile-about-text');
+            let editBio = document.getElementById('edit-about-text');
+
+            // Toggle the visibility of about elements (switch from 'view' to 'edit').
+            displayBio.hidden = !displayBio.hidden;
+            editBio.hidden = !editBio.hidden;
+
+            // If the user is about to edit, animate the edit button and edit elements.
+            if (!isEditingAbout) {
+                aboutBtn.classList.add('edit-button-animate-in');
+                editBio.classList.add('edit-text-anim');
+
+            // Otherwise, check if about element changed.
+            } else {
+
+                // Check & update the about section.
+                let aboutInput = document.getElementById('edit-about-text-input').value;
+                if (req.bio !== aboutInput) {
+                    valuesChanged = true;
+                    displayBio.textContent = aboutInput;
+                    req.bio = aboutInput;
+                }
+
+                // Remove the animations on the way out.
+                aboutBtn.classList.remove('edit-button-animate-in');
+                editBio.classList.remove('edit-text-anim');
+            }
+
+            // Remove focus from edit button because that causes odd issues.
+            aboutBtn.blur();
+
+            // Toggle editing mode.
+            isEditingAbout = !isEditingAbout
+
+            // If anything changed, send the request.
+            if (valuesChanged) {
+                openRequest('about', req);
+            }
+        });
     }
 
-    function handleText() {
+    function editSocial() {
 
+        // Edit button for social section.
+        let socialBtn = document.getElementById('edit-social');
+
+        // Boolean to determine if we're in edit mode.
+        let isEditingSocial = false;
+
+        // The request to build if edits are made. Defaults to current values.
+        let req = {
+            website: document.getElementById('edit-website-text').value,
+        }
+
+        socialBtn.addEventListener('click', () => {
+
+            // Boolean to determine if anything has changed.
+            let valuesChanged = false;
+
+            // Grab the display & edit elements in social.
+            let displaySocial = document.getElementById('profile-social-website-filled');
+            let displaySocialEmpty = document.getElementById('profile-social-website-empty');
+            let editSocial = document.getElementById('edit-social-website');
+
+            // If the user is about to edit, animate the edit button and edit elements.
+            if (!isEditingSocial) {
+                // Toggle the visibility of social elements (switch from 'view' to 'edit').
+                displaySocial.hidden = true;
+                displaySocialEmpty.hidden = true;
+                editSocial.hidden = !editSocial.hidden;
+
+                socialBtn.classList.add('edit-button-animate-in');
+                editSocial.classList.add('edit-text-anim');
+
+            // Otherwise, check if social element changed.
+            } else {
+
+                // Check & update the social section.
+                let socialInput = document.getElementById('edit-website-text').value.trim();
+                if (req.website !== socialInput) {
+                    valuesChanged = true;
+
+                    // If there's something besides whitespace, make a link out of it.
+                    if (socialInput !== '') {
+                        displaySocial.setAttribute('href', socialInput);
+                        displaySocial.innerHTML = `<a id="profile-social-website" href="${socialInput}" target="_blank"><i class="fas fa-globe"></i>${socialInput}</a>`;
+                    }
+
+                    req.website = socialInput;
+                }
+
+                // Toggle the visibility of social elements based on whether or not its empty.
+                displaySocial.hidden = req.website === '' ? true : false;
+                displaySocialEmpty.hidden = req.website === '' ? false : true;
+                editSocial.hidden = !editSocial.hidden;
+
+                // Remove the animations on the way out.
+                socialBtn.classList.remove('edit-button-animate-in');
+                editSocial.classList.remove('edit-text-anim');
+            }
+
+            // Remove focus from edit button because that causes odd issues.
+            socialBtn.blur();
+
+            // Toggle editing mode.
+            isEditingSocial = !isEditingSocial
+
+            // If anything changed, send the request.
+            if (valuesChanged) {
+                openRequest('website', req);
+            }
+        });
     }
 
-    // document.getElementById('submitForm').addEventListener('click', e => {
+    function editVideo() {
+
+        // Edit button for video section.
+        let videoBtn = document.getElementById('edit-video');
+
+        // Boolean to determine if we're in edit mode.
+        let isEditingVideo = false;
+
+        let container = document.getElementById('profile-music-container');
+        let videos = container.getElementsByTagName('iframe');
+
+        // Builds the current state of videos as keys (SampleKey) and values (SampleLocation)
+        let req = {}
+
+        for (let video of videos) {
+            req[video.getAttribute('data-id')] = video.getAttribute('src');
+        }
+
+        videoBtn.addEventListener('click', () => {
+
+            // Boolean to determine if anything has changed.
+            let valuesChanged = false;
+
+            // Grab elements for display & edit.
+            let container = document.getElementById('profile-music-container');
+            let videos = container.getElementsByTagName('iframe');
+            let inputs = container.getElementsByTagName('input');
+
+            // Toggle visibility of elements.
+            for (let video of videos) { video.hidden = !video.hidden }
+            for (let input of inputs) { input.hidden = !input.hidden }
+
+            // If the user is about to edit, animate the edit button and edit elements.
+            if (!isEditingVideo) {
+
+                videoBtn.classList.add('edit-button-animate-in');
+                for (let input of inputs) { input.classList.add('edit-text-anim') }
+
+                // Otherwise, check if social element changed.
+            } else {
+                // TODO: Make the things happen when videos are edited.
+            }
+
+            // Remove focus from edit button because that causes odd issues.
+            videoBtn.blur();
+
+            // Toggle editing mode.
+            isEditingVideo = !isEditingVideo
+
+            // If anything changed, send the request.
+            if (valuesChanged) {
+                openRequest('videos', req);
+            }
+        });
+    }
+
+    function openRequest(endpoint, payload) {
+        console.log('values sent to openRequest: ', endpoint, payload);
+        let req = new XMLHttpRequest();
+        req.open('PUT', `/profile/${endpoint}`, true);
+        req.addEventListener('load', () => {
+            if (req.status < 400) {
+                console.log("YAAAAS!");
+            } else {
+                console.log("BAD." + req.statusText);
+            }
+        });
+        req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        req.send(JSON.stringify(payload));
+    }
 }
 
 

@@ -176,7 +176,6 @@ app.delete('/dashboard/ads/delete', checkAuthenticated,(req, res, next) => {
     });
 });
 
-
 app.post('/dashboard/ads/edit', checkAuthenticated, (req, res, next) => {
     try {
         mysql.pool.getConnection(function (err, conn) {
@@ -270,9 +269,13 @@ function getAds(req, res, context, complete) {
         } else if (rows.length > 0) {
             sql = "SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, " +
                 "a.DateCreated, a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY " + rows[0]['Value'];
+            // set the sort value so that it can be read on refresh using the javascript in dashboard.js
+            context['sort'] = rows[0]['Value'];
         } else {
             sql = "SELECT a.AdKey, a.Title, a.Description, a.ZipCode, a.LocationRadius, a.DatePosted, a.Deleted, " +
                 "a.DateCreated, a.LastUpdated, a.IsActive FROM Ads a WHERE a.UserID = ? ORDER BY a.DatePosted DESC";
+            // set the sort value so that it can be read on refresh using the javascript in dashboard.js
+            context['sort'] = "a.DatePosted DESC";
         }
         mysql.pool.query(sql, [context.user.UserKey], (error, rows) => {
             if (error) {
@@ -314,15 +317,21 @@ function getAds(req, res, context, complete) {
 
 
 app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
-    mysql.pool.query(
-        "INSERT INTO UserSettings (UserID, SettingKey, `Value`) VALUES (?, (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder'), ?)",
-        [req.user.UserKey, req.body.sortOrder], (error, rows) => {
-            if (error) {
-                throw(error);
-            } else if (rows.length > 0) {
-                res.send(true);
-            }
-        });
+    // checks whether the UserID exists in the table
+    mysql.pool.query("SELECT UserID FROM UserSettings WHERE UserID = ?;", [req.user.UserKey], (error, results) => {
+           if (results.length == 0) {
+                //there is no sortOrder in table for this user so we create a new one 
+                mysql.pool.query("INSERT INTO UserSettings (UserID, SettingID, `Value`) VALUES (?, (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder'), ?);", [req.user.UserKey, req.body.sortOrder], (error, results) => {
+                   return res.redirect('\dashboard');
+                });
+            } else {
+                // a sortOrder that is not the default exists already so we just update the Value in the backend
+                mysql.pool.query("UPDATE UserSettings SET `Value` = ? WHERE UserID = ?;", [req.body.sortOrder, req.user.UserKey], (error, results) => {
+                   return res.redirect('\dashboard');
+                });
+            } 
+    });
+
 });
 
 

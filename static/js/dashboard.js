@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.addEventListener('load', () => {
         let res = JSON.parse(req.responseText);
         if (req.status < 400) {
+            $("[name='sortOrder']").val(res.sort);
+            console.log(res);
             if (res.has_current_ads) {
                 document.getElementById('current-ads-loading').hidden = true;
                 let currentAds = document.getElementById('current-ads');
@@ -171,6 +173,14 @@ function toggleEditAdView(id){
     thisView.hidden = !thisView.hidden;
 }
 
+// this was me playing around with using a function to XMLHTTPrequest the 
+// post function but it didn't make sense when all of the adds had to reload
+// so this function can be deleted if we want 
+/* 
+function filterSelection(sortFilter) {
+     let payload = {sortOrder: sortFilter};
+}
+*/
 // Send a request to /dashboard/ads/enable to toggle the state of "IsActive" for this ad.
 // Updates the UI by removing the node from where it was and appending it to where it should be.
 // Alerts the user with a success message after it's done, or error message if something bad happened.

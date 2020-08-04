@@ -7,6 +7,7 @@ function bindButtons() {
     editAbout();
     editSocial();
     editVideo();
+    editMusic();
 
     function editHeader() {
 
@@ -315,6 +316,81 @@ function bindButtons() {
         });
     }
 
+    function editMusic() {
+
+        // Edit button for music section.
+        let musicBtn = document.getElementById('edit-music');
+
+        // Boolean to determine if we're in edit mode.
+        let isEditingMusic = false;
+
+        let container = document.getElementById('profile-music-container');
+        let music = container.getElementsByClassName('display-music-element');
+
+        // Builds the current state of tracks as keys (SampleKey) and values (SampleLocation)
+        let req = {}
+
+        // Loop through the actual track iframes and build a reference to them, with SampleKey as ID and link as value.
+        for (let i=0; i < music.length; i++) {
+            let track = music[i].getElementsByTagName('iframe')[0];
+            req[track.getAttribute('data-id')] = track.getAttribute('src');
+        }
+
+        console.log("req: ", req);
+        musicBtn.addEventListener('click', () => {
+
+            // Boolean to determine if anything has changed.
+            let valuesChanged = false;
+
+            // Grab elements for display & edit.
+            let container = document.getElementById('profile-music-container');
+            let videos = container.getElementsByClassName('display-music-element');
+            let inputs = container.getElementsByClassName('edit-music-element');
+
+            // Display for if there are no tracks.
+            let noMusic = document.getElementById('no-music');
+
+            // Grab div for attaching new music.
+            let addMusic = document.getElementById('add-tracks-text');
+
+            // Toggle visibility of elements.
+            addMusic.hidden = !addMusic.hidden;
+
+            // If the user is about to edit, animate the edit button and edit elements.
+            if (!isEditingMusic) {
+
+                musicBtn.classList.add('edit-button-animate-in');
+                for (let input of inputs) {
+                    input.classList.add('edit-text-anim');
+                    input.classList.remove('hide');
+                }
+                addMusic.classList.add('edit-text-anim');
+                noMusic.hidden = true;
+
+            } else {
+
+                musicBtn.classList.remove('edit-button-animate-in');
+                for (let input of inputs) {
+                    input.classList.remove('edit-text-anim');
+                    input.classList.add('hide');
+                }
+                addMusic.classList.remove('edit-text-anim');
+                noMusic.hidden = videos.length > 0 ? true : false;
+            }
+
+            // Remove focus from edit button because that causes odd issues.
+            musicBtn.blur();
+
+            // Toggle editing mode.
+            isEditingMusic = !isEditingMusic
+
+            // If anything changed, send the request.
+            if (valuesChanged) {
+                openRequest('music', req);
+            }
+        });
+    }
+
     function openRequest(endpoint, payload) {
         console.log('values sent to openRequest: ', endpoint, payload);
         let req = new XMLHttpRequest();
@@ -361,6 +437,7 @@ function addVideo() {
     }
 }
 
+// Deletes the video with the given SampleKey, if it exists. Otherwise, shows an error.
 function deleteVideo(referrer=0) {
     if (referrer > 0) {
         let req = new XMLHttpRequest();
@@ -383,9 +460,10 @@ function deleteVideo(referrer=0) {
     }
 }
 
+// Replaces the existing video with given SampleKey with the validated user-provided URL.
 function updateVideo(id) {
     // Get the URL to be added to the work samples.
-    let url = document.getElementById('edit-video-text-'+26).value;
+    let url = document.getElementById(`edit-video-text-${id}`).value;
 
     // If we got it and it's valid, open a request and store it.
     if (url && validateYouTubeUrl(url)) {
@@ -394,7 +472,10 @@ function updateVideo(id) {
         req.addEventListener('load', () => {
             if (req.status < 400) {
                 showAlert("success", "far fa-check-circle", `Your video has been edited! Refreshing the page.`);
-                setTimeout(() => { location.reload(); }, 3000);
+                document.getElementById('edit-video').click();
+                setTimeout(() => {
+                    location.reload();
+                }, 2500);
             } else {
                 showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to add the video. Please try again later.`)
             }
@@ -404,7 +485,81 @@ function updateVideo(id) {
     } else {
         showAlert("caution", "fas fa-exclamation-triangle", 'You entered an invalid URL. Make sure the URL is from YouTube.');
     }
+}
 
+// Performs final validation check on the track URL, then sends it off to save to the DB while updating the UI.
+function addMusic() {
+    // Get the URL to be added to the work samples.
+    let url = document.getElementById('add-music-text').value;
+
+    // If we got it and it's valid, open a request and store it.
+    if (url && validateSoundCloudUrl(url)) {
+        let req = new XMLHttpRequest();
+        req.open('POST', `/profile/worksamples/music`, true);
+        req.addEventListener('load', () => {
+            if (req.status < 400) {
+                showAlert("success", "far fa-check-circle", `Your track has been added! Refreshing the page.`);
+                document.getElementById('edit-music').click();
+                setTimeout(() => { location.reload(); }, 3000);
+            } else {
+                showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to add the track. Please try again later.`)
+            }
+        });
+        req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        req.send(JSON.stringify({ workSampleTextInput: url }));
+    } else {
+        showAlert("caution", "fas fa-exclamation-triangle", 'You entered an invalid URL. Make sure the URL is a SoundCloud track.');
+    }
+}
+
+// Deletes the track with the given SampleKey, if it exists. Otherwise, shows an error.
+function deleteMusic(referrer=0) {
+    if (referrer > 0) {
+        let req = new XMLHttpRequest();
+        req.open('DELETE', `/profile/worksamples/music`, true);
+        req.addEventListener('load', () => {
+            if (req.status < 400) {
+                showAlert("success", "far fa-check-circle", `Your track was successfully deleted. Refreshing Page.`);
+                document.getElementById('edit-music').click();
+                setTimeout(() => {
+                    location.reload();
+                }, 2500);
+            } else {
+                showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to delete the track. Please try again later.`)
+            }
+        });
+        req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        req.send(JSON.stringify({sampleKey: referrer}));
+    } else {
+        showAlert("caution", "fas fa-exclamation-triangle", 'An invalid delete button was pressed. Try refreshing the page.');
+    }
+}
+
+// Replaces the existing track with given SampleKey with the validated user-provided URL.
+function updateMusic(id) {
+    // Get the URL to be added to the work samples.
+    let url = document.getElementById(`edit-music-text-${id}`).value;
+
+    // If we got it and it's valid, open a request and store it.
+    if (url && validateSoundCloudUrl(url)) {
+        let req = new XMLHttpRequest();
+        req.open('PUT', `/profile/worksamples/music`, true);
+        req.addEventListener('load', () => {
+            if (req.status < 400) {
+                showAlert("success", "far fa-check-circle", `Your music has been edited! Refreshing the page.`);
+                document.getElementById('edit-music').click();
+                setTimeout(() => {
+                    location.reload();
+                }, 2500);
+            } else {
+                showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to add the track. Please try again later.`)
+            }
+        });
+        req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        req.send(JSON.stringify({ workSampleTextInput: url, id: id }));
+    } else {
+        showAlert("caution", "fas fa-exclamation-triangle", 'You entered an invalid URL. Make sure the URL is from a SoundCloud track.');
+    }
 }
 
 function showAlert(type, icon, text) {
@@ -456,9 +611,8 @@ function validateYouTubeUrl(url, referrer=false) {
     } else return false;
 }
 
-
 // Copied over & edited from create-profile.
-function validateSoundCloudUrl(url) {
+function validateSoundCloudUrl(url, referrer=false) {
 
     // If we already validated & converted this URL and it didn't change, we're good.
     if (soundCloudLinkWasConverted && convertedSoundCloudLink === url) {
@@ -471,9 +625,9 @@ function validateSoundCloudUrl(url) {
         var match = url.match(regExp);
         if (match) {
             // If this a valid SoundCloud track link, then show user we're converting the link.
-            document.getElementById('worksample-soundcloud-converting').hidden = false;
-            document.getElementById('worksample-soundcloud-converted').hidden = true;
-            document.getElementById('worksample-soundcloud-invalid').hidden = true;
+            document.getElementById(`worksample-soundcloud-converting${referrer ? '-' + referrer : ''}`).hidden = false;
+            document.getElementById(`worksample-soundcloud-converted${referrer ? '-' + referrer : ''}`).hidden = true;
+            document.getElementById(`worksample-soundcloud-invalid${referrer ? '-' + referrer : ''}`).hidden = true;
 
             // Since it's from SoundCloud, grab the track ID and format it for embedding.
             // Use our super secret CORS escape hatch to make the request since we're 1337 h4x0R2.
@@ -487,16 +641,15 @@ function validateSoundCloudUrl(url) {
                     let number = res.match(/soundcloud:\/\/sounds:(\d{9})/);
 
                     // Hide the loading check.
-                    document.getElementById('worksample-soundcloud-converting').hidden = true;
+                    document.getElementById(`worksample-soundcloud-converting${referrer ? '-' + referrer : ''}`).hidden = true;
 
                     // If a valid ID was found, let the user know and convert the URL for display.
                     if (number && 1 in number) {
                         let iframe = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${number[1]}`;
 
                         // Show the user we've finished our conversion and insert it into the worksample input.
-                        document.getElementById('worksample-soundcloud-converted').hidden = false;
-                        document.getElementById('worksample-entered').value = iframe;
-                        document.getElementById('sampletype').value = "Music";
+                        document.getElementById(`worksample-soundcloud-converted${referrer ? '-' + referrer : ''}`).hidden = false;
+                        document.getElementById(`${referrer ? 'edit-music-text-' + referrer : 'add-music-text'}`).value = iframe;
 
                         // Flag that this URL's value and that it was converted.
                         soundCloudLinkWasConverted = true;
@@ -504,7 +657,7 @@ function validateSoundCloudUrl(url) {
                         return true;
                     }
 
-                    document.getElementById('worksample-soundcloud-invalid').hidden = false;
+                    document.getElementById(`worksample-soudcloud-invalid${referrer ? '-' + referrer : ''}`).hidden = false;
                     return false;
 
                 } else {
@@ -517,29 +670,6 @@ function validateSoundCloudUrl(url) {
 
     } else return false;
 }
-
-
-/*
-This is how we are going to get track ID from Soundcloud URLs for each track -
-
-document.addEventListener('DOMContentLoaded', (event) => {
-    let req = new XMLHttpRequest();
-    let url = 'https://soundcloud.com/milklab/nate-kimball-orchestra-namaste';
-    req.open('GET', `https://cors-anywhere.herokuapp.com/${url}`, true);
-    req.addEventListener('load', () => {
-        let res = req.responseText;
-        if (req.status < 400) {
-            // console.log(res);
-            console.log("YAY!");
-            let number = res.match(/soundcloud:\/\/sounds:(\d{9})/);
-            console.log(number[1]);
-            let iframe = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${number[1]}`;
-            console.log(iframe);
-        }
-    });
-    req.send(null);
-});
-*/
 
 window.addEventListener('DOMContentLoaded', () => {
     let req = new XMLHttpRequest();
@@ -554,7 +684,6 @@ window.addEventListener('DOMContentLoaded', () => {
     req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
     req.send(null);
 });
-
 
 //returns a list of the instruments in the edit form of the passed id
 function getEditInstruments() {
@@ -615,7 +744,6 @@ function addSelection(id, inst) {
     return thisId;
 }
 
-
 //returns html for instrument list for instrument section when passed in list of instruments/levels.
 function createInstrumentList(instruments) {
     let list = ``;
@@ -625,7 +753,6 @@ function createInstrumentList(instruments) {
     }
     return list;
 }
-
 
 $(document).ready(function () {
 

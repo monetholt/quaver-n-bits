@@ -534,6 +534,24 @@ app.post('/profile/instruments', checkAuthenticated, (req, res, next) => {
     }
 });
 
+app.delete('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('DELETE FROM WorkSamples WHERE ProfileID=? AND SampleKey=? AND SampleType="Music"',
+            [req.session.ProfileID, req.body.sampleKey],
+            function (err, result) {
+                if(err) {
+                    throw(err);
+                } else if(result.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
 app.put('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
    try {
        mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Music"',
@@ -572,10 +590,9 @@ app.post('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
 
 app.delete('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
     try {
-        mysql.pool.query('DELETE FROM WorkSamples WHERE ProfileID=? AND SampleKey=?',
+        mysql.pool.query('DELETE FROM WorkSamples WHERE ProfileID=? AND SampleKey=? AND SampleType="Video"',
             [req.session.ProfileID, req.body.sampleKey],
             function (err, result) {
-                console.log(result);
                 if(err) {
                     throw(err);
                 } else if(result.affectedRows === 1) {

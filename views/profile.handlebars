@@ -162,7 +162,6 @@
                                 <div class="cell medium-3">
                                     <button class="button alert expanded" onclick="deleteVideo({{SampleKey}})">Delete</button>
                                 </div>
-
                                 <div class="cell medium-9">
                                     <button class="button primary expanded" onclick="updateVideo({{SampleKey}})">Update URL</button>
                                 </div>
@@ -180,18 +179,47 @@
             <div class="cell medium-6">
                 <div class="profile-edit-button"><button id="edit-music" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                 <h2>Music:</h2>
-                <div id="profile-music-container" {{#unless workSamples.music}}hidden{{/unless}}>
-                {{#if workSamples.music}}
-                    {{#each workSamples.music}}
-                        {{#if (eq SampleType "Music")}}
-                        <iframe data-id="{{SampleKey}}" id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
-                        <div id="edit-music-{{SampleKey}}">
-                            <label for="edit-music-text-{{SampleKey}}">Track #{{inc @index}}: </label>
-                            <input type="text" id="edit-music-text-{{SampleKey}}" value="{{SampleLocation}}" />
+                <div id="add-tracks-text" hidden>
+                    <label for="add-music-text">Add Video: </label>
+                    <div class="grid-x">
+                        <div class="cell medium-8">
+                            <input type="text" id="add-music-text" placeholder="Enter a valid SoundCloud track URL" value=""  onchange="validateSoundCloudUrl(this.value)" />
+                            <div id="worksample-soundcloud-converting" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting SoundCloud link for embedding.</div>
+                            <div id="worksample-soundcloud-converted" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>
+                            <div id="worksample-soundcloud-invalid" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid SoundCloud link. Make sure to use the track URL.</div>
                         </div>
-                        {{/if}}
-                    {{/each}}
-                {{/if}}
+                        <div class="cell medium-4">
+                            <button id="add-music" type="button" class="button primary expanded" onclick="addMusic()"><i class="fas fa-plus"></i>Add</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="profile-music-container" {{#unless workSamples.music}}hidden{{/unless}}>
+                    {{#if workSamples.music}}
+                        {{#each workSamples.music}}
+                            {{#if (eq SampleType "Music")}}
+                                <div id="display-music-{{SampleKey}}" class="display-music-element responsive-embed widescreen">
+                                    <div id="edit-music-{{SampleKey}}" class="grid-x edit-music-element hide">
+                                        <div class="cell medium-12">
+                                            <label for="edit-music-text-{{SampleKey}}">Update Track URL: </label>
+                                        </div>
+                                        <div class="cell medium-12">
+                                            <input type="text" id="edit-music-text-{{SampleKey}}" value="{{SampleLocation}}" onchange="validateSoundCloudUrl(this.value, {{SampleKey}})" />
+                                            <div id="worksample-soundcloud-converting-{{SampleKey}}" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting SoundCloud link for embedding.</div>
+                                            <div id="worksample-soundcloud-converted-{{SampleKey}}" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>
+                                            <div id="worksample-soundcloud-invalid-{{SampleKey}}" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid SoundCloud link. Make sure to use the video URL or shareable link.</div>
+                                        </div>
+                                        <div class="cell medium-3">
+                                            <button class="button alert expanded" onclick="deleteMusic({{SampleKey}})">Delete</button>
+                                        </div>
+                                        <div class="cell medium-9">
+                                            <button class="button primary expanded" onclick="updateMusic({{SampleKey}})">Update URL</button>
+                                        </div>
+                                    </div>
+                                    <iframe data-id="{{SampleKey}}" id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
+                                </div>
+                            {{/if}}
+                        {{/each}}
+                    {{/if}}
                 </div>
                 <div id="no-music" {{#if workSamples.music}}hidden{{/if}}>
                     <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>

@@ -383,7 +383,27 @@ function deleteVideo(referrer=0) {
     }
 }
 
-function updateVideo() {
+function updateVideo(id) {
+    // Get the URL to be added to the work samples.
+    let url = document.getElementById('edit-video-text-'+26).value;
+
+    // If we got it and it's valid, open a request and store it.
+    if (url && validateYouTubeUrl(url)) {
+        let req = new XMLHttpRequest();
+        req.open('PUT', `/profile/worksamples/video`, true);
+        req.addEventListener('load', () => {
+            if (req.status < 400) {
+                showAlert("success", "far fa-check-circle", `Your video has been edited! Refreshing the page.`);
+                setTimeout(() => { location.reload(); }, 3000);
+            } else {
+                showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to add the video. Please try again later.`)
+            }
+        });
+        req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+        req.send(JSON.stringify({ workSampleTextInput: url, id: id }));
+    } else {
+        showAlert("caution", "fas fa-exclamation-triangle", 'You entered an invalid URL. Make sure the URL is from YouTube.');
+    }
 
 }
 

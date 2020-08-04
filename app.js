@@ -189,7 +189,7 @@ app.post('/dashboard/ads/edit', checkAuthenticated, (req, res, next) => {
                         res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
                         res.end();
                     }
-                    else if (rows.changedRows === 1) //now that ad is updated, do any instruments updates
+                    else if (rows.affectedRows === 1) //now that ad is updated, do any instruments updates
                     {
                         var adKey = req.body["ad-id"];
 
@@ -425,8 +425,8 @@ app.put('/profile/header', checkAuthenticated,(req, res, next) => {
             [req.body.zipCode, req.body.artistName, (req.body.privacySwitch), req.user.UserKey],
             function(err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"))
@@ -446,7 +446,7 @@ app.put('/profile/about', checkAuthenticated,(req, res, next) => {
             function(err, result) {
                 if(err) {
                     throw(err);
-                } else if(result.changedRows === 1) {
+                } else if(result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"))
@@ -465,8 +465,8 @@ app.put('/profile/website', checkAuthenticated,(req, res, next) => {
             [req.body.website, req.user.UserKey],
             function(err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"))
@@ -540,8 +540,8 @@ app.put('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
            [req.body.workSampleTextInput, req.session.ProfileID],
            function (err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"));
@@ -591,15 +591,15 @@ app.delete('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
 
 app.put('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
     try {
-        mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Video"',
-            [req.body.workSampleTextInput, req.session.ProfileID],
+        mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE SampleKey=? AND SampleType="Video"',
+            [req.body.workSampleTextInput, req.body.id],
             function (err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
-                    throw(new ReferenceError("No profile found"));
+                    console.log(result);
                 }
             });
     } catch(err) {
@@ -633,8 +633,8 @@ app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
             [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
             function(err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"))
@@ -661,7 +661,7 @@ app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
                         conn.release();
                         throw (err);
                     }
-                    else if (rows.changedRows === 1) //now that profile is created, add instruments
+                    else if (rows.affectedRows === 1) //now that profile is created, add instruments
                     {
                         var profileKey = req.session.ProfileID
                         //first format instrument/levelIDs sent in with form
@@ -762,7 +762,7 @@ app.post('/profile/instrument/add', checkAuthenticated, (req, res, next) => {
             function (err, result) {
                 if (err) {
                     throw (err);
-                } else if (result.changedRows === 1) {
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw (new ReferenceError("Must save profile before adding instruments."));
@@ -808,8 +808,8 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
             [req.body.levelId, req.body.ProfileKey, req.body.instrumentId],
             function(err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No such instrument for this user"));

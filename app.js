@@ -554,8 +554,8 @@ app.delete('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
 
 app.put('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
    try {
-       mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Music"',
-           [req.body.workSampleTextInput, req.session.ProfileID],
+       mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE SampleKey=? AND ProfileID=? AND SampleType="Music"',
+           [req.body.workSampleTextInput, req.body.id, req.session.ProfileID],
            function (err, result) {
                 if(err) {
                     throw (err);

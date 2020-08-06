@@ -183,9 +183,9 @@
                     <label for="add-music-text">Add Video: </label>
                     <div class="grid-x">
                         <div class="cell medium-8">
-                            <input type="text" id="add-music-text" placeholder="Enter a valid SoundCloud track URL" value=""  onchange="validateSoundCloudUrl(this.value)" />
+                            <input type="text" id="add-music-text" placeholder="Enter a valid SoundCloud track URL" value="" />
                             <div id="worksample-soundcloud-converting" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting SoundCloud link for embedding.</div>
-                            <div id="worksample-soundcloud-converted" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>
+                            <!--<div id="worksample-soundcloud-converted" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>-->
                             <div id="worksample-soundcloud-invalid" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid SoundCloud link. Make sure to use the track URL.</div>
                         </div>
                         <div class="cell medium-4">
@@ -203,9 +203,9 @@
                                             <label for="edit-music-text-{{SampleKey}}">Update Track URL: </label>
                                         </div>
                                         <div class="cell medium-12">
-                                            <input type="text" id="edit-music-text-{{SampleKey}}" value="{{SampleLocation}}" onchange="validateSoundCloudUrl(this.value, {{SampleKey}})" />
+                                            <input type="text" id="edit-music-text-{{SampleKey}}" value="{{SampleLocation}}" />
                                             <div id="worksample-soundcloud-converting-{{SampleKey}}" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting SoundCloud link for embedding.</div>
-                                            <div id="worksample-soundcloud-converted-{{SampleKey}}" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>
+                                            <!--<div id="worksample-soundcloud-converted-{{SampleKey}}" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>-->
                                             <div id="worksample-soundcloud-invalid-{{SampleKey}}" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid SoundCloud link. Make sure to use the video URL or shareable link.</div>
                                         </div>
                                         <div class="cell medium-3">

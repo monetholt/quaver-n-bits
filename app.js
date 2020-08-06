@@ -835,7 +835,20 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
      }
 });
 
-
+app.get('/matches',checkAuthenticated,(req, res, next) => {
+   try {
+       let sql = 'SELECT * FROM Matches WHERE Accepted = 0 AND MatchedProfileID = ?';
+       mysql.pool.query(sql, [req.session.ProfileID], function (err, result) {
+           if(err) {
+               throw(err);
+           } else {
+               res.send(JSON.stringify(result));
+           }
+       });
+   } catch(err) {
+       res.redirect(utils.errorRedirect('/matches', 'An unexpected error occurred retrieving your matches'));
+   }
+});
 
 //for pages accessible by authenticated users only
 function checkAuthenticated(req, res, next) {

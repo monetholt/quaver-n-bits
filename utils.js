@@ -3,5 +3,5 @@ exports.errorRedirect = (url, message) => {
 }
 
 exports.profileUpdateErrorRedirect = () =>
-    errorRedirect('/profile', 'An unexpected error occurred updating your profile');
+    this.errorRedirect('/profile', 'An unexpected error occurred updating your profile');
 

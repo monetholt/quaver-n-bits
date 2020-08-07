@@ -28,9 +28,8 @@ app.engine('handlebars', handlebars({
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
         moment: require('helper-moment'),
-        eq: (v1, v2) => {
-            return v1 === v2;
-        }
+        eq: (v1, v2) => { return v1 === v2; },
+        inc: val => { return parseInt(val) + 1; }
     }
 }));
 
@@ -190,7 +189,7 @@ app.post('/dashboard/ads/edit', checkAuthenticated, (req, res, next) => {
                         res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
                         res.end();
                     }
-                    else if (rows.changedRows === 1) //now that ad is updated, do any instruments updates
+                    else if (rows.affectedRows === 1) //now that ad is updated, do any instruments updates
                     {
                         var adKey = req.body["ad-id"];
 
@@ -260,7 +259,6 @@ function getInstrumentsAndLevels(req, res, context, complete) {
     });
 }
 
-// TODO (Nate): Rework this function to replace what's in '/dashboard/ads' for async request.
 function getAds(req, res, context, complete) {
     let sql = "SELECT `Value` FROM UserSettings WHERE UserID = ? AND SettingID = (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder');"
     mysql.pool.query(sql, [context.user.UserKey], (error, rows) => {
@@ -315,6 +313,11 @@ function getAds(req, res, context, complete) {
     });
 }
 
+// FIXME: This route will need to get all the users that match the ad criteria.
+app.get('/search-results', checkAuthenticated, function(req, res, next) {
+    // Do some sort of awful select with joins, then render (nav bar needs the user's profile to render):
+    res.render('search-results', { profile: true });
+});
 
 app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
     // checks whether the UserID exists in the table
@@ -397,7 +400,10 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                     user: req.user,
                     profile: rows[0][0],
                     profileInstruments: rows[1],
-                    workSamples: rows[2]
+                    workSamples: {
+                        music: rows[2].filter(sample => sample.SampleType === "Music"),
+                        video: rows[2].filter(sample => sample.SampleType === "Video"),
+                    }
                 };
 
                 getInstrumentsAndLevels(req, res, context, complete);
@@ -422,8 +428,8 @@ app.put('/profile/header', checkAuthenticated,(req, res, next) => {
             [req.body.zipCode, req.body.artistName, (req.body.privacySwitch), req.user.UserKey],
             function(err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"))
@@ -443,7 +449,27 @@ app.put('/profile/about', checkAuthenticated,(req, res, next) => {
             function(err, result) {
                 if(err) {
                     throw(err);
-                } else if(result.changedRows === 1) {
+                } else if(result.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"))
+                }
+            });
+    } catch (err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+// saves the info that is located in the Profiles website/social section and returns true if update was successful
+app.put('/profile/website', checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query(
+            'UPDATE Profiles SET Website = ?, LastUpdated = NOW() WHERE UserID = ?',
+            [req.body.website, req.user.UserKey],
+            function(err, result) {
+                if(err) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"))
@@ -511,14 +537,32 @@ app.post('/profile/instruments', checkAuthenticated, (req, res, next) => {
     }
 });
 
-app.put('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
-   try {
-       mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Music"',
-           [req.body.workSampleTextInput, req.session.ProfileID],
-           function (err, result) {
+app.delete('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('DELETE FROM WorkSamples WHERE ProfileID=? AND SampleKey=? AND SampleType="Music"',
+            [req.session.ProfileID, req.body.sampleKey],
+            function (err, result) {
                 if(err) {
                     throw(err);
-                } else if(result.changedRows === 1) {
+                } else if(result.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.put('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
+   try {
+       mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE SampleKey=? AND ProfileID=? AND SampleType="Music"',
+           [req.body.workSampleTextInput, req.body.id, req.session.ProfileID],
+           function (err, result) {
+                if(err) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"));
@@ -536,7 +580,7 @@ app.post('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
             function (err, result) {
                if(err) {
                    throw(err);
-               } else if(results.affectedRows === 1) {
+               } else if(result.affectedRows === 1) {
                    res.send(true);
                } else {
                    throw(new ReferenceError("No profile found"));
@@ -547,17 +591,35 @@ app.post('/profile/worksamples/music',checkAuthenticated,(req, res, next) => {
     }
 });
 
-app.put('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+app.delete('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
     try {
-        mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE ProfileID=? AND SampleType="Video"',
-            [req.body.workSampleTextInput, req.session.ProfileID],
+        mysql.pool.query('DELETE FROM WorkSamples WHERE ProfileID=? AND SampleKey=? AND SampleType="Video"',
+            [req.session.ProfileID, req.body.sampleKey],
             function (err, result) {
                 if(err) {
                     throw(err);
-                } else if(result.changedRows === 1) {
+                } else if(result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"));
+                }
+            });
+    } catch(err) {
+        res.redirect(utils.profileUpdateErrorRedirect());
+    }
+});
+
+app.put('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
+    try {
+        mysql.pool.query('UPDATE WorkSamples SET SampleLocation=? WHERE SampleKey=? AND SampleType="Video"',
+            [req.body.workSampleTextInput, req.body.id],
+            function (err, result) {
+                if(err) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    console.log(result);
                 }
             });
     } catch(err) {
@@ -572,7 +634,7 @@ app.post('/profile/worksamples/video',checkAuthenticated,(req, res, next) => {
             function (err, result) {
                 if(err) {
                     throw(err);
-                } else if(results.affectedRows === 1) {
+                } else if(result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"));
@@ -591,8 +653,8 @@ app.post('/profile/basic',checkAuthenticated,(req, res, next) => {
             [req.body.zipCode, req.body.phoneNumber, req.body.webAddress, req.body.lookingForWork, req.body.ArtistName, req.user.UserKey],
             function(err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No profile found"))
@@ -619,7 +681,7 @@ app.post('/profile/basic/create', checkAuthenticated, (req, res, next) => {
                         conn.release();
                         throw (err);
                     }
-                    else if (rows.changedRows === 1) //now that profile is created, add instruments
+                    else if (rows.affectedRows === 1) //now that profile is created, add instruments
                     {
                         var profileKey = req.session.ProfileID
                         //first format instrument/levelIDs sent in with form
@@ -720,7 +782,7 @@ app.post('/profile/instrument/add', checkAuthenticated, (req, res, next) => {
             function (err, result) {
                 if (err) {
                     throw (err);
-                } else if (result.changedRows === 1) {
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw (new ReferenceError("Must save profile before adding instruments."));
@@ -766,8 +828,8 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
             [req.body.levelId, req.body.ProfileKey, req.body.instrumentId],
             function(err, result) {
                 if(err) {
-                    throw(err);
-                } else if(result.changedRows === 1) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
                     res.send(true);
                 } else {
                     throw(new ReferenceError("No such instrument for this user"));
@@ -836,6 +898,11 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
 });
 
 app.get('/matches',checkAuthenticated,(req, res, next) => {
+    // Get all matches in the matches table, then:
+    res.render('matches', { profile: true });
+});
+
+app.get('/matches/pending',checkAuthenticated,(req, res, next) => {
    try {
        let sql = 'SELECT * FROM Matches WHERE Accepted = 0 AND MatchedProfileID = ?';
        mysql.pool.query(sql, [req.session.ProfileID], function (err, result) {
@@ -846,7 +913,7 @@ app.get('/matches',checkAuthenticated,(req, res, next) => {
            }
        });
    } catch(err) {
-       res.redirect(utils.errorRedirect('/matches', 'An unexpected error occurred retrieving your matches'));
+       res.redirect(utils.errorRedirect('/matches/pending', 'An unexpected error occurred retrieving your matches'));
    }
 });
 

@@ -132,7 +132,7 @@ function createAd(thisAd) {
         </div>
         <div class="display-ads-ad-overlay">
             ${thisAd.IsActive === 1 ? 
-                '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' +
+                '<button class="button primary large" onclick="location.href=\'/search-results\'"><i class="fas fa-search"></i>Search Results</button>' +
                 '<button class="button secondary large" onclick="toggleEditAdView(' + thisAd.AdKey + ')"><i class="far fa-edit"></i>Edit Ad</button>' +
                 '<button class="button warning large" onclick="toggleEnableAd(' + thisAd.AdKey + ')"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>' :
                 '<button class="button secondary large" onclick="toggleEnableAd(' + thisAd.AdKey + ')"><i class="fas fa-sync"></i>Enable Ad</button>'
@@ -151,10 +151,7 @@ function createAd(thisAd) {
             </div>
         </div>
         <div class="grid-x display-ads-ad-body">
-            <div class="cell medium-8 display-ads-ad-description">
-                <p>${thisAd.Description}</p>
-                
-            </div> 
+            <div class="cell medium-8 display-ads-ad-description"><p>${thisAd.Description}</p></div> 
             <div class="cell medium-4 display-ads-ad-instruments">
                 <h6>What I'm looking for: </h6>
                 <ul>

@@ -109,6 +109,18 @@ $delete-red: #f44336;
 $delete-red-hover: #e57373;
 
 .main-current-ads {
+  #sort {
+    align-items: flex-end;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+    padding-top: 10px;
+
+    .cell {
+      padding: 5px;
+    }
+  }
+
+
   .current-ads-label {
     font-family: $header-font;
     text-indent: 10px;
@@ -126,6 +138,10 @@ $delete-red-hover: #e57373;
     padding: 20px;
     @include boxshadow(0 0 5px 2px inset rgba(0, 0, 0, 0.01));
 
+    @include breakpoint(small only) {
+      background: transparent;
+      padding: 0;
+    }
     .current-ads-loading {
       color: $medium-gray;
 
@@ -153,13 +169,13 @@ $delete-red-hover: #e57373;
       border: 1px solid #eee;
       border-radius: 20px;
       overflow: hidden;
-      min-height: 500px;
       box-shadow: 0 0 5px 2px rgba(0,0,0,0.1);
       background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
       animation: 1s ease-out 0s 1 slideInFromLeft;
 
       @include breakpoint(small only) {
         min-height: 1000px;
+        margin: 20px 0;
       }
 
       .beacon-border {
@@ -222,10 +238,26 @@ $delete-red-hover: #e57373;
 
         .ads-edit-body {
           padding: 20px;
+          height: calc(100% - 250px);
+
+          @include breakpoint(small only) {
+            height: initial;
+          }
+
+          .ads-edit-description {
+            display: flex;
+            flex-flow: column;
+          }
 
           .ads-edit-instruments {
-            max-height: 200px;
+            height: 100%;
             overflow: scroll;
+
+            &:hover {
+              background-color: lightyellow;
+              cursor: pointer;
+              transition: background-color 0.8s ease;
+            }
           }
 
           .cell {
@@ -240,6 +272,7 @@ $delete-red-hover: #e57373;
           }
 
           textarea {
+            height: 100%;
             resize: none;
           }
 
@@ -375,16 +408,20 @@ $delete-red-hover: #e57373;
       .display-ads-ad-body {
         margin: 20px;
         padding: 20px;
-        height: 320px;
         border: 1px solid #ddd;
 
         .display-ads-ad-description {
           padding-right: 20px;
+          white-space: pre-line;
+          overflow: hidden;
+          min-height: 250px;
         }
 
         .display-ads-ad-instruments {
+          overflow: hidden;
           padding: 0 20px;
           border-left: 1px solid #ddd;
+          min-height: 250px;
 
           h6 {
             font-family: $header-font;
@@ -440,6 +477,10 @@ $delete-red-hover: #e57373;
     padding: 20px;
     @include boxshadow(0 0 5px 2px inset rgba(0, 0, 0, 0.01));
 
+    @include breakpoint(small only) {
+      padding: 0;
+    }
+
     #no-previous-ads {
       animation: 1s ease-out 0s 1 slideInFromLeft;
     }
@@ -470,6 +511,10 @@ $delete-red-hover: #e57373;
       box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
       background-image: linear-gradient(to right, #00000066, #00000066), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
       animation: 1s ease-out 0s 1 slideInFromLeft;
+
+      @include breakpoint(small only) {
+        margin: 20px 0;
+      }
 
       .display-ads-ad-overlay {
         position: absolute;

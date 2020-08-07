@@ -46,6 +46,11 @@ $alert-alert: #f44336;
     padding: 0 4px;
   }
 
+  &.default {
+    background: $dark-gray;
+    color: $white;
+  }
+
   &.hidden {
     display: none;
   }

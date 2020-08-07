@@ -1,69 +1,50 @@
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="/js/dashboard.js"></script>
+
 {{>nav}}
 {{>alert}}
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-
-<style>
-    .cell.medium-4.ads-edit-instruments:hover {
-        background-color: lightyellow;
-        cursor: pointer;
-/*        border-radius: 20px;
-*/        /*border: 1px solid #cacaca;*/
-        cursor: pointer;
-        transition: background-color 0.8s ease;
-    }
-
-</style>
-
-<script src="/js/dashboard.js"></script>
 <main>
     <div class="main-container main-current-ads">
         <div class="grid-x">
             <div class="cell medium-10 current-ads-label">
                 <h1>Current Ads:</h1>
             </div>
-            <div class="sort-by-text">
-                    <p>Sort Ads by: </p>
-            </div>
-            <!-- On first load need to reference the UserSettings table -->
-            <!-- set active the selection in the Value table -->
-            <!-- and onclick update the Value so that it will be set to that by default for that person's account -->
-            <!-- set up the filterSelection JS to take the different selections and store it then async load the page -->
-            <!-- check how Nate did his async load for disable and enable ads and see if I can copy that setting for the sort order -->
-            <!-- I don't really understand the Settings table tbh you only need the UserID and the button they selected (in this case the Value) -->
-            <!-- kind of a janky button set up but this is so we can click on it and see the results, can make it look pretty later -->
-            <!-- not sure how to get it so the buttons are all next to each other next to Current Ads header -->
-                <div class="cell medium-1" id="sortingContainer">
-     <!--       <button class="button active" onclick="filterSelection('a.Title ASC')"> Ascending Title </button>
-                <button class="button" onclick="filterSelection('a.Title DESC')"> Descending Title </button>
-                <button class="button" onclick="filterSelection('a.DatePosted ASC')"> Least Recent </button>
-                <button class="button" onclick="filterSelection('a.DatePosted DESC')"> Most Recent </button>
-                <button class="button" onclick="filterSelection('a.LocationRadius ASC')"> Ascending Location Radius </button>
-                <button class="button" onclick="filterSelection('a.LocationRadius DESC')"> Descending Location Radius </button>
-                <button class="button" onclick="filterSelection('a.DateCreated ASC')"> Ascending Date Created </button>
-                <button class="button" onclick="filterSelection('a.DateCreated DESC')"> Descending Date Created </button> -->
-
-<!-- the stuff above was just me playing around with function and buttons, can be disregarded or deleted -->
-<!-- below is the actual form for sorting ads based on the filter, currently there's nothing that shows which filter they are set to, and I might have flipped 
-     some of the ASC and DESC, but those are easy fixes. Things were breaking and fixing themselves and I was working on it from like 3am to 5am and then I lost internet 
-     so not really sure if I fixed the changes or not, changed the names so that it would make more sense -->
-                <form id="sort" action="/adSortOrder" method="post">
-                   <select name="sortOrder">
-                        <option value="a.Title ASC" selected> Ascending Title</option>
-                        <option value="a.Title DESC"> Descending Title </option>
-                        <option value="a.DatePosted ASC"> Least Recent</option>
-                        <option value="a.DatePosted DESC">Most Recent </option>
-                        <option value="a.LocationRadius ASC"> Closest from Location </option>
-                        <option value="a.LocationRadius DESC"> Farthest from Location </option>
-                        <option value="a.DateCreated ASC"> Least Recent Date Created</option>
-                        <option value="a.DateCreated DESC"> Most Recent Date Created </option>
-                        <input type="submit">
-                    </select>
-                 </form>
-                 </div>
             <div class="cell medium-2 create-ad-cta">
                 <button class="button primary expanded large" data-toggle="modal-create-ad"><i class="fas fa-plus"></i>New Ad</button>
+            </div>
+            <div class="medium-6">
+
+            </div>
+            <div class="medium-6">
+                <form class="grid-x" id="sort" action="/adSortOrder" method="post">
+                    <div class="cell medium-8">
+                        <div class="sort-by-text">
+                            <label for="sort-order">Sort Ads by: </label>
+                        </div>
+                        <div id="sortingContainer">
+                            <!-- the stuff above was just me playing around with function and buttons, can be disregarded or deleted -->
+                            <!-- below is the actual form for sorting ads based on the filter, currently there's nothing that shows which filter they are set to, and I might have flipped
+                             some of the ASC and DESC, but those are easy fixes. Things were breaking and fixing themselves and I was working on it from like 3am to 5am and then I lost internet
+                             so not really sure if I fixed the changes or not, changed the names so that it would make more sense -->
+
+                            <select id="sort-order" name="sortOrder">
+                                <option value="a.Title ASC" selected> Ascending Title</option>
+                                <option value="a.Title DESC"> Descending Title </option>
+                                <option value="a.DatePosted ASC"> Least Recent</option>
+                                <option value="a.DatePosted DESC">Most Recent </option>
+                                <option value="a.LocationRadius ASC"> Closest from Location </option>
+                                <option value="a.LocationRadius DESC"> Farthest from Location </option>
+                                <option value="a.DateCreated ASC"> Least Recent Date Created</option>
+                                <option value="a.DateCreated DESC"> Most Recent Date Created </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="cell medium-4">
+                        <button class="button light medium expanded" type="submit">Sort</button>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="current-ads-container">

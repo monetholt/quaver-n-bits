@@ -5429,13 +5429,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #6e26d9, #26d94a);
+    background-image: -webkit-linear-gradient(to bottom right, #8ed926, #2626d9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #6e26d9, #26d94a);
+    background-image: -moz-linear-gradient(to bottom right, #8ed926, #2626d9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #6e26d9, #26d94a);
+    background-image: -o-linear-gradient(to bottom right, #8ed926, #2626d9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #6e26d9, #26d94a);
+    background-image: linear-gradient(to bottom right, #8ed926, #2626d9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -6436,31 +6436,6 @@ nav {
       background-color: #eee; }
     nav .avatar .logout:hover {
       background-color: transparent; }
-  nav .notifications {
-    display: inline-flex;
-    align-items: center;
-    margin-top: 8px;
-    margin-right: 20px;
-    padding: 0 10px;
-    font-size: 32px;
-    color: #fefefe;
-    cursor: pointer; }
-    @media print, screen and (max-width: 39.99875em) {
-      nav .notifications {
-        margin-right: 10px; } }
-    nav .notifications i {
-      cursor: inherit; }
-    nav .notifications .notifications-icon {
-      position: relative; }
-      nav .notifications .notifications-icon .badge {
-        position: absolute;
-        bottom: 12px;
-        right: -3px;
-        width: 10px;
-        min-width: 0;
-        height: 10px;
-        background: #cc4b37;
-        color: #fefefe; }
   nav .nav-disabled-logout {
     position: absolute;
     top: 0;
@@ -6513,3 +6488,57 @@ nav {
     color: #fefefe; }
   #alert-popout.alert {
     background: #f44336; }
+
+@keyframes ringADingDingBitches {
+  0% {
+    transform: translateY(0) rotate(0); }
+  25% {
+    transform: translateY(-4px) rotate(25deg); }
+  50% {
+    transform: translateY(-4px) rotate(-25deg); }
+  75% {
+    transform: translateY(-4px) rotate(25deg); }
+  100% {
+    transform: translateY(0) rotate(0); } }
+
+.notifications {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-right: 20px;
+  padding: 0 10px;
+  font-size: 32px;
+  color: #fefefe;
+  cursor: pointer;
+  -webkit-transition: 0.2s ease;
+  -moz-transition: 0.2s ease;
+  -ms-transition: 0.2s ease;
+  -o-transition: 0.2s ease;
+  transition: 0.2s ease; }
+  .notifications:hover {
+    color: #6bffd6; }
+    .notifications:hover .badge {
+      background: #f44336 !important; }
+    .notifications:hover i {
+      animation: 0.5s ease-out 0s 1 ringADingDingBitches; }
+  @media print, screen and (max-width: 39.99875em) {
+    .notifications {
+      margin-right: 10px; } }
+  .notifications i {
+    cursor: inherit; }
+  .notifications .notifications-icon {
+    position: relative; }
+    .notifications .notifications-icon .badge {
+      position: absolute;
+      bottom: 12px;
+      right: -3px;
+      width: 10px;
+      min-width: 0;
+      height: 10px;
+      background: #cc4b37;
+      color: #fefefe;
+      -webkit-transition: 0.2s ease;
+      -moz-transition: 0.2s ease;
+      -ms-transition: 0.2s ease;
+      -o-transition: 0.2s ease;
+      transition: 0.2s ease; }

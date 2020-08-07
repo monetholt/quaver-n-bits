@@ -1,0 +1,65 @@
+@keyframes ringADingDingBitches {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  25% {
+    transform: translateY(-4px) rotate(25deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(-25deg);
+  }
+  75% {
+    transform: translateY(-4px) rotate(25deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+.notifications {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-right: 20px;
+  padding: 0 10px;
+  font-size: 32px;
+  color: #fefefe;
+  cursor: pointer;
+  @include transition(0.2s ease);
+
+  &:hover {
+    color: $primary-color;
+
+    .badge {
+      background: #f44336 !important;
+    }
+
+    i {
+      animation: 0.5s ease-out 0s 1 ringADingDingBitches;
+    }
+  }
+
+  @include breakpoint(small only) {
+    margin-right: 10px;
+  }
+
+  i {
+    cursor: inherit;
+  }
+
+  .notifications-icon {
+    position: relative;
+
+    .badge {
+      position: absolute;
+      bottom: 12px;
+      right: -3px;
+      width: 10px;
+      min-width: 0;
+      height: 10px;
+      background: #cc4b37;
+      color: #fefefe;
+      @include transition(0.2s ease);
+    }
+  }
+}

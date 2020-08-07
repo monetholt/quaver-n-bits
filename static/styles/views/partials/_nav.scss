@@ -116,40 +116,6 @@ nav {
     }
   }
 
-  .notifications {
-    display: inline-flex;
-    align-items: center;
-    margin-top: 8px;
-    margin-right: 20px;
-    padding: 0 10px;
-    font-size: 32px;
-    color: #fefefe;
-    cursor: pointer;
-
-    @include breakpoint(small only) {
-      margin-right: 10px;
-    }
-
-    i {
-      cursor: inherit;
-    }
-
-    .notifications-icon {
-      position: relative;
-
-      .badge {
-        position: absolute;
-        bottom: 12px;
-        right: -3px;
-        width: 10px;
-        min-width: 0;
-        height: 10px;
-        background: #cc4b37;
-        color: #fefefe;
-      }
-    }
-}
-
   .nav-disabled-logout {
     position: absolute;
     top: 0;

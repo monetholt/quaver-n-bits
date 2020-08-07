@@ -132,7 +132,7 @@ function createAd(thisAd) {
         </div>
         <div class="display-ads-ad-overlay">
             ${thisAd.IsActive === 1 ? 
-                '<button class="button primary large"><i class="fas fa-search"></i>View Matches</button>' +
+                '<button class="button primary large" onclick="location.href=\'/search-results\'"><i class="fas fa-search"></i>View Matches</button>' +
                 '<button class="button secondary large" onclick="toggleEditAdView(' + thisAd.AdKey + ')"><i class="far fa-edit"></i>Edit Ad</button>' +
                 '<button class="button warning large" onclick="toggleEnableAd(' + thisAd.AdKey + ')"><i class="fas fa-microphone-alt-slash"></i>Disable Ad</button>' :
                 '<button class="button secondary large" onclick="toggleEnableAd(' + thisAd.AdKey + ')"><i class="fas fa-sync"></i>Enable Ad</button>'

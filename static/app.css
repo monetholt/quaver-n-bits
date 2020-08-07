@@ -5339,13 +5339,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #af26d9, #d92662);
+    background-image: -webkit-linear-gradient(to bottom right, #d9c126, #26d947);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #af26d9, #d92662);
+    background-image: -moz-linear-gradient(to bottom right, #d9c126, #26d947);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #af26d9, #d92662);
+    background-image: -o-linear-gradient(to bottom right, #d9c126, #26d947);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #af26d9, #d92662);
+    background-image: linear-gradient(to bottom right, #d9c126, #26d947);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {

@@ -259,7 +259,6 @@ function getInstrumentsAndLevels(req, res, context, complete) {
     });
 }
 
-// TODO (Nate): Rework this function to replace what's in '/dashboard/ads' for async request.
 function getAds(req, res, context, complete) {
     let sql = "SELECT `Value` FROM UserSettings WHERE UserID = ? AND SettingID = (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder');"
     mysql.pool.query(sql, [context.user.UserKey], (error, rows) => {
@@ -314,6 +313,11 @@ function getAds(req, res, context, complete) {
     });
 }
 
+// FIXME: This route will need to get all the users that match the ad criteria.
+app.get('/search-results', checkAuthenticated, function(req, res, next) {
+    // Do some sort of awful select with joins, then render (nav bar needs the user's profile to render):
+    res.render('search-results', { profile: true });
+});
 
 app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
     // checks whether the UserID exists in the table
@@ -402,7 +406,6 @@ app.get('/profile',checkAuthenticated,(req,res,next) => {
                     }
                 };
 
-                console.log(context.workSamples);
                 getInstrumentsAndLevels(req, res, context, complete);
 
                 function complete() {
@@ -895,6 +898,11 @@ app.post('/profile/instrument/update',checkAuthenticated,(req, res, next) => {
 });
 
 app.get('/matches',checkAuthenticated,(req, res, next) => {
+    // Get all matches in the matches table, then:
+    res.render('matches', { profile: true });
+});
+
+app.get('/matches/pending',checkAuthenticated,(req, res, next) => {
    try {
        let sql = 'SELECT * FROM Matches WHERE Accepted = 0 AND MatchedProfileID = ?';
        mysql.pool.query(sql, [req.session.ProfileID], function (err, result) {
@@ -905,7 +913,7 @@ app.get('/matches',checkAuthenticated,(req, res, next) => {
            }
        });
    } catch(err) {
-       res.redirect(utils.errorRedirect('/matches', 'An unexpected error occurred retrieving your matches'));
+       res.redirect(utils.errorRedirect('/matches/pending', 'An unexpected error occurred retrieving your matches'));
    }
 });
 

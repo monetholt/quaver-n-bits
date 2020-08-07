@@ -5429,13 +5429,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #266bd9, #91d926);
+    background-image: -webkit-linear-gradient(to bottom right, #6e26d9, #26d94a);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #266bd9, #91d926);
+    background-image: -moz-linear-gradient(to bottom right, #6e26d9, #26d94a);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #266bd9, #91d926);
+    background-image: -o-linear-gradient(to bottom right, #6e26d9, #26d94a);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #266bd9, #91d926);
+    background-image: linear-gradient(to bottom right, #6e26d9, #26d94a);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -6331,6 +6331,7 @@ main {
 
 nav {
   position: fixed;
+  display: flex;
   top: 0;
   left: 0;
   width: 100vw;
@@ -6348,8 +6349,9 @@ nav {
   -moz-box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5);
   box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5); }
   nav .logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    flex-grow: 1;
     margin-left: 20px;
     font-family: "Faster One", cursive;
     color: #fefefe;
@@ -6372,16 +6374,19 @@ nav {
         nav .logo h3 {
           -webkit-text-stroke: 0.3px rgba(246, 255, 107, 0.1); } }
   nav .avatar {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+    display: inline-flex;
+    align-items: center;
     height: 44px;
     width: 44px;
+    margin-top: 8px;
+    margin-right: 8px;
     font-size: 36px;
     text-align: center;
     color: #fefefe;
     border-radius: 25px;
     cursor: pointer; }
+    nav .avatar i {
+      cursor: inherit; }
     nav .avatar:hover .nav-menu {
       opacity: 1;
       transform: translateX(0); }
@@ -6431,6 +6436,31 @@ nav {
       background-color: #eee; }
     nav .avatar .logout:hover {
       background-color: transparent; }
+  nav .notifications {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+    margin-right: 20px;
+    padding: 0 10px;
+    font-size: 32px;
+    color: #fefefe;
+    cursor: pointer; }
+    @media print, screen and (max-width: 39.99875em) {
+      nav .notifications {
+        margin-right: 10px; } }
+    nav .notifications i {
+      cursor: inherit; }
+    nav .notifications .notifications-icon {
+      position: relative; }
+      nav .notifications .notifications-icon .badge {
+        position: absolute;
+        bottom: 12px;
+        right: -3px;
+        width: 10px;
+        min-width: 0;
+        height: 10px;
+        background: #cc4b37;
+        color: #fefefe; }
   nav .nav-disabled-logout {
     position: absolute;
     top: 0;

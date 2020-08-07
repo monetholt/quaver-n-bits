@@ -5295,6 +5295,14 @@ main {
   #worksample-soundcloud-invalid i {
     margin-right: 10px; }
 
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%); }
+  100% {
+    opacity: 1;
+    transform: translateY(0); } }
+
 @keyframes slideInFromLeft {
   0% {
     opacity: 0;
@@ -5331,13 +5339,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d9cd26, #d92682);
+    background-image: -webkit-linear-gradient(to bottom right, #af26d9, #d92662);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d9cd26, #d92682);
+    background-image: -moz-linear-gradient(to bottom right, #af26d9, #d92662);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d9cd26, #d92682);
+    background-image: -o-linear-gradient(to bottom right, #af26d9, #d92662);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d9cd26, #d92682);
+    background-image: linear-gradient(to bottom right, #af26d9, #d92662);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5351,6 +5359,8 @@ main {
         width: 250px;
         height: 250px;
         object-fit: cover; }
+      .main-profile .profile-header .profile-header-intro .profile-header-title #edit-title-privacy-switch {
+        font-weight: normal; }
       .main-profile .profile-header .profile-header-intro .profile-header-title p:last-child {
         margin: 0; }
       .main-profile .profile-header .profile-header-intro .profile-header-title i {
@@ -5390,6 +5400,8 @@ main {
     padding: 1.25rem; }
     .main-profile .profile-info .profile-about {
       position: relative; }
+      .main-profile .profile-info .profile-about #profile-about-text {
+        white-space: pre-wrap; }
     .main-profile .profile-info .cell {
       padding: 1.25rem; }
     @media print, screen and (min-width: 40em) {
@@ -5454,6 +5466,90 @@ main {
       @media print, screen and (max-width: 39.99875em) {
         .main-profile .profile-media .cell {
           border-bottom: 1px solid #eee; } }
+    .main-profile .profile-media .edit-video-element {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      margin-bottom: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1; }
+      .main-profile .profile-media .edit-video-element.hide {
+        display: none; }
+      .main-profile .profile-media .edit-video-element label {
+        font-weight: bold;
+        font-size: 1rem;
+        text-align: center;
+        color: white; }
+    .main-profile .profile-media #add-videos-text {
+      background: #72ffd21c;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #72ffd2;
+      margin-bottom: 20px; }
+      .main-profile .profile-media #add-videos-text label {
+        font-family: "Maven Pro", sans-serif;
+        font-weight: bold;
+        text-indent: 20px; }
+      .main-profile .profile-media #add-videos-text .cell {
+        border-right: none;
+        border-bottom: none; }
+        .main-profile .profile-media #add-videos-text .cell i {
+          padding-right: 10px; }
+    .main-profile .profile-media .edit-music-element {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      margin-bottom: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1; }
+      .main-profile .profile-media .edit-music-element.hide {
+        display: none; }
+      .main-profile .profile-media .edit-music-element label {
+        font-weight: bold;
+        font-size: 1rem;
+        text-align: center;
+        color: white; }
+    .main-profile .profile-media #add-tracks-text {
+      background: #72ffd21c;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #72ffd2;
+      margin-bottom: 20px; }
+      .main-profile .profile-media #add-tracks-text label {
+        font-family: "Maven Pro", sans-serif;
+        font-weight: bold;
+        text-indent: 20px; }
+      .main-profile .profile-media #add-tracks-text .cell {
+        border-right: none;
+        border-bottom: none; }
+        .main-profile .profile-media #add-tracks-text .cell i {
+          padding-right: 10px; }
+    .main-profile .profile-media .worksample-converting {
+      color: #faff00;
+      text-align: center;
+      animation: 0.5s ease-out 0s 1 slideInFromTop; }
+      .main-profile .profile-media .worksample-converting i {
+        margin-right: 10px; }
+    .main-profile .profile-media .worksample-converted {
+      color: #00f70a;
+      text-align: center;
+      animation: 0.5s ease-out 0s 1 slideInFromTop; }
+      .main-profile .profile-media .worksample-converted i {
+        margin-right: 10px; }
+    .main-profile .profile-media .worksample-invalid {
+      color: #ff8494;
+      text-align: center;
+      animation: 0.5s ease-out 0s 1 slideInFromTop; }
+      .main-profile .profile-media .worksample-invalid i {
+        margin-right: 10px; }
 
 .profile-edit-button {
   position: absolute;
@@ -6247,6 +6343,9 @@ nav {
     font-weight: bold;
     text-decoration: underline;
     padding: 0 4px; }
+  #alert-popout.default {
+    background: #212121;
+    color: #fefefe; }
   #alert-popout.hidden {
     display: none; }
   #alert-popout.success {

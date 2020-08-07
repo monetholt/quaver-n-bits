@@ -5339,13 +5339,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #d9c126, #26d947);
+    background-image: -webkit-linear-gradient(to bottom right, #74d926, #97d926);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #d9c126, #26d947);
+    background-image: -moz-linear-gradient(to bottom right, #74d926, #97d926);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #d9c126, #26d947);
+    background-image: -o-linear-gradient(to bottom right, #74d926, #97d926);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #d9c126, #26d947);
+    background-image: linear-gradient(to bottom right, #74d926, #97d926);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -5726,6 +5726,14 @@ main {
   100% {
     color: #fefefe; } }
 
+.main-current-ads #sort {
+  align-items: flex-end;
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  padding-top: 10px; }
+  .main-current-ads #sort .cell {
+    padding: 5px; }
+
 .main-current-ads .current-ads-label {
   font-family: "Maven Pro", sans-serif;
   text-indent: 10px; }
@@ -5741,6 +5749,10 @@ main {
   -webkit-box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01);
   -moz-box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01);
   box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01); }
+  @media print, screen and (max-width: 39.99875em) {
+    .main-current-ads .current-ads-container {
+      background: transparent;
+      padding: 0; } }
   .main-current-ads .current-ads-container .current-ads-loading {
     color: #cacaca; }
     .main-current-ads .current-ads-container .current-ads-loading .current-ads-loading-spin {
@@ -5760,13 +5772,13 @@ main {
     border: 1px solid #eee;
     border-radius: 20px;
     overflow: hidden;
-    min-height: 500px;
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
     background-image: linear-gradient(to right, #fefefe66, #fefefe66), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
     animation: 1s ease-out 0s 1 slideInFromLeft; }
     @media print, screen and (max-width: 39.99875em) {
       .main-current-ads .current-ads-container .display-ads-ad {
-        min-height: 1000px; } }
+        min-height: 1000px;
+        margin: 20px 0; } }
     .main-current-ads .current-ads-container .display-ads-ad .beacon-border {
       animation: 2s ease-out 0s infinite beacon; }
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay {
@@ -5808,10 +5820,21 @@ main {
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-header .cell {
           padding: 0 10px; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body {
-        padding: 20px; }
+        padding: 20px;
+        height: calc(100% - 250px); }
+        @media print, screen and (max-width: 39.99875em) {
+          .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body {
+            height: initial; } }
+        .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .ads-edit-description {
+          display: flex;
+          flex-flow: column; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .ads-edit-instruments {
-          max-height: 200px;
+          height: 100%;
           overflow: scroll; }
+          .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .ads-edit-instruments:hover {
+            background-color: lightyellow;
+            cursor: pointer;
+            transition: background-color 0.8s ease; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body .cell {
           padding: 0 10px; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body label {
@@ -5820,6 +5843,7 @@ main {
           font-family: "Maven Pro", sans-serif;
           color: #212121; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body textarea {
+          height: 100%;
           resize: none; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-edit-overlay .ads-edit-body button i {
           padding-right: 10px; }
@@ -5916,13 +5940,17 @@ main {
     .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body {
       margin: 20px;
       padding: 20px;
-      height: 320px;
       border: 1px solid #ddd; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-description {
-        padding-right: 20px; }
+        padding-right: 20px;
+        white-space: pre-line;
+        overflow: hidden;
+        min-height: 250px; }
       .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-instruments {
+        overflow: hidden;
         padding: 0 20px;
-        border-left: 1px solid #ddd; }
+        border-left: 1px solid #ddd;
+        min-height: 250px; }
         .main-current-ads .current-ads-container .display-ads-ad .display-ads-ad-body .display-ads-ad-instruments h6 {
           font-family: "Maven Pro", sans-serif;
           font-weight: bold; }
@@ -5957,6 +5985,9 @@ main {
   -webkit-box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01);
   -moz-box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01);
   box-shadow: 0 0 5px 2px inset rgba(0, 0, 0, 0.01); }
+  @media print, screen and (max-width: 39.99875em) {
+    .main-previous-ads .previous-ads-container {
+      padding: 0; } }
   .main-previous-ads .previous-ads-container #no-previous-ads {
     animation: 1s ease-out 0s 1 slideInFromLeft; }
   .main-previous-ads .previous-ads-container .previous-ads-loading {
@@ -5979,6 +6010,9 @@ main {
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.1);
     background-image: linear-gradient(to right, #00000066, #00000066), url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/frenchstucco.png);
     animation: 1s ease-out 0s 1 slideInFromLeft; }
+    @media print, screen and (max-width: 39.99875em) {
+      .main-previous-ads .previous-ads-container .display-ads-ad {
+        margin: 20px 0; } }
     .main-previous-ads .previous-ads-container .display-ads-ad .display-ads-ad-overlay {
       position: absolute;
       display: flex;

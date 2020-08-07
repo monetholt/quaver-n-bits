@@ -151,10 +151,7 @@ function createAd(thisAd) {
             </div>
         </div>
         <div class="grid-x display-ads-ad-body">
-            <div class="cell medium-8 display-ads-ad-description">
-                <p>${thisAd.Description}</p>
-                
-            </div> 
+            <div class="cell medium-8 display-ads-ad-description"><p>${thisAd.Description}</p></div> 
             <div class="cell medium-4 display-ads-ad-instruments">
                 <h6>What I'm looking for: </h6>
                 <ul>

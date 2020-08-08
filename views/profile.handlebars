@@ -1,6 +1,7 @@
-<script src="/js/profile.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script src="/js/instruments.js"></script>
+<script src="/js/profile.js"></script>
 
 {{>nav}}
 {{>alert}}
@@ -72,15 +73,15 @@
                                 document.getElementById('switch-privacy-tooltip').setAttribute('title', '');
                             });
 
-                                                    // let ps = document.getElementById('privacySwitch');
-                                                    // ps.addEventListener('click', () => {
-                                                    //     console.log('privacySwitch clicked! checked ? ', ps.getAttribute('checked'));
-                                                    //     ps.setAttribute('checked', ps.getAttribute('checked') ? false : true);
-                                                    //     console.log('tooltip-on: ', document.getElementById('switch-privacy-tooltip-on'));
-                                                    //     console.log('tooltip-off: ', document.getElementById('switch-privacy-tooltip-off'));
-                                                    //     document.getElementById('switch-privacy-tooltip-on').hidden = ps.getAttribute('checked') ? false : true;
-                                                    //     document.getElementById('switch-privacy-tooltip-off').hidden = ps.getAttribute('checked') ? true : false;
-                                                    // });
+                            // let ps = document.getElementById('privacySwitch');
+                            // ps.addEventListener('click', () => {
+                            //     console.log('privacySwitch clicked! checked ? ', ps.getAttribute('checked'));
+                            //     ps.setAttribute('checked', ps.getAttribute('checked') ? false : true);
+                            //     console.log('tooltip-on: ', document.getElementById('switch-privacy-tooltip-on'));
+                            //     console.log('tooltip-off: ', document.getElementById('switch-privacy-tooltip-off'));
+                            //     document.getElementById('switch-privacy-tooltip-on').hidden = ps.getAttribute('checked') ? false : true;
+                            //     document.getElementById('switch-privacy-tooltip-off').hidden = ps.getAttribute('checked') ? true : false;
+                            // });
                         </script>
                     </div>
                 </div>
@@ -106,17 +107,17 @@
                     <h2>What I Play:</h2>
                     <ul id="instrument-list">
                         {{#each profileInstruments}}
-                        <li><span class='inst-list-inst' data-val='{{InstrumentKey}}'>{{Instrument}}</span> <span class='inst-list-level' data-val='{{LevelKey}}'>({{Level}})</span></li>
+                        <li> <span class='inst-list-level' data-val='{{LevelKey}}'>{{Level}}-Level</span> <span class='inst-list-inst' data-val='{{InstrumentKey}}'><strong>{{Instrument}}</strong></span></li>
                         {{/each}}
                     </ul>
                 </div>
                 <div class="profile-social">
                     <div class="profile-edit-button"><button id="edit-social" class="button"><i class="fas fa-pencil-alt"></i></button></div>
                     <h2>Social:</h2>
-                    <div id="profile-social-website-filled" {{#if (eq profile.Website "")}}hidden{{/if}}>
+                    <div id="profile-social-website-filled" {{#if (eq profile.Website "")}} hidden{{/if}}>
                         <a id="profile-social-website" href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>{{profile.Website}}</a>
                     </div>
-                    <div id="profile-social-website-empty"{{#unless (eq profile.Website "")}}hidden{{/unless}}>
+                    <div id="profile-social-website-empty" {{#unless (eq profile.Website "")}} hidden{{/unless}}>
                         <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
                     </div>
                     <div id="edit-social-website" hidden>
@@ -134,7 +135,7 @@
                     <label for="add-video-text">Add Video: </label>
                     <div class="grid-x">
                         <div class="cell medium-8">
-                            <input type="text" id="add-video-text" placeholder="Enter a valid YouTube URL" value=""  onchange="validateYouTubeUrl(this.value)" />
+                            <input type="text" id="add-video-text" placeholder="Enter a valid YouTube URL" value="" onchange="validateYouTubeUrl(this.value)" />
                             <div id="worksample-youtube-converting" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting YouTube link for embedding.</div>
                             <div id="worksample-youtube-converted" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>
                             <div id="worksample-youtube-invalid" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid YouTube link. Make sure to use the video URL or shareable link.</div>
@@ -144,35 +145,35 @@
                         </div>
                     </div>
                 </div>
-                <div id="profile-video-container" {{#unless workSamples.video}}hidden{{/unless}}>
-                {{#if workSamples.video}}
+                <div id="profile-video-container" {{#unless workSamples.video}} hidden{{/unless}}>
+                    {{#if workSamples.video}}
                     {{#each workSamples.video}}
-                        {{#if (eq SampleType "Video")}}
-                        <div id="display-video-{{SampleKey}}" class="display-video-element responsive-embed widescreen">
-                            <div id="edit-video-{{SampleKey}}" class="grid-x edit-video-element hide">
-                                <div class="cell medium-12">
-                                    <label for="edit-video-text-{{SampleKey}}">Update Video URL: </label>
-                                </div>
-                                <div class="cell medium-12">
-                                    <input type="text" id="edit-video-text-{{SampleKey}}" value="{{SampleLocation}}" onchange="validateYouTubeUrl(this.value, {{SampleKey}})" />
-                                    <div id="worksample-youtube-converting-{{SampleKey}}" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting YouTube link for embedding.</div>
-                                    <div id="worksample-youtube-converted-{{SampleKey}}" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>
-                                    <div id="worksample-youtube-invalid-{{SampleKey}}" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid YouTube link. Make sure to use the video URL or shareable link.</div>
-                                </div>
-                                <div class="cell medium-3">
-                                    <button class="button alert expanded" onclick="deleteVideo({{SampleKey}})">Delete</button>
-                                </div>
-                                <div class="cell medium-9">
-                                    <button class="button primary expanded" onclick="updateVideo({{SampleKey}})">Update URL</button>
-                                </div>
+                    {{#if (eq SampleType "Video")}}
+                    <div id="display-video-{{SampleKey}}" class="display-video-element responsive-embed widescreen">
+                        <div id="edit-video-{{SampleKey}}" class="grid-x edit-video-element hide">
+                            <div class="cell medium-12">
+                                <label for="edit-video-text-{{SampleKey}}">Update Video URL: </label>
                             </div>
-                            <iframe data-id="{{SampleKey}}" id="video-{{SampleKey}}" width="560" height="315" src="{{SampleLocation}}" frameborder="0" allowfullscreen></iframe>
+                            <div class="cell medium-12">
+                                <input type="text" id="edit-video-text-{{SampleKey}}" value="{{SampleLocation}}" onchange="validateYouTubeUrl(this.value, {{SampleKey}})" />
+                                <div id="worksample-youtube-converting-{{SampleKey}}" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting YouTube link for embedding.</div>
+                                <div id="worksample-youtube-converted-{{SampleKey}}" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>
+                                <div id="worksample-youtube-invalid-{{SampleKey}}" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid YouTube link. Make sure to use the video URL or shareable link.</div>
+                            </div>
+                            <div class="cell medium-3">
+                                <button class="button alert expanded" onclick="deleteVideo({{SampleKey}})">Delete</button>
+                            </div>
+                            <div class="cell medium-9">
+                                <button class="button primary expanded" onclick="updateVideo({{SampleKey}})">Update URL</button>
+                            </div>
                         </div>
-                        {{/if}}
+                        <iframe data-id="{{SampleKey}}" id="video-{{SampleKey}}" width="560" height="315" src="{{SampleLocation}}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    {{/if}}
                     {{/each}}
-                {{/if}}
+                    {{/if}}
                 </div>
-                <div id="no-videos" {{#if workSamples.video}}hidden{{/if}}>
+                <div id="no-videos" {{#if workSamples.video}} hidden{{/if}}>
                     <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
                 </div>
             </div>
@@ -193,35 +194,35 @@
                         </div>
                     </div>
                 </div>
-                <div id="profile-music-container" {{#unless workSamples.music}}hidden{{/unless}}>
+                <div id="profile-music-container" {{#unless workSamples.music}} hidden{{/unless}}>
                     {{#if workSamples.music}}
-                        {{#each workSamples.music}}
-                            {{#if (eq SampleType "Music")}}
-                                <div id="display-music-{{SampleKey}}" class="display-music-element responsive-embed widescreen">
-                                    <div id="edit-music-{{SampleKey}}" class="grid-x edit-music-element hide">
-                                        <div class="cell medium-12">
-                                            <label for="edit-music-text-{{SampleKey}}">Update Track URL: </label>
-                                        </div>
-                                        <div class="cell medium-12">
-                                            <input type="text" id="edit-music-text-{{SampleKey}}" value="{{SampleLocation}}" />
-                                            <div id="worksample-soundcloud-converting-{{SampleKey}}" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting SoundCloud link for embedding.</div>
-                                            <!--<div id="worksample-soundcloud-converted-{{SampleKey}}" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>-->
-                                            <div id="worksample-soundcloud-invalid-{{SampleKey}}" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid SoundCloud link. Make sure to use the video URL or shareable link.</div>
-                                        </div>
-                                        <div class="cell medium-3">
-                                            <button class="button alert expanded" onclick="deleteMusic({{SampleKey}})">Delete</button>
-                                        </div>
-                                        <div class="cell medium-9">
-                                            <button class="button primary expanded" onclick="updateMusic({{SampleKey}})">Update URL</button>
-                                        </div>
-                                    </div>
-                                    <iframe data-id="{{SampleKey}}" id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
-                                </div>
-                            {{/if}}
-                        {{/each}}
+                    {{#each workSamples.music}}
+                    {{#if (eq SampleType "Music")}}
+                    <div id="display-music-{{SampleKey}}" class="display-music-element responsive-embed widescreen">
+                        <div id="edit-music-{{SampleKey}}" class="grid-x edit-music-element hide">
+                            <div class="cell medium-12">
+                                <label for="edit-music-text-{{SampleKey}}">Update Track URL: </label>
+                            </div>
+                            <div class="cell medium-12">
+                                <input type="text" id="edit-music-text-{{SampleKey}}" value="{{SampleLocation}}" />
+                                <div id="worksample-soundcloud-converting-{{SampleKey}}" class="worksample-converting" hidden><i class="fas fa-spinner fa-spin"></i>Converting SoundCloud link for embedding.</div>
+                                <!--<div id="worksample-soundcloud-converted-{{SampleKey}}" class="worksample-converted" hidden><i class="far fa-check-circle"></i>Your work sample is ready to be added!</div>-->
+                                <div id="worksample-soundcloud-invalid-{{SampleKey}}" class="worksample-invalid" hidden><i class="fas fa-exclamation-triangle"></i>Not a valid SoundCloud link. Make sure to use the video URL or shareable link.</div>
+                            </div>
+                            <div class="cell medium-3">
+                                <button class="button alert expanded" onclick="deleteMusic({{SampleKey}})">Delete</button>
+                            </div>
+                            <div class="cell medium-9">
+                                <button class="button primary expanded" onclick="updateMusic({{SampleKey}})">Update URL</button>
+                            </div>
+                        </div>
+                        <iframe data-id="{{SampleKey}}" id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
+                    </div>
+                    {{/if}}
+                    {{/each}}
                     {{/if}}
                 </div>
-                <div id="no-music" {{#if workSamples.music}}hidden{{/if}}>
+                <div id="no-music" {{#if workSamples.music}} hidden{{/if}}>
                     <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
                 </div>
             </div>
@@ -238,7 +239,7 @@
     <table>
         <tr>
             <td>
-                <select id="instrument-list-edit" style="width: 100%" required>
+                <select id="instrument-list-edit" data-ad="0" style="width: 100%" required>
                     <option></option>
                     {{#each instruments}}
                     <option value="{{this.InstrumentKey}}">{{this.Instrument}}</option>

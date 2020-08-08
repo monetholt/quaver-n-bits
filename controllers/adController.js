@@ -2,7 +2,6 @@ const mysql = require('../dbcon.js');
 const utils = require('../utils.js');
 const jp = require("jsonpath");
 
-
 module.exports = {
     loadDashboard: (req, res) => {
         var context = {
@@ -73,68 +72,7 @@ module.exports = {
         try {
             mysql.pool.getConnection(function (err, conn) {
                 if (err) throw (err);
-                //update the ad info
-                conn.query(
-                    'UPDATE Ads SET Title = ?, Description = ?,  ZipCode = ?, LocationRadius = ?, DatePosted = NOW(), LastUpdated = NOW() WHERE AdKey = ? AND UserID = ?',
-                    [req.body["ad-title"], req.body["ad-text"], req.body["ad-zip"], req.body["ad-radius"], req.body["ad-id"], req.user.UserKey],
-                    function (err, rows) {
-                        if (err) {
-                            conn.release();
-                            res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
-                            res.end();
-                        }
-                        else if (rows.affectedRows === 1) //now that ad is updated, do any instruments updates
-                        {
-                            var adKey = req.body["ad-id"];
-
-                            //delete current instruments
-                            conn.query(`DELETE FROM AdInstruments WHERE AdId = ? `, [adKey],
-                                function (err, rows) {
-
-                                    if (err) {
-                                        conn.release();
-                                        res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
-                                        res.end();
-                                    } else {
-
-                                        //first format instrument/levelIDs sent in with form
-                                        var instruments = [];
-
-                                        var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
-                                        for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
-
-                                            if (Object.prototype.hasOwnProperty.call(req.body, "instruments[" + i + "][InstrumentKey]") &&
-                                                req.body["instruments[" + i + "][InstrumentKey]"] > 0) {
-
-                                                instruments.push([
-                                                    req.body["instruments[" + i + "][InstrumentKey]"],
-                                                    req.body["instruments[" + i + "][LevelKey]"],
-                                                    req.body["instruments[" + i + "][Quantity]"],
-                                                    adKey, timestamp, timestamp]);
-
-                                            }
-                                            else break;
-                                        }
-
-                                        ////add the instruments
-                                        conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
-                                            function (err, rows) {
-                                                conn.release();
-
-                                                if (err) {
-                                                    res.write({ message: 'An error occurred when updating your ad: '.JSON.stringify(err) });
-                                                    res.end();
-                                                } else res.send({ success: 1, message: 'Successfully updated ad.' });
-
-                                            });
-                                    }
-                                });
-                        }
-                        else {
-                            conn.release();
-                            res.send({ success: 0,  message: 'Ad not found.' });
-                        }
-                    });
+                updateAd(conn, req, res);
             });
         } catch (err) {
             res.write(JSON.stringify(err));
@@ -170,6 +108,70 @@ module.exports = {
     }
 }
 
+function addInstrumentsToExistingAd(req, adKey, conn, res) {
+    //first format instrument/levelIDs sent in with form
+    var instruments = [];
+
+    var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
+    for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
+
+        if (Object.prototype.hasOwnProperty.call(req.body, "instruments[" + i + "][InstrumentKey]") &&
+            req.body["instruments[" + i + "][InstrumentKey]"] > 0) {
+
+            instruments.push([
+                req.body["instruments[" + i + "][InstrumentKey]"],
+                req.body["instruments[" + i + "][LevelKey]"],
+                req.body["instruments[" + i + "][Quantity]"],
+                adKey, timestamp, timestamp]);
+
+        } else break;
+    }
+
+    //add the instruments
+    conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
+        function (err, rows) {
+            conn.release();
+
+            if (err) {
+                res.write({message: 'An error occurred when updating your ad: '.JSON.stringify(err)});
+                res.end();
+            } else res.send({success: 1, message: 'Successfully updated ad.'});
+        });
+}
+
+function updateInstruments(req, conn, res) {
+    var adKey = req.body["ad-id"];
+
+    //delete current instruments
+    conn.query(`DELETE FROM AdInstruments WHERE AdId = ? `, [adKey],
+        function (err) {
+            if (err) {
+                conn.release();
+                res.write({message: 'An error occurred when updating your ad: '.JSON.stringify(err)});
+                res.end();
+            } else {
+                addInstrumentsToExistingAd(req, adKey, conn, res);
+            }
+        });
+}
+
+function updateAd(conn, req, res) {
+    conn.query(
+        'UPDATE Ads SET Title = ?, Description = ?,  ZipCode = ?, LocationRadius = ?, DatePosted = NOW(), LastUpdated = NOW() WHERE AdKey = ? AND UserID = ?',
+        [req.body["ad-title"], req.body["ad-text"], req.body["ad-zip"], req.body["ad-radius"], req.body["ad-id"], req.user.UserKey],
+        function (err, rows) {
+            if (err) {
+                conn.release();
+                res.write({message: 'An error occurred when updating your ad: '.JSON.stringify(err)});
+                res.end();
+            } else if (rows.affectedRows === 1) { //now that ad is updated, do any instruments updates
+                updateInstruments(req, conn, res);
+            } else {
+                conn.release();
+                res.send({success: 0, message: 'Ad not found.'});
+            }
+        });
+}
 
 function addInstrumentsToNewAd(rows, req, conn, res) {
     var adKey = rows.insertId;

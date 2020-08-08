@@ -1,21 +1,3 @@
-// document.addEventListener('DOMContentLoaded', (event) => {
-//     let req = new XMLHttpRequest();
-//     let url = 'https://soundcloud.com/milklab/nate-kimball-orchestra-namaste';
-//     req.open('GET', `https://cors-anywhere.herokuapp.com/${url}`, true);
-//     req.addEventListener('load', () => {
-//         let res = req.responseText;
-//         if (req.status < 400) {
-//             // console.log(res);
-//             console.log("YAY!");
-//             let number = res.match(/soundcloud:\/\/sounds:(\d{9})/);
-//             console.log(number[1]);
-//             let iframe = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${number[1]}`;
-//             console.log(iframe);
-//         }
-//     });
-//     req.send(null);
-// });
-
 // Global placeholder for state.
 let allAds = {}
 
@@ -117,7 +99,7 @@ function createAd(thisAd) {
                 <div class="cell medium-4 ads-edit-instruments" onclick="selectInstrumentsEdit(${thisAd.AdKey})">
                     <label for="ads-edit-instruments-${thisAd.AdKey}">Instruments:</label>
                     <ul class="ads-edit-instruments-section">
-                        ${ createInstrumentList(thisAd.instruments) }
+                        ${ createInstrumentList(thisAd.instruments, true) }
                     </ul>
                 </div>
             </div>
@@ -155,7 +137,7 @@ function createAd(thisAd) {
             <div class="cell medium-4 display-ads-ad-instruments">
                 <h6>What I'm looking for: </h6>
                 <ul>
-                ${ createInstrumentList(thisAd.instruments) }
+                ${ createInstrumentList(thisAd.instruments, true) }
                 </ul>
             </div> 
         </div>
@@ -297,66 +279,6 @@ function deleteAd(id) {
     req.send(JSON.stringify({AdKey: id}));
 }
 
-function createInstrumentList(instruments) {
-    let list = ``;
-    for (let i in instruments) {
-        list += `<li><span class='inst-list-quantity' data-val='${instruments[i]['Quantity']}'>${instruments[i]['Quantity']}</span> 
-                <span class='inst-list-level' data-val='${instruments[i]['LevelKey']}'>${instruments[i]['Level']}-Level</span> 
-                <span class='inst-list-inst' data-val='${instruments[i]['InstrumentKey']}'><strong>${instruments[i]['Instrument']}</strong></span></li>`;
-    }
-    return list;
-}
-
-
-//returns a list of the instruments in the edit form of the passed id
-function getEditInstruments(id) {
-    //Go to the edit form for this add and grab all instruments
-    let adInstruments = $("#display-ads-edit-overlay-" + id).find(".ads-edit-instruments-section").find("li");
-
-    let instrumentList = [];
-
-    //add instruments to array
-    adInstruments.each(function () {
-        let instID = $(this).find(".inst-list-inst").attr("data-val");
-        let levelID = $(this).find(".inst-list-level").attr("data-val");
-        let quantity = $(this).find(".inst-list-quantity").attr("data-val");
-        let instName = $(this).find(".inst-list-inst").text();
-        let levelName = $(this).find(".inst-list-level").text().split("-")[0];
-
-        instrumentList.push({
-            "InstrumentKey": instID,
-            "LevelKey": levelID,
-            "Quantity": quantity,
-            "Instrument": instName,
-            "Level": levelName
-        });
-    });
-
-    //return list of instruments
-    return instrumentList;
-}
-
-
-//clears and resets the edit instrument popup
-function clearInstrumentsEditForm() {
-    $("#instrument-selection-edit").html(""); //clear out any selected instruments
-    $("#instrument-section-edit-btn").attr("data-id", 0).unbind(); //clear out any id and event attached to this form.
-    $("#error-msg-edit").html(""); //clear out any error msg
-}
-
-
-//populates edit instrument form with instruments in the passed ad's edit form
-function populateInstrumentsEditForm(id) {
-    
-    let instruments = getEditInstruments(id); //get instrument data from edit form
-
-    $.each(instruments, function (i, instrument) {
-        var sectionID = addSelection(instrument.InstrumentKey, instrument.Instrument, "edit"); //add this instrument to the form
-        $("#" + sectionID).find("#level-" + sectionID).val(instrument.LevelKey); //set the level
-        $("#" + sectionID).find("#quantity-" + sectionID).val(instrument.Quantity); //set the quantity
-    });
-}
-
 
 function selectInstrumentsEdit(id) {
     clearInstrumentsEditForm(); //make sure any stale info is cleared from form
@@ -418,7 +340,7 @@ function selectInstrumentsEdit(id) {
                 $("#error-msg-edit").html(errorMsg);
             }
             else {
-                let instrumentHtml = createInstrumentList(selected); //otherwise convert selections back to text and put in ad edit form
+                let instrumentHtml = createInstrumentList(selected, true); //otherwise convert selections back to text and put in ad edit form
                 $("#display-ads-edit-overlay-" + id).find(".ads-edit-instruments-section").html(instrumentHtml);
 
                 $("#modal-edit-ad-instruments").foundation('close'); //close popup
@@ -429,48 +351,8 @@ function selectInstrumentsEdit(id) {
     $("#modal-edit-ad-instruments").foundation('open'); //show form to user
 }
 
-//when passed an instrument id + name, will add a new section under the instrument select so the user can select level or delete.
-//will show user an error if they try to add the same instrument twice
-function addSelection(id, inst, addOrEdit) {
-    var selectionDiv = $("#instrument-selection-" + addOrEdit); //grab section below instrument select
-
-    var thisId = id + "-" + Date.now();
-
-    selectionDiv.append("<div class='instrument-selection-item' id='" + thisId +"'></div>"); //add a new 'box' for this selected instrument
-
-    var thisSelection = selectionDiv.find("#" + thisId);
-
-    thisSelection.append("<div class='delete-selection'>X</div>"); //add the icon to delete this section
-    var levelSelect = $("#level-list-main-" + addOrEdit).clone(); //copy the existing level selector so this instrument can have its own
-    levelSelect.attr("id", "level-" + thisId); //set the id for the level select + unhide it
-    levelSelect.css("display", "inline-block");
-
-    thisSelection.append("<div class='instrument-selection-text'>" + inst + "</div>");
-    thisSelection.append(levelSelect);
-    thisSelection.append("<input placeholder='Quantity' type='number' class='selection-quantity'  id='quantity-" + thisId+"' value='1' min='1' max='99' />");
-
-    return thisId;
-}
 
 $(document).ready(function () {
-
-    //set up the instrument to use select2 for easy searching+selecting. This seemed closest to the datalist we were using
-    $('#instrument-list-add, #instrument-list-edit').select2({
-        placeholder: "Select an instrument"
-    }).on('select2:select', function (e) {
-        //whenever we select a new instrument, add it to the section below to select level
-        var selectedOption = e.params.data;
-        addSelection(selectedOption.id, (selectedOption.text), $(this).attr("id").split("-")[2]);
-    });
-
-    //click event to remove selected instruments.
-    $("body").on("click", ".delete-selection", function () {
-        $(this).parent().remove();
-    });
-
-    $("#modal-edit-ad-instruments").on("closed.zf.reveal", function () {
-        clearInstrumentsEditForm();
-    });
 
     $("#addAd").submit(function (e) {
         e.preventDefault();

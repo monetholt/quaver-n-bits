@@ -917,6 +917,40 @@ app.get('/matches/pending',checkAuthenticated,(req, res, next) => {
    }
 });
 
+app.put('/notifications/markRead',checkAuthenticated,(req, res, next) => {
+    try {
+        let sql = 'UPDATE Notifications SET ReadMsg=1 WHERE UserID=?';
+        mysql.pool.query(sql, [req.user.UserKey], function (err, result) {
+           if(err) {
+               throw(err);
+           } else if (result.affectedRows >= 1) {
+                res.send(true);
+           } else {
+               throw(new ReferenceError('No unread notifications found'));
+           }
+        });
+    } catch(err) {
+        res.redirect(utils.errorRedirect('/notifications/markRead', 'An unexpected error occurred marking your notifications read'));
+    }
+});
+
+app.put('/notifications/markRead/:id',checkAuthenticated,(req, res, next) => {
+    try {
+        let sql = 'UPDATE Notifications SET ReadMsg=1 WHERE NotificationKey=?';
+        mysql.pool.query(sql, [req.params.id], function(err, result) {
+           if(err) {
+               throw(err);
+           } else if (result.affectedRows === 1) {
+               res.send(true);
+           } else {
+               throw(new ReferenceError('No such notification or notification already read'));
+           }
+        });
+    } catch(err) {
+        res.redirect(utils.errorRedirect('/notifications/markRead', 'An unexpected error occurred marking your notification read'));
+    }
+});
+
 //for pages accessible by authenticated users only
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {

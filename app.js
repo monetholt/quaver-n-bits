@@ -633,7 +633,7 @@ app.get('/matches/pending',utils.checkAuthenticated,(req, res, next) => {
    }
 });
 
-app.put('/notifications/markRead',checkAuthenticated,(req, res, next) => {
+app.put('/notifications/markRead',utils.checkAuthenticated,(req, res, next) => {
     try {
         let sql = 'UPDATE Notifications SET ReadMsg=1 WHERE UserID=?';
         mysql.pool.query(sql, [req.user.UserKey], function (err, result) {
@@ -650,7 +650,7 @@ app.put('/notifications/markRead',checkAuthenticated,(req, res, next) => {
     }
 });
 
-app.put('/notifications/markRead/:id',checkAuthenticated,(req, res, next) => {
+app.put('/notifications/markRead/:id',utils.checkAuthenticated,(req, res, next) => {
     try {
         let sql = 'UPDATE Notifications SET ReadMsg=1 WHERE NotificationKey=?';
         mysql.pool.query(sql, [req.params.id], function(err, result) {

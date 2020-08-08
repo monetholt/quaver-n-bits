@@ -1,4 +1,4 @@
-const mysql = require('dbcon.js');
+const mysql = require('./dbcon.js');
 
 exports.errorRedirect = (url, message) => {
     return url + '?message=' + message;

@@ -13,7 +13,6 @@ var MemoryStore = require('memorystore')(session)
 const methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 const utils = require('./utils');
-const jp = require("jsonpath");
 
 
 // constants
@@ -93,49 +92,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
-app.use()
+//Routes
+app.use('/dashboard', require('./routes/ads.js'));
 
-app.get('/create-profile',checkAuthenticated,(req,res) => {
+app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
     mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
         if(error) {
             res.write(JSON.stringify(error));
             res.end();
         }
         res.render('create-profile', { user: req.user, instruments: rows[0], levels: rows[1] });
-    });
-});
-
-//any page requiring authentication needs to run checkAuthenticated first
-app.get('/dashboard', checkAuthenticated, function (req, res, next) {
-    var context = {
-        user: req.user
-    };
-    mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
-        try {
-            if (results.length == 0)
-            {
-                //for now you are SOL
-                res.write("No profile created for this user");
-                res.end();
-            }
-            else if (results[0].ArtistName === null) {
-                req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
-                req.session.Profile = results[0]; //put profile in the session
-                res.redirect('/create-profile');
-            } else {
-                req.session.ProfileID = results[0].ProfileKey; //put profile id in the session
-                req.session.Profile = results[0]; //put profile in the session
-
-                context['profile'] = results;
-                utils.getInstrumentsAndLevels(req, res, context, complete);
-                function complete() {
-                    res.render('dashboard', context);
-                }
-            }
-        } catch(err) {
-            res.write(JSON.stringify(err));
-            res.end();
-        }
     });
 });
 
@@ -645,63 +611,6 @@ app.post('/profile/instrument/update',utils.checkAuthenticated,(req, res, next) 
     } catch(err) {
         res.redirect(utils.profileUpdateErrorRedirect());
     }
-});
-
-//for storing data from ad creation, use req.body[] because otherwise it is read in as a subtraction
-//added form action and method, also changed from datalist to regular select.
- app.post('/dashboard/ads/create', utils.checkAuthenticated, (req, res, next) => {
-     try {
-         mysql.pool.getConnection(function (err, conn) {
-             if (err) throw (err);
-
-             //create the ad
-             conn.query(
-                 'INSERT INTO Ads SET UserID = ?, Title = ?, Description = ?,  ZipCode = ?, LocationRadius = ?, DatePosted = NOW(), Deleted = ?, IsActive = ?, DateCreated = NOW(), LastUpdated = NOW() ',
-                 [req.user.UserKey, req.body["ad-title"], req.body["ad-text"], req.session.Profile.ZipCode, req.body["ad-radius"], '0', '1'],
-                 function (err, rows) {
-                     if (err) {
-                         conn.release();
-                         res.write(JSON.stringify(err));
-                         res.end();
-                     }
-                     else if (rows.insertId > 0) //now that ad is created, add instruments
-                     {
-                         var adKey = rows.insertId;
-
-                         //first format instrument/levelIDs sent in with form
-                         var instruments = [];
-
-                         var timestamp = new Date().toISOString().slice(0, 19).replace('T', ' '); //timestamp for create/lastupdated
-                         for (i = 0; i <= 20; i++) { //set arbitary max of 20 instruments for now
-
-                             if (Object.prototype.hasOwnProperty.call(req.body, "InstrumentID-" + i) && req.body["InstrumentID-" + i] > 0) {
-                                 instruments.push([req.body["InstrumentID-" + i], req.body["LevelID-" + i], req.body["Quantity-" + i], adKey, timestamp, timestamp]);
-                             }
-                             else break;
-                         }
-
-                         //add the instruments
-                         conn.query(`INSERT INTO AdInstruments (InstrumentID, LevelID, Quantity, AdId, CreateDate, LastUpdated)  VALUES ?  `, [instruments],
-                             function (err, rows) {
-                                 conn.release();
-
-                                 if (err) {
-                                     res.write(JSON.stringify(err));
-                                     res.end();
-                                 } else res.redirect('/dashboard'); // successfully posted data to the database, redirecting to dashboard
-
-                             });
-
-                     }
-                     else {
-                         conn.release();
-                         throw (new ReferenceError("No Ad created"));
-                     }
-                 });
-         });
-     } catch (err) {
-         res.redirect(utils.profileUpdateErrorRedirect());
-     }
 });
 
 app.get('/matches',utils.checkAuthenticated,(req, res, next) => {

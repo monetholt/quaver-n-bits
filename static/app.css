@@ -5429,13 +5429,13 @@ main {
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    background-image: -webkit-linear-gradient(to bottom right, #8ed926, #2626d9);
+    background-image: -webkit-linear-gradient(to bottom right, #26d93e, #269ad9);
     /* For Chrome 25+ and Safari 6+, iOS 6.1+, Android 4.3+ */
-    background-image: -moz-linear-gradient(to bottom right, #8ed926, #2626d9);
+    background-image: -moz-linear-gradient(to bottom right, #26d93e, #269ad9);
     /* For Firefox 3.6+ */
-    background-image: -o-linear-gradient(to bottom right, #8ed926, #2626d9);
+    background-image: -o-linear-gradient(to bottom right, #26d93e, #269ad9);
     /* For old Opera 11.1+ */
-    background-image: linear-gradient(to bottom right, #8ed926, #2626d9);
+    background-image: linear-gradient(to bottom right, #26d93e, #269ad9);
     /* Standard syntax; must be last */
     color: #fefefe; }
     .main-profile .profile-header label {
@@ -6502,13 +6502,14 @@ nav {
     transform: translateY(0) rotate(0); } }
 
 .notifications {
+  position: relative;
   display: inline-flex;
   align-items: center;
   margin-top: 8px;
   margin-right: 20px;
   padding: 0 10px;
   font-size: 32px;
-  color: #fefefe;
+  color: #aaa;
   cursor: pointer;
   -webkit-transition: 0.2s ease;
   -moz-transition: 0.2s ease;
@@ -6516,11 +6517,20 @@ nav {
   -o-transition: 0.2s ease;
   transition: 0.2s ease; }
   .notifications:hover {
-    color: #6bffd6; }
-    .notifications:hover .badge {
-      background: #f44336 !important; }
-    .notifications:hover i {
-      animation: 0.5s ease-out 0s 1 ringADingDingBitches; }
+    color: #fefefe; }
+    .notifications:hover .notifications-menu {
+      opacity: 1;
+      transform: translateX(0); }
+  .notifications.unread {
+    color: #fefefe; }
+    .notifications.unread .badge {
+      display: block !important; }
+    .notifications.unread:hover {
+      color: #6bffd6; }
+      .notifications.unread:hover .badge {
+        background: #f44336 !important; }
+      .notifications.unread:hover i {
+        animation: 0.5s ease-out 0s 1 ringADingDingBitches; }
   @media print, screen and (max-width: 39.99875em) {
     .notifications {
       margin-right: 10px; } }
@@ -6530,6 +6540,7 @@ nav {
     position: relative; }
     .notifications .notifications-icon .badge {
       position: absolute;
+      display: none;
       bottom: 12px;
       right: -3px;
       width: 10px;
@@ -6542,3 +6553,18 @@ nav {
       -ms-transition: 0.2s ease;
       -o-transition: 0.2s ease;
       transition: 0.2s ease; }
+  .notifications .notifications-menu {
+    position: absolute;
+    top: 52px;
+    width: 250px;
+    right: -8px;
+    z-index: 20;
+    background: #fefefe;
+    border: 1px solid #eee;
+    -webkit-box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+    transition: 0.3s ease-in-out;
+    opacity: 0;
+    transform: translateX(100%);
+    transform-origin: top right; }

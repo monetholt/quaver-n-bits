@@ -3,7 +3,46 @@
 {{>alert}}
 
 <main>
-    <div class="main-container main-matches">
-        This page will hold all of your active and inactive matches. You'll see!
+    <div class="main-container main-active-matches">
+        <div class="active-matches-label">
+            <h1>Active Matches:</h1>
+        </div>
+        <div class="active-matches-container">
+            <div id="no-active-matches" class="active-matches-text">
+                <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
+            </div>
+            {{!-- <div id="active-matches-loading" class="active-matches-loading">
+                <div class="active-matches-text">
+                    <h2>Consulting the Lexicon</h2>
+                </div>
+                <div class="active-matches-loading-spin">
+                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+                </div>
+            </div> --}}
+            <div id="active-matches">
+
+            </div>
+        </div>
+    </div>
+    <div class="main-container main-inactive-matches">
+        <div class="inactive-matches-label">
+            <h1>Inactive Matches:</h1>
+        </div>
+        <div class="inactive-matches-container">
+            <div id="no-inactive-matches" class="inactive-matches-text">
+                <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
+            </div>
+            {{!-- <div id="inactive-matches-loading" class="inactive-matches-loading">
+                <div class="inactive-matches-text">
+                    <h2>Consulting the Lexicon</h2>
+                </div>
+                <div class="inactive-matches-loading-spin">
+                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+                </div>
+            </div> --}}
+            <div id="inactive-matches">
+
+            </div>
+        </div>
     </div>
 </main>

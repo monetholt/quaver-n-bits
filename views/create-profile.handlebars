@@ -42,13 +42,10 @@
             var match = url.match(regExp);
             console.log(match[1]);
             if (match && match[1].length == 11) {
-                // Do anything for being valid
                 console.log("This is a youtube link");
                 document.getElementById('worksample-soundcloud-converted').hidden = false;
                 document.getElementById('worksample-entered').value = 'https://www.youtube.com/embed/' + match[1] + '?autoplay=0';
                 document.getElementById('sampletype').value = "Video";
-                // if need to change the url to embed url then use below line
-                //$('#ytplayerSide').attr('src', 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0');
 
                 // Flag that this URL's value and that it was converted.
                 youTubeLinkWasConverted = true;
@@ -83,8 +80,7 @@
                 document.getElementById('worksample-soundcloud-converted').hidden = true;
                 document.getElementById('worksample-soundcloud-invalid').hidden = true;
 
-                // Since it's from SoundCloud, grab the track ID and format it for embedding.
-                // Use our super secret CORS escape hatch to make the request since we're 1337 h4x0R2.
+                // Since it's from SoundCloud, grab the track ID and format it for embedding, using CORS escape hatch.
                 let req = new XMLHttpRequest();
                 req.open('GET', `https://cors-anywhere.herokuapp.com/${url}`, true);
                 req.addEventListener('load', () => {
@@ -302,7 +298,6 @@
                         </tr>
                         <tr>
                             <td>
-                                <!--<input placeholder="Select an Instrument" list="instrument-list" type="text" id="instruments" oninput="checkSelected()">-->
                                 <select id="instrument-list">
                                     <option></option>
                                     {{#each instruments}}

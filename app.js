@@ -313,10 +313,39 @@ function getAds(req, res, context, complete) {
     });
 }
 
-// FIXME: This route will need to get all the users that match the ad criteria.
-app.get('/search-results', checkAuthenticated, function(req, res, next) {
-    // Do some sort of awful select with joins, then render (nav bar needs the user's profile to render):
-    res.render('search-results', { profile: true });
+app.get('/search-results/profiles', checkAuthenticated, (req, res, next) => {
+    mysql.pool.query('SELECT * FROM Profiles WHERE ProfileKey IN (' + req.body.ids.join() + ')'), (err, results) => {
+        if (results) {
+            mysql.pool.query('SELECT * FROM Profiles WHERE ProfileKey IN (' + req.body.ids.join() + ')'), (err1, results1) => {
+                if (results1) {
+                    res.send({ profiles: results, profileInstruments: results1 });
+                } else {
+                    throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
+                }
+            });
+        } else {
+            throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
+        }
+    });
+});
+
+app.get('/search-results/:id', checkAuthenticated, (req, res, next) => {
+    mysql.pool.query(`SELECT p.ProfileKey FROM AdInstruments ai
+    JOIN Ads a ON ai.AdID = a.AdKey
+    JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID <= ai.LevelID
+    JOIN Profiles p ON pi.ProfileID = p.ProfileKey AND p.LookingForWork = 1
+    WHERE ai.AdID = ? AND a.UserID != p.UserID;`, [req.params.id], (err, results) => {
+        if(results) {
+            let context = {
+                user: req.user,
+                profile: true,
+                profileIDs: results
+            };
+            res.render('search-results', context);
+        } else {
+            throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
+        }
+    });
 });
 
 app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {

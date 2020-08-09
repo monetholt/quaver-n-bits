@@ -4,6 +4,19 @@
 
 <main>
     <div class="main-container main-search-results">
-        This page will hold search results. You'll see.
+        <h1>Matching Profile IDs for this ad:</h1>
+        {{#if ProfileIDs}}
+            {{#each ProfileIDs}}
+                <div id="search-result-{{ProfileKey}}" data-id="{{ProfileKey}}">
+                    <p><strong>Profile ID:</strong> {{ProfileKey}}</p>
+                    <div id="profile-content-{{ProfileKey}}">
+
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <h6>There aren't any users who match your ad criteria.</h6>
+        {{/if}}
+
     </div>
 </main>

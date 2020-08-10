@@ -9,6 +9,7 @@ $logo-text-border: 0.3px rgba(246, 255, 107, 0.1);
 
 nav {
   position: fixed;
+  display: flex;
   top: 0;
   left: 0;
   width: 100vw;
@@ -18,8 +19,9 @@ nav {
   @include boxshadow(2px 2px 5px 1px rgba(0, 0, 0, 0.5));
 
   .logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    flex-grow: 1;
     margin-left: 20px;
     font-family: $title-font;
     color: $white;
@@ -37,16 +39,21 @@ nav {
   }
 
   .avatar {
-    position: absolute;
-    top: ($nav-height - $avatar-size) / 2;
-    right: ($nav-height - $avatar-size) / 2;
+    display: inline-flex;
+    align-items: center;
     height: $avatar-size;
     width: $avatar-size;
+    margin-top: ($nav-height - $avatar-size) / 2;
+    margin-right: ($nav-height - $avatar-size) / 2;
     font-size: $avatar-icon-size;
     text-align: center;
     color: $white;
     border-radius: 25px;
     cursor: pointer;
+
+    i {
+      cursor: inherit;
+    }
 
     &:hover {
       .nav-menu {
@@ -91,7 +98,7 @@ nav {
         @include transition(0.2s linear);
       }
 
-      a{
+      a {
         color: $dark-gray;
       }
     }

@@ -221,3 +221,17 @@ $header-hover-color: #ffef00;
     color: #4a4a4a;
   }
 }
+
+#no-matches {
+  display: block;
+  text-align: center;
+  padding: 20px 0;
+  margin: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: #eee;
+}
+
+.hidden {
+  display: none !important;
+}

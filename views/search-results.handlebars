@@ -30,22 +30,25 @@ profiles: {
 
 <main>
     <div class="main-container main-search-results">
-        <div class="search-results-header">
-            <div class="back">
-                <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> Back</a>
-            </div>
-            <div class="title">
-                <h5>Search results for:</h5>
-                <h2><strong>{{ad.Title}}</strong></h2>
-            </div>
-            <div class="subtitle">
-                <i class="fas fa-broadcast-tower"></i>Searching within <strong>{{ad.LocationRadius}}</strong> miles of <strong>{{ad.ZipCode}}</strong>.
-            </div>
-        </div>
         {{#if profiles}}
+        <div id="search-results-container">
+            <div class="search-results-header">
+                <div class="back">
+                    <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                </div>
+                <div class="title">
+                    <h5>Search results for:</h5>
+                    <h2><strong>{{ad.Title}}</strong></h2>
+                </div>
+                <div class="subtitle">
+                    <i class="fas fa-broadcast-tower"></i>Searching within <strong>{{ad.LocationRadius}}</strong> miles of <strong>{{ad.ZipCode}}</strong>.
+                    <input id="adzipcode" value="{{ad.ZipCode}}" type="hidden" />
+                    <input id="adlocrad" value="{{ad.LocationRadius}}" type="hidden" />
+                </div>
+            </div>
             <div id="search-results">
                 {{#each profiles}}
-                    <div id="search-result-{{ProfileKey}}" class="search-result" data-id="{{ProfileKey}}">
+                    <div id="search-result-{{ProfileKey}}" class="search-result" data-id="{{ProfileKey}}" data-zip="{{ZipCode}}">
                         <div class="grid-x search-result-header">
                             <div class="cell medium-shrink header-photo">
                                 {{#if Photo}}
@@ -98,9 +101,17 @@ profiles: {
                     </div>
                 {{/each}}
             </div>
-        {{else}}
-            <h6>There aren't any users who match your ad criteria.</h6>
+        </div>
         {{/if}}
-
+        <div id="no-matches" class="main-search-results{{#if profiles}} hidden{{/if}}">
+            <div class="search-results-header">
+                <div class="back">
+                    <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                </div>
+                <div class="title">
+                    <i class="fas fa-wind"></i> There aren't any users who match your ad criteria.
+                </div>
+            </div>
+        </div>
     </div>
 </main>

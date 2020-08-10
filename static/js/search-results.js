@@ -15,7 +15,7 @@
          let radius = document.getElementById('adlocrad').value;
 
          // Only perform search if radius is greater than 0, since 0 indicates the ad searches any location.
-         if (radius > 0) {
+         if (radius < 99999) {
 
              // API Key (we might want to move this).
              const key = 'js-tdNwFATA32aht796TZoLdODFiay74Fs5Kj4eTsOobne4ZWjs8uDmItN8K1GQKOph';

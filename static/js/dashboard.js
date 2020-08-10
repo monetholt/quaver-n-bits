@@ -79,6 +79,7 @@ function createAd(thisAd) {
                 <div class="cell medium-3 ads-edit-radius">
                     <label for="ads-edit-radius-${thisAd.AdKey}">Search Radius:</label>
                     <select name="ads-edit-radius" id="ads-edit-radius-${thisAd.AdKey}">
+                        <option value="99999">Any</option>
                         <option value="5">5 Miles</option>
                         <option value="10">10 Miles</option>
                         <option value="25">25 Miles</option>

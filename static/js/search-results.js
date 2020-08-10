@@ -1,43 +1,30 @@
-//  document.addEventListener('DOMContentLoaded', (event) => {
-//     let req = new XMLHttpRequest();
-//     req.open('GET', '/dashboard/ads', true);
-//     req.addEventListener('load', () => {
-//         let res = JSON.parse(req.responseText);
-//         if (req.status < 400) {
-//             $("[name='sortOrder']").val(res.sort);
-//             console.log(res);
-//             if (res.has_current_ads) {
-//                 document.getElementById('current-ads-loading').hidden = true;
-//                 let currentAds = document.getElementById('current-ads');
-//                 for (let ad in res.current_ads) {
-//                     currentAds.appendChild(createAd(res.current_ads[ad]));
-//                     allAds[res.current_ads[ad]['AdKey']] = res.current_ads[ad];
-//                 }
-//             } else {
-//                 document.getElementById('current-ads-loading').hidden = true;
-//                 document.getElementById('no-current-ads').hidden = false;
-//             }
-//
-//             if (res.has_prev_ads) {
-//                 document.getElementById('previous-ads-loading').hidden = true;
-//                 let previousAds = document.getElementById('previous-ads');
-//                 for (let ad in res.prev_ads) {
-//                     previousAds.appendChild(createAd(res.prev_ads[ad]));
-//                     allAds[res.prev_ads[ad]['AdKey']] = res.prev_ads[ad];
-//                 }
-//             } else {
-//                 document.getElementById('previous-ads-loading').hidden = true;
-//                 document.getElementById('no-previous-ads').hidden = false;
-//             }
-//         } else {
-//             console.log("WHOOPS!");
-//         }
-//     });
-//     document.getElementById('current-ads-loading').hidden = false;
-//     document.getElementById('previous-ads-loading').hidden = false;
-//     document.getElementById('no-current-ads').hidden = true;
-//     document.getElementById('no-previous-ads').hidden = true;
-//     req.send(null);
-//  });
-//
-// }
+ document.addEventListener('DOMContentLoaded', (event) => {
+     //
+     // // Get all existing match IDs
+     // let results = document.getElementById('search-results');
+     //
+     // // If they actually exist, then fetch the matching profiles & instruments.
+     // if (results) {
+     //
+     //     // Grab all of the Profile IDs we need.
+     //     let resultIDs = [];
+     //     Object.keys(results.children).forEach(key => {
+     //         resultIDs.push(results.children[key].getAttribute('data-id'));
+     //     });
+     //
+     //     // Open request to get profiles & profile instruments.
+     //     let req = new XMLHttpRequest();
+     //     req.open('POST', '/search-results/profiles', true);
+     //     req.addEventListener('load', () => {
+     //         let res = JSON.parse(req.responseText);
+     //         if (req.status < 400) {
+     //             console.log("Response from fetch:");
+     //             console.log(res);
+     //         }
+     //     });
+     //
+     //     console.log("resultIDs to be sent: " + resultIDs);
+     //     req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+     //     req.send(JSON.stringify({ resultIDs: resultIDs }));
+     // }
+ });

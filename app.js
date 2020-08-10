@@ -29,7 +29,8 @@ app.engine('handlebars', handlebars({
     helpers: {
         moment: require('helper-moment'),
         eq: (v1, v2) => { return v1 === v2; },
-        inc: val => { return parseInt(val) + 1; }
+        inc: val => { return parseInt(val) + 1; },
+        log: val => { console.log(val) }
     }
 }));
 
@@ -313,14 +314,47 @@ function getAds(req, res, context, complete) {
     });
 }
 
-app.get('/search-results/profiles', checkAuthenticated, (req, res, next) => {
-    mysql.pool.query('SELECT * FROM Profiles WHERE ProfileKey IN (' + req.body.ids.join() + ')'), (err, results) => {
-        if (results) {
-            mysql.pool.query('SELECT * FROM Profiles WHERE ProfileKey IN (' + req.body.ids.join() + ')'), (err1, results1) => {
-                if (results1) {
-                    res.send({ profiles: results, profileInstruments: results1 });
+// Fetches profiles + instruments for all profiles in the search-results.
+app.get('/search-results/:id', checkAuthenticated, (req, res, next) => {
+    mysql.pool.query(`SELECT DISTINCT a.*, p.ProfileKey FROM AdInstruments ai
+    JOIN Ads a ON ai.AdID = a.AdKey
+    JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID >= ai.LevelID
+    JOIN Profiles p ON pi.ProfileID = p.ProfileKey AND p.LookingForWork = 1
+    WHERE ai.AdID = ? AND a.UserID != p.UserID;`, [req.params.id], (err, adAndIDs) => {
+        if(adAndIDs) {
+            let profileIDs = adAndIDs.map(p => p.ProfileKey).join();
+            let context = {
+                user: req.user,
+                profile: true,
+                ad: adAndIDs[0]
+            };
+            mysql.pool.query(`SELECT * FROM Profiles WHERE ProfileKey IN (${profileIDs})`, false, (err, results) => {
+                if (results) {
+                    let profiles = {}
+                    results.forEach(profile => {
+                        profiles[profile["ProfileKey"]] = profile;
+                        profiles[profile["ProfileKey"]]["Instruments"] = {}
+                    });
+                    mysql.pool.query(`SELECT p.ProfileKey, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
+                    LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
+                    LEFT JOIN Users u ON p.UserID = UserKey
+                    LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
+                    LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
+                    WHERE ProfileID IN (${profileIDs});`, false, (err1, results1) => {
+                        if (results1) {
+                            results1.forEach((result, i) => {
+                                profiles[result["ProfileKey"]]["Instruments"] = {
+                                    ...profiles[result["ProfileKey"]]["Instruments"],
+                                    [i]: result
+                                };
+                            });
+                            res.render('search-results', { ...context, profiles: profiles });
+                        } else {
+                            throw(new ReferenceError("Something went wrong fetching profile instruments for the search results page."));
+                        }
+                    });
                 } else {
-                    throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
+                    throw(new ReferenceError("Something went wrong fetching profiles for the search results page."));
                 }
             });
         } else {
@@ -329,24 +363,23 @@ app.get('/search-results/profiles', checkAuthenticated, (req, res, next) => {
     });
 });
 
-app.get('/search-results/:id', checkAuthenticated, (req, res, next) => {
-    mysql.pool.query(`SELECT p.ProfileKey FROM AdInstruments ai
-    JOIN Ads a ON ai.AdID = a.AdKey
-    JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID <= ai.LevelID
-    JOIN Profiles p ON pi.ProfileID = p.ProfileKey AND p.LookingForWork = 1
-    WHERE ai.AdID = ? AND a.UserID != p.UserID;`, [req.params.id], (err, results) => {
-        if(results) {
-            let context = {
-                user: req.user,
-                profile: true,
-                profileIDs: results
-            };
-            res.render('search-results', context);
-        } else {
-            throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
-        }
-    });
-});
+// app.get('/search-results/:id', checkAuthenticated, (req, res, next) => {
+//     mysql.pool.query(`SELECT p.ProfileKey FROM AdInstruments ai
+//     JOIN Ads a ON ai.AdID = a.AdKey
+//     JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID <= ai.LevelID
+//     JOIN Profiles p ON pi.ProfileID = p.ProfileKey AND p.LookingForWork = 1
+//     WHERE ai.AdID = ? AND a.UserID != p.UserID;`, [req.params.id], (err, ProfileIDs) => {
+//         if(ProfileIDs) {
+//             let context = {
+//                 user: req.user,
+//                 profile: true,
+//             };
+//             // res.render('search-results', context);
+//         } else {
+//             throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
+//         }
+//     });
+// });
 
 app.post('/adSortOrder', checkAuthenticated, function (req, res, next) {
     // checks whether the UserID exists in the table

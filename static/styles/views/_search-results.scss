@@ -276,7 +276,6 @@ $no-matches-hover: #2196f3;
 
   .title {
     font-size: 2rem;
-    padding-top: 20px;
 
     i {
       padding-right: 20px;
@@ -289,6 +288,7 @@ $no-matches-hover: #2196f3;
     margin-bottom: 10px;
     letter-spacing: 2px;
     cursor: pointer;
+    padding-bottom: 20px;
     @include basic-links($no-matches-link, $no-matches-hover);
 
     i {

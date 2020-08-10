@@ -6534,8 +6534,7 @@ main {
   border-radius: 20px;
   animation: 0.5s ease-out 0s 1 slideInFromLeft; }
   #no-matches .title {
-    font-size: 2rem;
-    padding-top: 20px; }
+    font-size: 2rem; }
     #no-matches .title i {
       padding-right: 20px; }
   #no-matches .back {
@@ -6543,7 +6542,8 @@ main {
     position: relative;
     margin-bottom: 10px;
     letter-spacing: 2px;
-    cursor: pointer; }
+    cursor: pointer;
+    padding-bottom: 20px; }
     #no-matches .back a, #no-matches .back a:visited, #no-matches .back a:active {
       color: #114b79;
       outline: none;

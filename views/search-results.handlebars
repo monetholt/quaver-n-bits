@@ -2,8 +2,61 @@
 {{>nav}}
 {{>alert}}
 
+<!-- Reference for structure of incoming handlebars data:
+user: (your user data),
+profile: (true so nav bar shows avatar),
+profiles: {
+    profileID: {
+        ProfileKey,
+        UserID,
+        ZipCode,
+        Phone,
+        Website,
+        LookingForWork,
+        LastUpdated,
+        CreateDate,
+        ArtistName,
+        Bio,
+        Photo,
+        Instruments: [
+            { InstrumentID, Instrument, LevelID, Level },
+            ...
+        ]
+    },
+    ...
+}
+-->
+
 <main>
     <div class="main-container main-search-results">
-        This page will hold search results. You'll see.
+        <h1>Search results for: <strong>{{ad.Title}}</strong> </h1>
+        <h3>Searching within {{ad.LocationRadius}} miles of {{ad.ZipCode}}.</h3>
+        {{#if profiles}}
+            <div id="search-results">
+                {{#each profiles}}
+                    <div id="search-result-{{ProfileKey}}" data-id="{{ProfileKey}}">
+                        <h3><strong>{{ArtistName}}</strong></h3>
+                        <div id="profile-content-{{ProfileKey}}">
+                            <p><strong>Profile ID:</strong> {{ProfileKey}}</p>
+                            <p><strong>Zip Code:</strong> {{ZipCode}}</p>
+                            <p><strong>Last Updated:</strong> {{moment LastUpdated format="MMMM Do, YYYY"}}</p>
+                            <p><strong>Bio:</strong> {{Bio}}</p>
+                            <div>
+                                <h5>Instruments:</h5>
+                                <ul>
+                                {{#each Instruments}}
+                                    {{ log this }}
+                                    <li>{{Level}} {{Instrument}}</li>
+                                {{/each}}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <h6>There aren't any users who match your ad criteria.</h6>
+        {{/if}}
+
     </div>
 </main>

@@ -6356,6 +6356,14 @@ main {
     opacity: 1;
     transform: translateX(0); } }
 
+@keyframes glowingButton {
+  0% {
+    box-shadow: 0 0 5px 1px #6bffd6; }
+  50% {
+    box-shadow: 0 0 5px 3px #6bffd6; }
+  100% {
+    box-shadow: 0 0 5px 1px #6bffd6; } }
+
 .main-search-results {
   padding: 0 !important; }
   .main-search-results .search-results-header {
@@ -6494,6 +6502,7 @@ main {
             box-shadow: 0 0 5px 1px #6bffd6;
             margin: 15px;
             cursor: pointer;
+            animation: 3s ease-out 0s infinite glowingButton;
             -webkit-transition: 0.3s ease;
             -moz-transition: 0.3s ease;
             -ms-transition: 0.3s ease;
@@ -6505,7 +6514,8 @@ main {
               background: #2f2f2f;
               color: #fffab0;
               border: 1px solid #fffab0;
-              box-shadow: 0 0 5px 1px #fffab0; }
+              box-shadow: 0 0 5px 1px #fffab0;
+              animation: none; }
               .main-search-results #search-results .search-result .search-result-header .header-button button:hover i {
                 color: #fffab0;
                 animation: 1s ease-out 0s 1 lightning; }

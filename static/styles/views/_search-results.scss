@@ -102,6 +102,7 @@ $no-matches-hover: #2196f3;
       color: #72ffd2;
       border: 1px solid #72ffd2;
       border-radius: 50px;
+      text-align: center;
       width: fit-content;
 
       i {
@@ -220,6 +221,10 @@ $no-matches-hover: #2196f3;
             cursor: pointer;
             @include transition(0.3s ease);
 
+            &:focus {
+              background: #2f2f2f;
+            }
+
             &:hover {
               background: #2f2f2f;
               color: $secondary-color;
@@ -242,6 +247,11 @@ $no-matches-hover: #2196f3;
       .search-result-body {
         padding: 20px;
 
+        .no-bio {
+          i {
+            padding-right: 5px;
+          }
+        }
         h5 {
           font-family: $header-font;
           font-weight: bold;

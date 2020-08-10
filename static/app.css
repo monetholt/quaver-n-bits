@@ -6407,6 +6407,7 @@ main {
       color: #72ffd2;
       border: 1px solid #72ffd2;
       border-radius: 50px;
+      text-align: center;
       width: fit-content; }
       .main-search-results .search-results-header .subtitle i {
         padding-right: 10px;
@@ -6498,6 +6499,8 @@ main {
             -ms-transition: 0.3s ease;
             -o-transition: 0.3s ease;
             transition: 0.3s ease; }
+            .main-search-results #search-results .search-result .search-result-header .header-button button:focus {
+              background: #2f2f2f; }
             .main-search-results #search-results .search-result .search-result-header .header-button button:hover {
               background: #2f2f2f;
               color: #fffab0;
@@ -6511,6 +6514,8 @@ main {
             padding-right: 10px; }
       .main-search-results #search-results .search-result .search-result-body {
         padding: 20px; }
+        .main-search-results #search-results .search-result .search-result-body .no-bio i {
+          padding-right: 5px; }
         .main-search-results #search-results .search-result .search-result-body h5 {
           font-family: "Maven Pro", sans-serif;
           font-weight: bold; }

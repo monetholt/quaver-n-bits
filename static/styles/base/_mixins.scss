@@ -33,7 +33,7 @@
   a, a:visited, a:active {
     color: $link-color;
     outline: none;
-    @include transition(.3s ease-in-out);
+    @include transition(0.3s ease-in-out);
   }
 
   a:hover {

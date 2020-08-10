@@ -109,6 +109,7 @@ app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
 
 // Fetches profiles + instruments for all profiles in the search-results.
 app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
+    // Step 1: Get the original ad content and all matching profile IDs.
     mysql.pool.query(`SELECT DISTINCT a.*, p.ProfileKey FROM AdInstruments ai
     JOIN Ads a ON ai.AdID = a.AdKey
     JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID >= ai.LevelID
@@ -121,58 +122,49 @@ app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
                 profile: true,
                 ad: adAndIDs[0]
             };
-            mysql.pool.query(`SELECT * FROM Profiles WHERE ProfileKey IN (${profileIDs})`, false, (err, results) => {
-                if (results) {
-                    let profiles = {}
-                    results.forEach(profile => {
-                        profiles[profile["ProfileKey"]] = profile;
-                        profiles[profile["ProfileKey"]]["Instruments"] = {}
-                    });
-                    mysql.pool.query(`SELECT p.ProfileKey, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
-                    LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
-                    LEFT JOIN Users u ON p.UserID = UserKey
-                    LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
-                    LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
-                    WHERE ProfileID IN (${profileIDs});`, false, (err1, results1) => {
-                        if (results1) {
-                            results1.forEach((result, i) => {
-                                profiles[result["ProfileKey"]]["Instruments"] = {
-                                    ...profiles[result["ProfileKey"]]["Instruments"],
-                                    [i]: result
-                                };
-                            });
-                            res.render('search-results', { ...context, profiles: profiles });
-                        } else {
-                            throw(new ReferenceError("Something went wrong fetching profile instruments for the search results page."));
-                        }
-                    });
-                } else {
-                    throw(new ReferenceError("Something went wrong fetching profiles for the search results page."));
-                }
-            });
+
+            // If there were no matching profileIDs, render the page with profiles set to false..
+            if (!profileIDs) {
+                return res.render('search-results', { ...context, profiles: false });
+            } else {
+                // Step 2: Get the profile data for each of the matching profile keys. Set up profile key/value pairs.
+                mysql.pool.query(`SELECT * FROM Profiles WHERE ProfileKey IN (${profileIDs})`, false, (err, results) => {
+                    if (results) {
+                        let profiles = {}
+                        results.forEach(profile => {
+                            profiles[profile["ProfileKey"]] = profile;
+                            profiles[profile["ProfileKey"]]["Instruments"] = {}
+                        });
+
+                        // Step 3: Add in the instruments and levels for each of the profiles that matched.
+                        mysql.pool.query(`SELECT p.ProfileKey, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
+                        LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
+                        LEFT JOIN Users u ON p.UserID = UserKey
+                        LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
+                        LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
+                        WHERE ProfileID IN (${profileIDs});`, false, (err1, results1) => {
+                            if (results1) {
+                                results1.forEach((result, i) => {
+                                    profiles[result["ProfileKey"]]["Instruments"] = {
+                                        ...profiles[result["ProfileKey"]]["Instruments"],
+                                        [i]: result
+                                    };
+                                });
+                                res.render('search-results', { ...context, profiles: profiles });
+                            } else {
+                                throw(new ReferenceError("Something went wrong fetching profile instruments for the search results page."));
+                            }
+                        });
+                    } else {
+                        throw(new ReferenceError("Something went wrong fetching profiles for the search results page."));
+                    }
+                });
+            }
         } else {
             throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
         }
     });
 });
-
-// app.get('/search-results/:id', checkAuthenticated, (req, res, next) => {
-//     mysql.pool.query(`SELECT p.ProfileKey FROM AdInstruments ai
-//     JOIN Ads a ON ai.AdID = a.AdKey
-//     JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID <= ai.LevelID
-//     JOIN Profiles p ON pi.ProfileID = p.ProfileKey AND p.LookingForWork = 1
-//     WHERE ai.AdID = ? AND a.UserID != p.UserID;`, [req.params.id], (err, ProfileIDs) => {
-//         if(ProfileIDs) {
-//             let context = {
-//                 user: req.user,
-//                 profile: true,
-//             };
-//             // res.render('search-results', context);
-//         } else {
-//             throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
-//         }
-//     });
-// });
 
 app.post('/adSortOrder', utils.checkAuthenticated, function (req, res, next) {
     // checks whether the UserID exists in the table
@@ -189,7 +181,6 @@ app.post('/adSortOrder', utils.checkAuthenticated, function (req, res, next) {
                 });
             } 
     });
-
 });
 
 

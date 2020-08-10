@@ -63,7 +63,6 @@ $social-links-underline: #48fe80;
     margin: 0 0 1.25rem;
     padding: 1.25rem;
     background: #333;
-    @include gradient(to bottom right, hsl(random(360), 70%, 50%), hsl(random(360), 70%, 50%));
     color: $white;
 
     label {
@@ -156,6 +155,10 @@ $social-links-underline: #48fe80;
 
       #profile-about-text {
         white-space: pre-wrap;
+      }
+
+      #edit-about-text-input {
+        resize: none;
       }
     }
 

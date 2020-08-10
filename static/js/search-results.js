@@ -57,7 +57,8 @@
              // We're limited on requests, so comment this out to test non zip code related things.
              req.send(null);
          } else {
-             // If there are matches and they are all "any" radius, then just show them.
+             // If there are matches and they are all "any" radius, hide the loading placeholder and just show them.
+             document.getElementById('search-results-loading').classList.add('hidden');
              document.getElementById('search-results').classList.remove('hidden');
          }
      }

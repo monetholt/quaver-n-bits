@@ -166,24 +166,6 @@ app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
     });
 });
 
-// app.get('/search-results/:id', checkAuthenticated, (req, res, next) => {
-//     mysql.pool.query(`SELECT p.ProfileKey FROM AdInstruments ai
-//     JOIN Ads a ON ai.AdID = a.AdKey
-//     JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID <= ai.LevelID
-//     JOIN Profiles p ON pi.ProfileID = p.ProfileKey AND p.LookingForWork = 1
-//     WHERE ai.AdID = ? AND a.UserID != p.UserID;`, [req.params.id], (err, ProfileIDs) => {
-//         if(ProfileIDs) {
-//             let context = {
-//                 user: req.user,
-//                 profile: true,
-//             };
-//             // res.render('search-results', context);
-//         } else {
-//             throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
-//         }
-//     });
-// });
-
 app.post('/adSortOrder', utils.checkAuthenticated, function (req, res, next) {
     // checks whether the UserID exists in the table
     mysql.pool.query("SELECT UserID FROM UserSettings WHERE UserID = ?;", [req.user.UserKey], (error, results) => {
@@ -199,7 +181,6 @@ app.post('/adSortOrder', utils.checkAuthenticated, function (req, res, next) {
                 });
             } 
     });
-
 });
 
 

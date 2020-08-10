@@ -46,7 +46,23 @@ profiles: {
                     <input id="adlocrad" value="{{ad.LocationRadius}}" type="hidden" />
                 </div>
             </div>
-            <div id="search-results">
+            <div id="search-results-loading" class="search-results-loading">
+                <div class="search-results-text">
+                    <h2>Reticulating Splines</h2>
+                </div>
+                <div class="search-results-loading-spin">
+                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+                </div>
+            </div>
+            <div id="no-matches" class="hidden">
+                <div class="back">
+                    <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                </div>
+                <div class="title">
+                    <i class="fas fa-wind"></i> There aren't any users who match your ad criteria.
+                </div>
+            </div>
+            <div id="search-results" class="hidden">
                 {{#each profiles}}
                     <div id="search-result-{{ProfileKey}}" class="search-result" data-id="{{ProfileKey}}" data-zip="{{ZipCode}}">
                         <div class="grid-x search-result-header">
@@ -102,16 +118,15 @@ profiles: {
                 {{/each}}
             </div>
         </div>
-        {{/if}}
-        <div id="no-matches" class="main-search-results{{#if profiles}} hidden{{/if}}">
-            <div class="search-results-header">
-                <div class="back">
-                    <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> Back</a>
-                </div>
-                <div class="title">
-                    <i class="fas fa-wind"></i> There aren't any users who match your ad criteria.
-                </div>
+        {{else}}
+        <div id="no-matches">
+            <div class="back">
+                <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> Back</a>
+            </div>
+            <div class="title">
+                <i class="fas fa-wind"></i> There aren't any users who match your ad criteria.
             </div>
         </div>
+        {{/if}}
     </div>
 </main>

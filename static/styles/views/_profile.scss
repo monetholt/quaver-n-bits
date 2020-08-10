@@ -156,6 +156,10 @@ $social-links-underline: #48fe80;
       #profile-about-text {
         white-space: pre-wrap;
       }
+
+      #edit-about-text-input {
+        resize: none;
+      }
     }
 
     .cell {

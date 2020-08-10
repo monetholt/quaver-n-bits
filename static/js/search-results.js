@@ -7,7 +7,7 @@
      // Deletes any children in the DOM that are outside of the given zip code radius.
      function filterByZipCode() {
 
-         // Check for origin. If it doesn't exist, no need to do anything.
+         // Check for origin. If it doesn't exist, no need to do anything (no results).
          if (!document.getElementById('adzipcode')) { return; }
 
          // Get the origin zip and radius.
@@ -39,10 +39,15 @@
                          }
                      });
 
+                     // Hide the loading placeholder.
+                     document.getElementById('search-results-loading').classList.add('hidden');
+
                      // If all of the children got removed after checking the radius, display the "no matches" message.
                      if (parent.children.length == 0) {
                          document.getElementById('no-matches').classList.remove('hidden');
-                         document.getElementById('search-results-container').classList.add('hidden');
+                     // Otherwise, show the proper matches.
+                     } else {;
+                         document.getElementById('search-results').classList.remove('hidden');
                      }
                  } else {
                      console.log("Something bad happened." + req.statusText);
@@ -51,6 +56,9 @@
 
              // We're limited on requests, so comment this out to test non zip code related things.
              req.send(null);
+         } else {
+             // If there are matches and they are all "any" radius, then just show them.
+             document.getElementById('search-results').classList.remove('hidden');
          }
      }
      function randomBG() {

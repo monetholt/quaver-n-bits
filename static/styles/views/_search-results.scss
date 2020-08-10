@@ -1,5 +1,7 @@
 $header-link-color: $secondary-color;
 $header-hover-color: #ffef00;
+$no-matches-link: #114b79;
+$no-matches-hover: #2196f3;
 
 @keyframes beacon {
   0% {
@@ -33,6 +35,17 @@ $header-hover-color: #ffef00;
   100% {
     transform: scale(1) rotate(0) translateY(0);
     color: $secondary-color;
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -97,6 +110,31 @@ $header-hover-color: #ffef00;
     }
   }
 
+  .search-results-loading {
+    margin: 20px;
+    padding: 20px;
+    background: #f1f1f1;
+    border: 1px solid $medium-gray;
+    border-radius: 20px;
+    color: $medium-gray;
+
+    .search-results-text {
+      text-align: center;
+    }
+
+    .search-results-loading-spin {
+      display: block;
+      text-align: center;
+      padding: 0;
+      margin: 0;
+
+      i {
+        color: #eaeaea;
+        font-size: 5rem;
+      }
+    }
+  }
+
   #search-results {
     padding: 20px;
     background: #f7f7f7;
@@ -107,6 +145,7 @@ $header-hover-color: #ffef00;
       border: 1px solid #bbb;
       border-radius: 20px;
       @include boxshadow(1px 1px 5px 2px rgba(0,0,0,0.2));
+      animation: 0.5s ease-out 0s 1 slideInFromLeft;
 
       .search-result-header {
         padding: 10px;
@@ -225,11 +264,47 @@ $header-hover-color: #ffef00;
 #no-matches {
   display: block;
   text-align: center;
-  padding: 20px 0;
-  margin: 10px;
+  padding: 20px;
+  margin: 20px;
   font-size: 1.5rem;
   font-weight: bold;
   background: #eee;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  animation: 0.5s ease-out 0s 1 slideInFromLeft;
+
+  .title {
+    font-size: 2rem;
+    padding-top: 20px;
+
+    i {
+      padding-right: 20px;
+    }
+  }
+
+  .back {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    @include basic-links($no-matches-link, $no-matches-hover);
+
+    i {
+      padding-left: 10px;
+      padding-right: 0;
+      color: $no-matches-link;
+      @include transition(0.3s cubic-bezier(0.4, 0, 0.2, 1));
+    }
+
+    &:hover {
+      i {
+        padding-left: 0;
+        padding-right: 10px;
+        color: $no-matches-hover;
+      }
+    }
+  }
 }
 
 .hidden {

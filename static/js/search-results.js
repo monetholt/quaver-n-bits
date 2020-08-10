@@ -1,30 +1,16 @@
  document.addEventListener('DOMContentLoaded', (event) => {
-     //
-     // // Get all existing match IDs
-     // let results = document.getElementById('search-results');
-     //
-     // // If they actually exist, then fetch the matching profiles & instruments.
-     // if (results) {
-     //
-     //     // Grab all of the Profile IDs we need.
-     //     let resultIDs = [];
-     //     Object.keys(results.children).forEach(key => {
-     //         resultIDs.push(results.children[key].getAttribute('data-id'));
-     //     });
-     //
-     //     // Open request to get profiles & profile instruments.
-     //     let req = new XMLHttpRequest();
-     //     req.open('POST', '/search-results/profiles', true);
-     //     req.addEventListener('load', () => {
-     //         let res = JSON.parse(req.responseText);
-     //         if (req.status < 400) {
-     //             console.log("Response from fetch:");
-     //             console.log(res);
-     //         }
-     //     });
-     //
-     //     console.log("resultIDs to be sent: " + resultIDs);
-     //     req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
-     //     req.send(JSON.stringify({ resultIDs: resultIDs }));
-     // }
+
+     randomBG();
+
+
+     function randomBG() {
+         let header = document.getElementsByClassName('search-result-header');
+         Object.values(header).forEach(result => {
+             let variance = 40;
+             let rand1 = Math.random() * (360 - 200) + 200;
+             let rand2 = rand1 - variance < 0 ? rand1 - variance + 360 : rand1 - variance;
+             result.style.backgroundImage = `linear-gradient(to bottom right, hsl(${rand1}, 70%, 50%), hsl(${rand2}, 70%, 50%))`;
+         });
+     };
  });
+

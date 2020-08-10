@@ -2,8 +2,128 @@
 {{>nav}}
 {{>alert}}
 
+<!-- Reference for structure of incoming handlebars data:
+user: (your user data),
+ad: (original ad data except instruments),
+profile: (true so nav bar shows avatar),
+profiles: {
+    profileID: {
+        ProfileKey,
+        UserID,
+        ZipCode,
+        Phone,
+        Website,
+        LookingForWork,
+        LastUpdated,
+        CreateDate,
+        ArtistName,
+        Bio,
+        Photo,
+        Instruments: [
+            { InstrumentID, Instrument, LevelID, Level },
+            ...
+        ]
+    },
+    ...
+}
+-->
+
 <main>
     <div class="main-container main-search-results">
-        This page will hold search results. You'll see.
+        {{#if profiles}}
+        <div id="search-results-container">
+            <div class="search-results-header">
+                <div class="back">
+                    <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> Back</a>
+                </div>
+                <div class="title">
+                    <h5>Search results for:</h5>
+                    <h2><strong>{{ad.Title}}</strong></h2>
+                </div>
+                <div class="subtitle">
+                    <i class="fas fa-broadcast-tower"></i>Searching within <strong>{{ad.LocationRadius}}</strong> miles of <strong>{{ad.ZipCode}}</strong>.
+                    <input id="adzipcode" value="{{ad.ZipCode}}" type="hidden" />
+                    <input id="adlocrad" value="{{ad.LocationRadius}}" type="hidden" />
+                </div>
+            </div>
+            <div id="search-results-loading" class="search-results-loading">
+                <div class="search-results-text">
+                    <h2>Reticulating Splines</h2>
+                </div>
+                <div class="search-results-loading-spin">
+                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+                </div>
+            </div>
+            <div id="no-matches" class="hidden">
+                <div class="title">
+                    <i class="fas fa-wind"></i> There aren't any users who match your ad criteria.
+                </div>
+            </div>
+            <div id="search-results" class="hidden">
+                {{#each profiles}}
+                    <div id="search-result-{{ProfileKey}}" class="search-result" data-id="{{ProfileKey}}" data-zip="{{ZipCode}}">
+                        <div class="grid-x search-result-header">
+                            <div class="cell medium-shrink header-photo">
+                                {{#if Photo}}
+                                    <img class="search-result-image" src="{{Photo}}" />
+                                {{else}}
+                                    <img class="search-result-image" src="/img/profile-img.jpg" />
+                                {{/if}}
+                            </div>
+                            <div class="cell medium-auto header-info">
+                                <div class="search-result-name">
+                                    {{#if ArtistName}}
+                                        {{ArtistName}}
+                                    {{else}}
+                                        <span class="anon light">I don't have a name.</span>
+                                    {{/if}}
+                                </div>
+                                <div class="search-result-loc">
+                                    <i class="fas fa-map-marker-alt"></i>{{ZipCode}}
+                                </div>
+                                <div class="search-result-active">
+                                    Last Active: {{moment LastUpdated fromNow="true"}} ago
+                                </div>
+                            </div>
+                            <div class="cell medium-shrink header-button">
+                                <button class="button dark expanded"><i class="fas fa-bolt"></i>Let's Connect</button>
+                            </div>
+                        </div>
+                        <div id="profile-content-{{ProfileKey}}" class="search-result-body">
+                            <div class="grid-x">
+                                <div class="cell medium-6">
+                                    <h5>About me:</h5>
+                                    <p>
+                                        {{#if Bio}}
+                                            {{Bio}}
+                                        {{else}}
+                                            <span class="anon dark no-bio"><i class="far fa-sad-cry"></i>I never filled out my bio.</span>
+                                        {{/if}}
+                                    </p>
+                                </div>
+                                <div class="cell medium-6">
+                                    <h5>Instruments:</h5>
+                                    <ul>
+                                        {{#each Instruments}}
+                                            <li>{{Level}} {{Instrument}}</li>
+                                        {{/each}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+        {{else}}
+        <div id="no-matches">
+            <div class="back">
+                <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> Back</a>
+            </div>
+            <div class="title">
+                <i class="fas fa-wind"></i> There aren't any users who match your ad criteria.
+            </div>
+        </div>
+        {{/if}}
     </div>
 </main>

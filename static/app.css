@@ -6394,11 +6394,12 @@ main {
       text-align: center; }
       .main-search-results .search-results-header .title h5 {
         font-weight: 400;
-        font-size: 1rem; }
+        font-size: 1rem;
+        color: #ddd; }
       .main-search-results .search-results-header .title h2 {
         font-weight: bold;
         font-size: 1.75rem;
-        color: #ddd; }
+        color: white; }
     .main-search-results .search-results-header .subtitle {
       margin: 20px auto 0;
       padding: 10px 20px;

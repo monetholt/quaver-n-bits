@@ -107,7 +107,7 @@ app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
 });
 
 // Fetches profiles + instruments for all profiles in the search-results.
-app.get('/search-results/:id', checkAuthenticated, (req, res, next) => {
+app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
     mysql.pool.query(`SELECT DISTINCT a.*, p.ProfileKey FROM AdInstruments ai
     JOIN Ads a ON ai.AdID = a.AdKey
     JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID >= ai.LevelID

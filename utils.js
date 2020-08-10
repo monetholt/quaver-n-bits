@@ -17,14 +17,33 @@ exports.getInstrumentsAndLevels = (req, res, context, complete) =>
         complete();
     });
 
+
+//get notifications and put into session. Called within checkauthenticated after checked user is already authenticated
+exports.getNotifications = (req, next) =>
+    mysql.pool.query("SELECT * FROM Notifications WHERE UserID=? ", [req.user.UserKey], (error, rows) => {
+        if (error)
+        {
+            //not going to throw an error. just not going to send anything back
+            req.session.notifs = [];
+        }
+        else
+        {
+            req.session.notifs = rows; //put notifications in session
+        }
+
+        return next();
+    });
+
 //for pages accessible by authenticated users only
 exports.checkAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         //TODO add check to see if user has created profile. If not direct them to create a profile
-        return next();
+        exports.getNotifications(req, next);
     }
+    else {
+        res.redirect('/'); //if not authenticated, bump to landing page
 
-    res.redirect('/'); //if not authenticated, bump to landing page
+    }
 }
 
 //for pages accessible by non-authenticated users only

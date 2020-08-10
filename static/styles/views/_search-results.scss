@@ -218,7 +218,6 @@ $no-matches-hover: #2196f3;
             font-size: 1rem;
             box-shadow: 0 0 5px 1px $primary-color;
             margin: 15px;
-            cursor: pointer;
             @include transition(0.3s ease);
 
             &:focus {

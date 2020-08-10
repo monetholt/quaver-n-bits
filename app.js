@@ -28,7 +28,8 @@ app.engine('handlebars', handlebars({
     helpers: {
         moment: require('helper-moment'),
         eq: (v1, v2) => { return v1 === v2; },
-        inc: val => { return parseInt(val) + 1; }
+        inc: val => { return parseInt(val) + 1; },
+        log: val => { console.log(val) }
     }
 }));
 
@@ -105,11 +106,91 @@ app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
     });
 });
 
-// FIXME: This route will need to get all the users that match the ad criteria.
-app.get('/search-results', utils.checkAuthenticated, function(req, res, next) {
-    // Do some sort of awful select with joins, then render (nav bar needs the user's profile to render):
-    res.render('search-results', { profile: true });
+// Fetches profiles + instruments for all profiles in the search-results.
+app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
+    mysql.pool.query(`SELECT DISTINCT a.*, p.ProfileKey FROM AdInstruments ai
+    JOIN Ads a ON ai.AdID = a.AdKey
+    JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID >= ai.LevelID
+    JOIN Profiles p ON pi.ProfileID = p.ProfileKey AND p.LookingForWork = 1
+    WHERE ai.AdID = ? AND a.UserID != p.UserID;`, [req.params.id], (err, adAndIDs) => {
+        if(adAndIDs) {
+            let profileIDs = adAndIDs.map(p => p.ProfileKey).join();
+            let context = {
+                user: req.user,
+                profile: true,
+                ad: adAndIDs[0]
+            };
+            mysql.pool.query(`SELECT * FROM Profiles WHERE ProfileKey IN (${profileIDs})`, false, (err, results) => {
+                if (results) {
+                    let profiles = {}
+                    results.forEach(profile => {
+                        profiles[profile["ProfileKey"]] = profile;
+                        profiles[profile["ProfileKey"]]["Instruments"] = {}
+                    });
+                    mysql.pool.query(`SELECT p.ProfileKey, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
+                    LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
+                    LEFT JOIN Users u ON p.UserID = UserKey
+                    LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
+                    LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
+                    WHERE ProfileID IN (${profileIDs});`, false, (err1, results1) => {
+                        if (results1) {
+                            results1.forEach((result, i) => {
+                                profiles[result["ProfileKey"]]["Instruments"] = {
+                                    ...profiles[result["ProfileKey"]]["Instruments"],
+                                    [i]: result
+                                };
+                            });
+                            res.render('search-results', { ...context, profiles: profiles });
+                        } else {
+                            throw(new ReferenceError("Something went wrong fetching profile instruments for the search results page."));
+                        }
+                    });
+                } else {
+                    throw(new ReferenceError("Something went wrong fetching profiles for the search results page."));
+                }
+            });
+        } else {
+            throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
+        }
+    });
 });
+
+// app.get('/search-results/:id', checkAuthenticated, (req, res, next) => {
+//     mysql.pool.query(`SELECT p.ProfileKey FROM AdInstruments ai
+//     JOIN Ads a ON ai.AdID = a.AdKey
+//     JOIN ProfileInstruments pi ON pi.InstrumentID = ai.InstrumentID AND pi.LevelID <= ai.LevelID
+//     JOIN Profiles p ON pi.ProfileID = p.ProfileKey AND p.LookingForWork = 1
+//     WHERE ai.AdID = ? AND a.UserID != p.UserID;`, [req.params.id], (err, ProfileIDs) => {
+//         if(ProfileIDs) {
+//             let context = {
+//                 user: req.user,
+//                 profile: true,
+//             };
+//             // res.render('search-results', context);
+//         } else {
+//             throw(new ReferenceError("Something went wrong fetching search results for Ad ID " + req.params.id));
+//         }
+//     });
+// });
+
+app.post('/adSortOrder', utils.checkAuthenticated, function (req, res, next) {
+    // checks whether the UserID exists in the table
+    mysql.pool.query("SELECT UserID FROM UserSettings WHERE UserID = ?;", [req.user.UserKey], (error, results) => {
+           if (results.length == 0) {
+                //there is no sortOrder in table for this user so we create a new one 
+                mysql.pool.query("INSERT INTO UserSettings (UserID, SettingID, `Value`) VALUES (?, (SELECT SettingKey FROM Settings WHERE `Name` = 'AdSortOrder'), ?);", [req.user.UserKey, req.body.sortOrder], (error, results) => {
+                   return res.redirect('\dashboard');
+                });
+            } else {
+                // a sortOrder that is not the default exists already so we just update the Value in the backend
+                mysql.pool.query("UPDATE UserSettings SET `Value` = ? WHERE UserID = ?;", [req.body.sortOrder, req.user.UserKey], (error, results) => {
+                   return res.redirect('\dashboard');
+                });
+            } 
+    });
+
+});
+
 
 //any page requiring NOT authentication needs to run checkNotAuthenticated first
 //landing page does not need authentication, in fact we do not allow logged in users to access

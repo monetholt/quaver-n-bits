@@ -633,6 +633,67 @@ app.get('/matches/pending',utils.checkAuthenticated,(req, res, next) => {
    }
 });
 
+
+//adds a new match with pending status and adds notification for user to accept/reject
+app.post('/matches/add', utils.checkAuthenticated, (req, res, next) => {
+    try {
+        mysql.pool.getConnection(function (err, conn) {
+            if (err) throw (err);
+
+            //add the match record
+            conn.query('INSERT INTO Matches (AdID, MatchedProfileID, Accepted, DateInviteSent) VALUES (?, ?, ?, NOW())',
+                [req.body.AdID, req.body.MatchedProfileID, false],
+                function (err, rows) {
+
+                    if (err) { //something went wrong so send an error
+                        conn.release();
+                        res.write({ success: 0, message: 'An error occurred when requesting to match: '.JSON.stringify(err) });
+                        res.end();
+                    } else {
+
+                        var matchKey = rows.insertId; //id of match we just created.
+
+                        //now need the notification record for the person who owns the profile
+
+                        //first go get the userID of the profile ID
+                        conn.query(`SELECT UserID FROM Profiles WHERE ProfileKey = ? LIMIT 1`, [req.body.MatchedProfileID],
+                            function (err, rows) {
+
+                                if (err) {
+                                    conn.release();
+                                    res.write({ success: 0, message: 'An error occurred when getting user connected to profile: '.JSON.stringify(err) });
+                                    res.end();
+                                } else if (rows.length === 0) {
+                                    conn.release();
+                                    res.write({ success: 0, message: 'Profile user does not exist. ' }); //no user found! No goood
+                                    res.end();
+                                }
+                                else {
+                                    var userID = rows[0]["UserID"];
+
+                                    //now go add the notification record.
+                                    conn.query(`INSERT INTO Notifications (UserID, MatchID, Msg, ReadMsg, CreateDate) VALUES (?, ?, ?, ?, NOW()) `,
+                                        [userID, matchKey, "New match request! Please accept or reject.", false],
+                                        function (err, rows) {
+                                            conn.release();
+
+                                            if (err) {
+                                                res.write({ success: 1, message: 'An error occurred adding notification for match request: '.JSON.stringify(err) });
+                                                res.end();
+                                            } else res.send({ success: 1, message: 'Successfully requested to match.' });
+                                        });
+                                }
+                            });
+                    }
+                });
+
+        });
+    } catch (err) {
+        res.write(JSON.stringify(err));
+        res.end();
+    }
+});
+
 app.put('/notifications/markRead',utils.checkAuthenticated,(req, res, next) => {
     try {
         let sql = 'UPDATE Notifications SET ReadMsg=1 WHERE UserID=?';

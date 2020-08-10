@@ -667,6 +667,43 @@ app.put('/notifications/markRead/:id',utils.checkAuthenticated,(req, res, next) 
     }
 });
 
+
+//delete all notifications for a user.
+app.delete('/notifications/delete', utils.checkAuthenticated, (req, res, next) => {
+    try {
+        let sql = 'DELETE FROM Notifications WHERE UserID=?';
+        mysql.pool.query(sql, [req.user.UserKey], function (err, result) {
+            if (err) {
+                throw (err);
+            } else if (result.affectedRows >= 1) {
+                res.send(true);
+            } else {
+                res.send(true); //don't worry about throwing an error. could be that they deleted on one tab and tried to do it again on another
+            }
+        });
+    } catch (err) {
+        res.redirect(utils.errorRedirect('/notifications/delete', 'An unexpected error occurred deleting your notifications.'));
+    }
+});
+
+//delete a single notification for a user.
+app.delete('/notifications/delete/:id', utils.checkAuthenticated, (req, res, next) => {
+    try {
+        let sql = 'DELETE FROM Notifications WHERE UserID=? AND NotificationKey=?';
+        mysql.pool.query(sql, [req.user.UserKey, req.params.id], function (err, result) {
+            if (err) {
+                throw (err);
+            } else if (result.affectedRows === 1) {
+                res.send(true);
+            } else {
+                res.send(true); //don't worry about throwing an error. could be that they deleted on one tab and tried to do it again on another
+            }
+        });
+    } catch (err) {
+        res.redirect(utils.errorRedirect('/notifications/delete', 'An unexpected error occurred deleting a notification.'));
+    }
+});
+
 // start app
 app.listen(port, function(){
     console.log('Express started on port ' + port + '; press Ctrl-C to terminate.')

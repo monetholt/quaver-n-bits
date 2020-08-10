@@ -19,6 +19,9 @@ profiles: {
         ArtistName,
         Bio,
         Photo,
+        Matched,
+        Ignored,
+        Pending,
         Instruments: [
             { InstrumentID, Instrument, LevelID, Level },
             ...
@@ -61,6 +64,7 @@ profiles: {
             </div>
             <div id="search-results" class="hidden">
                 {{#each profiles}}
+                    {{#unless Ignored}}
                     <div id="search-result-{{ProfileKey}}" class="search-result" data-id="{{ProfileKey}}" data-zip="{{ZipCode}}">
                         <div class="grid-x search-result-header">
                             <div class="cell medium-shrink header-photo">
@@ -86,7 +90,16 @@ profiles: {
                                 </div>
                             </div>
                             <div class="cell medium-shrink header-button">
-                                <button class="button dark expanded"><i class="fas fa-bolt"></i>Let's Connect</button>
+                                {{#if Connected}}
+                                    {{#if Matched}}
+                                        <button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Already Matched!</button>
+                                    {{/if}}
+                                    {{#if Pending}}
+                                        <button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Pending Match</button>
+                                    {{/if}}
+                                {{else}}
+                                    <button class="button dark expanded"><i class="fas fa-bolt"></i>Let's Connect</button>
+                                {{/if}}
                             </div>
                         </div>
                         <div id="profile-content-{{ProfileKey}}" class="search-result-body">
@@ -112,6 +125,7 @@ profiles: {
                             </div>
                         </div>
                     </div>
+                    {{/unless}}
                 {{/each}}
             </div>
         </div>

@@ -70,29 +70,32 @@
              let rand2 = rand1 - variance < 0 ? rand1 - variance + 360 : rand1 - variance;
              result.style.backgroundImage = `linear-gradient(to bottom right, hsl(${rand1}, 70%, 50%), hsl(${rand2}, 70%, 50%))`;
          });
-     };
+     }
 
-         //test add match functionality. Uncomment and add hardcoded values for AdID & MatchedProfileID to test.
-    //$.ajax({
-    //    type: "POST",
-    //    url: "/matches/add",
-    //    data: {
-    //        "AdID": 19, //pass ad ID and the profile to match with
-    //        "MatchedProfileID": 17,
-    //    },
-    //    success: function (data, textStatus, jqXHR) {
-    //        //data - response from server
-    //        if (data.success == 1) {
-    //            showAlert("successs", "far fa-check-circle", "Match requested!");
-    //        }
-    //        else {
-    //            showAlert("warning", "fa fa-exclamation-triangle", "Error requesting to match.");
-    //        }
-    //    },
-    //    error: function (jqXHR, textStatus, errorThrown) {
-    //        showAlert("warning", "fa fa-exclamation-triangle", "Error requesting to match.");
-    //    },
-    //    dataType: 'json'
-    //});
+     // function to request a match with a searched user
+     function sendNotification(AdID, ProfileID) {
+        // does nothing so far 
+         $.ajax({
+             type: "POST",
+             url: "/matches/add",
+             data: {
+                 "AdID": AdID, //pass ad ID and the profile to match with
+                 "MatchedProfileID": ProfileID,
+             },
+             success: function (data, textStatus, jqXHR) {
+                 //data - response from server
+                 if (data.success == 1) {
+                     showAlert("successs", "far fa-check-circle", "Match requested!");
+                 }
+                 else {
+                     showAlert("warning", "fa fa-exclamation-triangle", "Error requesting to match.");
+                 }
+             },
+             error: function (jqXHR, textStatus, errorThrown) {
+                 showAlert("warning", "fa fa-exclamation-triangle", "Error requesting to match.");
+             },
+             dataType: 'json'
+         });
+     }
  });
 

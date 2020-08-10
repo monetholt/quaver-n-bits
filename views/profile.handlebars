@@ -36,7 +36,7 @@
                         <input type="number" id="edit-title-loc-input" value="{{profile.ZipCode}}" min="00501" max="99950">
                     </div>
                     <div id="profile-header-joined-date">Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</div>
-                    <!--                    <h6 id="profile-head-title-privacy">You are {{#if profile.LookingForWork}}{{else}}not {{/if}} currently looking for a spot in a band.</h6>-->
+
                     <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}">
                     <div id="edit-title-privacy-switch" class="switch" hidden>
                         <span>Are you currently looking for a spot in a band?</span><br>
@@ -64,7 +64,6 @@
                                     document.getElementById('profile-head-title-privacy-public').classList.remove('hidden');
                                 }
 
-                                // I hate foundation for making me do this hacky bs to reflow a damn tooltip title. This will probably break with some future foundation release.
                                 let $el = $('#switch-privacy-tooltip');
                                 $el.attr('title', `Switching this ${ps.checked ? 'off' : 'on'} will set your profile to ${ps.checked ? 'private' : 'public'} so it will ${ps.checked ? 'no longer ' : ''}be viewable by other users.`);
                                 $el.data().zfPlugin.template.text($el.attr('title'));
@@ -73,15 +72,6 @@
                                 document.getElementById('switch-privacy-tooltip').setAttribute('title', '');
                             });
 
-                            // let ps = document.getElementById('privacySwitch');
-                            // ps.addEventListener('click', () => {
-                            //     console.log('privacySwitch clicked! checked ? ', ps.getAttribute('checked'));
-                            //     ps.setAttribute('checked', ps.getAttribute('checked') ? false : true);
-                            //     console.log('tooltip-on: ', document.getElementById('switch-privacy-tooltip-on'));
-                            //     console.log('tooltip-off: ', document.getElementById('switch-privacy-tooltip-off'));
-                            //     document.getElementById('switch-privacy-tooltip-on').hidden = ps.getAttribute('checked') ? false : true;
-                            //     document.getElementById('switch-privacy-tooltip-off').hidden = ps.getAttribute('checked') ? true : false;
-                            // });
                         </script>
                     </div>
                 </div>
@@ -230,6 +220,7 @@
     </div>
 </main>
 
+{{! Handles the pop-up for editing instruments }}
 <div class="reveal" id="modal-edit-instruments" data-reveal data-close-on-click="false" data-animation-in="fade-in" data-animation-out="fade-out">
     <h3>Edit Instruments</h3>
     <p class="lead"></p>

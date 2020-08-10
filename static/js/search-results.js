@@ -70,6 +70,11 @@
              let rand2 = rand1 - variance < 0 ? rand1 - variance + 360 : rand1 - variance;
              result.style.backgroundImage = `linear-gradient(to bottom right, hsl(${rand1}, 70%, 50%), hsl(${rand2}, 70%, 50%))`;
          });
-     };
+     }
+
+     // function to request a match with a searched user
+     function sendNotification(AdID, ProfileID) {
+        // does nothing so far 
+     }
  });
 

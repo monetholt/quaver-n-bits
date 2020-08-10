@@ -150,7 +150,38 @@ app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
                                         [i]: result
                                     };
                                 });
-                                res.render('search-results', { ...context, profiles: profiles });
+
+                                // Step 4: Add an attribute for each match called Matched that is automatically set to false
+                                mysql.pool.query(`SELECT * FROM Matches WHERE AdID = ? AND MatchedProfileID IN (${profileIDs})`,[req.params.id], (err2, results2) => {
+                                    Object.values(profiles).forEach(profile => {
+                                        profile["Matched"]=false;
+                                        profile["Pending"]=false;
+                                        profile["Ignored"]=false;
+                                        profile["Connected"]=false;
+                                    });
+                                    if (results2) {
+                                        results2.forEach(result => {
+                                            // Connection has been made in some way
+                                            profiles[result["MatchedProfileID"]]["Connected"] = true;
+                                            
+                                            // Pending/open request
+                                            if (result["Accepted"] === 0 && result["Deleted"] === 0) {
+                                                profiles[result["MatchedProfileID"]]["Pending"] = true; 
+                                            }
+                                            // Ignored
+                                            else if (result["Accepted"] === 0 && result["Deleted"] === 1) {
+                                                profiles[result["MatchedProfileID"]]["Ignored"] = true; 
+                                            }
+                                            // Matched!
+                                            else if (result["Accepted"] === 1) {
+                                                profiles[result["MatchedProfileID"]]["Matched"] = true; 
+                                            }
+                                        });
+                                    }
+                                    
+                                    res.render('search-results', { ...context, profiles: profiles });
+                                });
+
                             } else {
                                 throw(new ReferenceError("Something went wrong fetching profile instruments for the search results page."));
                             }

@@ -17,25 +17,43 @@
 }
 
 .notifications {
+  position: relative;
   display: inline-flex;
   align-items: center;
   margin-top: 8px;
   margin-right: 20px;
   padding: 0 10px;
   font-size: 32px;
-  color: #fefefe;
+  color: #aaa;
   cursor: pointer;
   @include transition(0.2s ease);
 
   &:hover {
-    color: $primary-color;
+    color: $white;
+
+    .notifications-menu {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  &.unread {
+    color: #fefefe;
 
     .badge {
-      background: #f44336 !important;
+      display: block !important;
     }
 
-    i {
-      animation: 0.5s ease-out 0s 1 ringADingDingBitches;
+    &:hover {
+      color: $primary-color;
+
+      .badge {
+        background: #f44336 !important;
+      }
+
+      i {
+        animation: 0.5s ease-out 0s 1 ringADingDingBitches;
+      }
     }
   }
 
@@ -52,6 +70,7 @@
 
     .badge {
       position: absolute;
+      display: none;
       bottom: 12px;
       right: -3px;
       width: 10px;
@@ -61,5 +80,20 @@
       color: #fefefe;
       @include transition(0.2s ease);
     }
+  }
+
+  .notifications-menu {
+    position: absolute;
+    top: 52px;
+    width: 250px;
+    right: -8px;
+    z-index: 20;
+    background: $white;
+    border: 1px solid #eee;
+    @include boxshadow(2px 2px 5px 0 rgba(0,0,0,0.5));
+    transition: 0.3s ease-in-out;
+    opacity: 0;
+    transform: translateX(100%);
+    transform-origin: top right;
   }
 }

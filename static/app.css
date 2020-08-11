@@ -6740,3 +6740,83 @@ nav {
     color: #fefefe; }
   #alert-popout.alert {
     background: #f44336; }
+
+@keyframes ringADingDingBitches {
+  0% {
+    transform: translateY(0) rotate(0); }
+  25% {
+    transform: translateY(-4px) rotate(25deg); }
+  50% {
+    transform: translateY(-4px) rotate(-25deg); }
+  75% {
+    transform: translateY(-4px) rotate(25deg); }
+  100% {
+    transform: translateY(0) rotate(0); } }
+
+.notifications {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-right: 20px;
+  padding: 0 10px;
+  font-size: 32px;
+  color: #aaa;
+  cursor: pointer;
+  -webkit-transition: 0.2s ease;
+  -moz-transition: 0.2s ease;
+  -ms-transition: 0.2s ease;
+  -o-transition: 0.2s ease;
+  transition: 0.2s ease; }
+  .notifications:hover {
+    color: #fefefe; }
+    .notifications:hover .notifications-menu {
+      opacity: 1;
+      transform: translateX(0); }
+  .notifications.unread {
+    color: #fefefe; }
+    .notifications.unread .badge {
+      display: block !important; }
+    .notifications.unread:hover {
+      color: #6bffd6; }
+      .notifications.unread:hover .badge {
+        background: #f44336 !important; }
+      .notifications.unread:hover i {
+        animation: 0.5s ease-out 0s 1 ringADingDingBitches; }
+  @media print, screen and (max-width: 39.99875em) {
+    .notifications {
+      margin-right: 10px; } }
+  .notifications i {
+    cursor: inherit; }
+  .notifications .notifications-icon {
+    position: relative; }
+    .notifications .notifications-icon .badge {
+      position: absolute;
+      display: none;
+      bottom: 12px;
+      right: -3px;
+      width: 10px;
+      min-width: 0;
+      height: 10px;
+      background: #cc4b37;
+      color: #fefefe;
+      -webkit-transition: 0.2s ease;
+      -moz-transition: 0.2s ease;
+      -ms-transition: 0.2s ease;
+      -o-transition: 0.2s ease;
+      transition: 0.2s ease; }
+  .notifications .notifications-menu {
+    position: absolute;
+    top: 52px;
+    width: 250px;
+    right: -8px;
+    z-index: 20;
+    background: #fefefe;
+    border: 1px solid #eee;
+    -webkit-box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+    transition: 0.3s ease-in-out;
+    opacity: 0;
+    transform: translateX(100%);
+    transform-origin: top right; }

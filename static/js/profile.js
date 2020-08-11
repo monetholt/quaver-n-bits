@@ -585,19 +585,6 @@ function updateMusic(id) {
     }
 }
 
-function showAlert(type, icon, text) {
-    let alert = document.getElementById('alert-popout');
-    alert.innerHTML = `<i class="${icon}"></i>${text}`;
-    alert.hidden = false;
-    alert.classList.add(type);
-    alert.classList.remove('hidden');
-    setTimeout(
-        function() {
-            alert.classList.add('hidden');
-            alert.classList.remove(type);
-        }, 2500);
-}
-
 // Copied over & edited from create-profile.
 function validateYouTubeUrl(url, referrer=false) {
     // If we already validated & converted this URL and it didn't change, we're good.

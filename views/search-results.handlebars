@@ -1,3 +1,4 @@
+<script src="/js/library.js"></script>
 <script src="/js/search-results.js"></script>
 {{>nav}}
 {{>alert}}
@@ -64,68 +65,68 @@ profiles: {
             </div>
             <div id="search-results" class="hidden">
                 {{#each profiles}}
-                    {{#unless Ignored}}
-                    <div id="search-result-{{ProfileKey}}" class="search-result" data-id="{{ProfileKey}}" data-zip="{{ZipCode}}">
-                        <div class="grid-x search-result-header">
-                            <div class="cell medium-shrink header-photo">
-                                {{#if Photo}}
-                                    <img class="search-result-image" src="{{Photo}}" />
+                {{#unless Ignored}}
+                <div id="search-result-{{ProfileKey}}" class="search-result" data-id="{{ProfileKey}}" data-zip="{{ZipCode}}">
+                    <div class="grid-x search-result-header">
+                        <div class="cell medium-shrink header-photo">
+                            {{#if Photo}}
+                            <img class="search-result-image" src="{{Photo}}" />
+                            {{else}}
+                            <img class="search-result-image" src="/img/profile-img.jpg" />
+                            {{/if}}
+                        </div>
+                        <div class="cell medium-auto header-info">
+                            <div class="search-result-name">
+                                {{#if ArtistName}}
+                                {{ArtistName}}
                                 {{else}}
-                                    <img class="search-result-image" src="/img/profile-img.jpg" />
+                                <span class="anon light">I don't have a name.</span>
                                 {{/if}}
                             </div>
-                            <div class="cell medium-auto header-info">
-                                <div class="search-result-name">
-                                    {{#if ArtistName}}
-                                        {{ArtistName}}
-                                    {{else}}
-                                        <span class="anon light">I don't have a name.</span>
-                                    {{/if}}
-                                </div>
-                                <div class="search-result-loc">
-                                    <i class="fas fa-map-marker-alt"></i>{{ZipCode}}
-                                </div>
-                                <div class="search-result-active">
-                                    Last Active: {{moment LastUpdated fromNow="true"}} ago
-                                </div>
+                            <div class="search-result-loc">
+                                <i class="fas fa-map-marker-alt"></i>{{ZipCode}}
                             </div>
-                            <div class="cell medium-shrink header-button">
-                                {{#if Connected}}
-                                    {{#if Matched}}
-                                        <button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Already Matched!</button>
-                                    {{/if}}
-                                    {{#if Pending}}
-                                        <button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Pending Match</button>
-                                    {{/if}}
-                                {{else}}
-                                    <button class="button dark expanded"><i class="fas fa-bolt"></i>Let's Connect</button>
-                                {{/if}}
+                            <div class="search-result-active">
+                                Last Active: {{moment LastUpdated fromNow="true"}} ago
                             </div>
                         </div>
-                        <div id="profile-content-{{ProfileKey}}" class="search-result-body">
-                            <div class="grid-x">
-                                <div class="cell medium-6">
-                                    <h5>About me:</h5>
-                                    <p>
-                                        {{#if Bio}}
-                                            {{Bio}}
-                                        {{else}}
-                                            <span class="anon dark no-bio"><i class="far fa-sad-cry"></i>I never filled out my bio.</span>
-                                        {{/if}}
-                                    </p>
-                                </div>
-                                <div class="cell medium-6">
-                                    <h5>Instruments:</h5>
-                                    <ul>
-                                        {{#each Instruments}}
-                                            <li>{{Level}} {{Instrument}}</li>
-                                        {{/each}}
-                                    </ul>
-                                </div>
+                        <div class="cell medium-shrink header-button" id="search-result-actions-{{ProfileKey}}">
+                            {{#if Connected}}
+                            {{#if Matched}}
+                            <button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Already Matched!</button>
+                            {{/if}}
+                            {{#if Pending}}
+                            <button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Pending Match</button>
+                            {{/if}}
+                            {{else}}
+                            <button class="button dark expanded" onclick="request2Match({{../ad.AdKey}}, {{ProfileKey}})"><i class="fas fa-bolt"></i>Let's Connect</button>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div id="profile-content-{{ProfileKey}}" class="search-result-body">
+                        <div class="grid-x">
+                            <div class="cell medium-6">
+                                <h5>About me:</h5>
+                                <p>
+                                    {{#if Bio}}
+                                    {{Bio}}
+                                    {{else}}
+                                    <span class="anon dark no-bio"><i class="far fa-sad-cry"></i>I never filled out my bio.</span>
+                                    {{/if}}
+                                </p>
+                            </div>
+                            <div class="cell medium-6">
+                                <h5>Instruments:</h5>
+                                <ul>
+                                    {{#each Instruments}}
+                                    <li>{{Level}} {{Instrument}}</li>
+                                    {{/each}}
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    {{/unless}}
+                </div>
+                {{/unless}}
                 {{/each}}
             </div>
         </div>

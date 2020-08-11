@@ -1,9 +1,39 @@
+<!-- Reference for structure of incoming handlebars data:
+notifs: [
+    {
+        NotificationKey,
+        UserID,
+        Msg,
+        ReadMsg,
+        CreateDate,
+        MatchID
+    },
+    ...
+]
+-->
+
 <div id="notifications" class="notifications unread">
     <div class="notifications-icon">
         <i class="far fa-bell"></i>
         <span class="badge">&nbsp;</span>
     </div>
     <div class="notifications-menu">
-        I am a menu!
+        {{#each notifs}}
+        <div class="notif" href="/matches">
+            {{#if ReadMsg}}
+            <span class="notif-read read"></span>
+            {{else}}
+            <span class="notif-read unread"></span>
+            {{/if}}
+
+            <span class="notif-msg">{{Msg}}</span>
+        </div>
+        {{else}}
+        <span>Nothing to see here</span>
+        {{/each}}
+
+        {{#if notifs.length}}
+        <span class="notifs-bulk-action"><a href="javascript:markReadAllNotifications()">Mark All Read</a> | <a href="javascript:clearAllNotifications()">Clear All</a></span>
+        {{/if}}
     </div>
 </div>

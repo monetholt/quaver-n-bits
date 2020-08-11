@@ -16,3 +16,49 @@ function showAlert(type, icon, text) {
 }
 
 //TBD add fns for notifications
+
+//mark all notifications read
+markReadAllNotifications()
+{
+    $.ajax({
+        type: "POST",
+        url: "/notifications/markRead",
+        data: {},
+        success: function (success, textStatus, jqXHR) {
+            //data - response from server
+            if (success) {
+                $("#notifications").find(".match").removeClass("notif-unread").addClass("notif-read");
+            }
+            else {
+                showAlert("warning", "fa fa-exclamation-triangle", "Error clearing notifications."); //something went wrong
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            showAlert("warning", "fa fa-exclamation-triangle", "Error clearing notifications."); //something went wrong
+        },
+        dataType: 'json'
+    });
+}
+
+//mark all notifications read
+clearAllNotifications()
+{
+    $.ajax({
+        type: "POST",
+        url: "/notifications/delete",
+        data: {},
+        success: function (success, textStatus, jqXHR) {
+            //data - response from server
+            if (success) {
+                $("#notifications").find(".notifications-menu").html("<span>Nothing to see here</span>"); //clear out notifications
+            }
+            else {
+                showAlert("warning", "fa fa-exclamation-triangle", "Error clearing notifications."); //something went wrong
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            showAlert("warning", "fa fa-exclamation-triangle", "Error clearing notifications."); //something went wrong
+        },
+        dataType: 'json'
+    });
+}

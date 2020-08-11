@@ -17,7 +17,7 @@ function request2Match(AdID, ProfileID) {
         success: function (data, textStatus, jqXHR) {
             //data - response from server
             if (data.success == 1) {
-                showAlert("successs", "far fa-check-circle", "Match requested!"); //success! Show message
+                showAlert("success", "far fa-check-circle", "Match requested!"); //success! Show message
                 updateBtn(ProfileID); //update the btn for this match request to show pending
             }
             else {

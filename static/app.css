@@ -6635,6 +6635,7 @@ main {
 
 nav {
   position: fixed;
+  display: flex;
   top: 0;
   left: 0;
   width: 100vw;
@@ -6652,8 +6653,9 @@ nav {
   -moz-box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5);
   box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5); }
   nav .logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    flex-grow: 1;
     margin-left: 20px;
     font-family: "Faster One", cursive;
     color: #fefefe;
@@ -6676,16 +6678,19 @@ nav {
         nav .logo h3 {
           -webkit-text-stroke: 0.3px rgba(246, 255, 107, 0.1); } }
   nav .avatar {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+    display: inline-flex;
+    align-items: center;
     height: 44px;
     width: 44px;
+    margin-top: 8px;
+    margin-right: 8px;
     font-size: 36px;
     text-align: center;
     color: #fefefe;
     border-radius: 25px;
     cursor: pointer; }
+    nav .avatar i {
+      cursor: inherit; }
     nav .avatar:hover .nav-menu {
       opacity: 1;
       transform: translateX(0); }

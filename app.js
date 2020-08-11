@@ -96,7 +96,7 @@ app.use(methodOverride('_method'));
 //Routes
 app.use('/dashboard', require('./routes/ads.js'));
 app.use('/profile', require('./routes/profileInfo.js'));
-
+app.use('/user-profile', require('./routes/userProfile.js'));
 app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
     mysql.pool.query("CALL GetInstrumentsLevels()", [], (error, rows) => {
         if(error) {

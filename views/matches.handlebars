@@ -7,6 +7,15 @@
     <div class="main-container main-active-matches">
         <div class="active-matches-label">
             <h1>Active Matches:</h1>
+            <!-- This is an example of a "View Profile" button for a matched user.
+            Just plug in their {{ProfileID}} in place of the fixed value in the input below -->
+
+            <div id="PLEASE-DELETE-ME-FOR-I-AM-BUT-A-MERE-TEST!">
+                <form method="POST" action="/user-profile">
+                    <input name="ProfileID" value="66" type="hidden" />
+                    <button type="submit" class="button expanded large">View a profile!</button>
+                </form>
+            </div>
         </div>
         <div class="active-matches-container">
             <div id="no-active-matches" class="active-matches-text">

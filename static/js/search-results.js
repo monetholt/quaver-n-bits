@@ -34,7 +34,6 @@ function request2Match(AdID, ProfileID) {
 
 document.addEventListener('DOMContentLoaded', (event) => {
 
-
      filterByZipCode();
      randomBG();
 
@@ -80,7 +79,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                      if (parent.children.length == 0) {
                          document.getElementById('no-matches').classList.remove('hidden');
                      // Otherwise, show the proper matches.
-                     } else {;
+                     } else {
                          document.getElementById('search-results').classList.remove('hidden');
                      }
                  } else {

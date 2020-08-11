@@ -5743,6 +5743,54 @@ main {
     #modal-edit-instruments .instrument-selection-item .delete-selection:hover {
       background: #e57373; }
 
+.user-profile-back {
+  display: inline-block;
+  position: fixed;
+  margin: 20px;
+  letter-spacing: 1px;
+  z-index: 2;
+  cursor: pointer;
+  padding: 10px 20px;
+  background: #212121;
+  border: 1px solid #0a0a0a;
+  border-radius: 50px;
+  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  animation: 0.5s ease-out 0s 1 slideInFromLeft;
+  -webkit-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -moz-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -ms-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -o-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .user-profile-back a, .user-profile-back a:visited, .user-profile-back a:active {
+    color: #fefefe;
+    outline: none;
+    -webkit-transition: 0.3s ease-in-out;
+    -moz-transition: 0.3s ease-in-out;
+    -ms-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out; }
+  .user-profile-back a:hover {
+    color: #fffab0; }
+  .user-profile-back i {
+    padding-left: 10px;
+    padding-right: 0;
+    color: #fefefe;
+    -webkit-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -moz-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -ms-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -o-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .user-profile-back .back-text {
+    padding-left: 5px; }
+  .user-profile-back:hover {
+    color: #fffab0;
+    background-color: #333; }
+    .user-profile-back:hover i {
+      padding-left: 0;
+      padding-right: 10px;
+      color: #fffab0; }
+
 @keyframes slideInFromLeft {
   0% {
     opacity: 0;
@@ -6502,7 +6550,6 @@ main {
             box-shadow: 0 0 5px 1px #6bffd6;
             margin: 15px;
             animation: 3s ease-out 0s infinite glowingButton;
-
             -webkit-transition: 0.3s ease;
             -moz-transition: 0.3s ease;
             -ms-transition: 0.3s ease;

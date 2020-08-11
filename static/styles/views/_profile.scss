@@ -50,6 +50,8 @@
 }
 $social-links: #607d8b;
 $social-links-underline: #48fe80;
+$user-profile-back-link: $white;
+$user-profile-back-hover: $secondary-color;
 
 .main-profile {
   padding: 0 !important;
@@ -466,4 +468,44 @@ $social-links-underline: #48fe80;
             }
         }
     }
+}
+
+.user-profile-back {
+  display: inline-block;
+  position: fixed;
+  margin: 20px;
+  letter-spacing: 1px;
+  z-index: 2;
+  cursor: pointer;
+  padding: 10px 20px;
+  background: $dark-gray;
+  border: 1px solid $black;
+  border-radius: 50px;
+  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  animation: 0.5s ease-out 0s 1 slideInFromLeft;
+  @include basic-links($user-profile-back-link, $user-profile-back-hover);
+  @include transition(0.3s cubic-bezier(0.4, 0, 0.2, 1));
+
+  i {
+    padding-left: 10px;
+    padding-right: 0;
+    color: $user-profile-back-link;
+    @include transition(0.3s cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .back-text {
+    padding-left: 5px;
+  }
+
+  &:hover {
+    color: $user-profile-back-hover;
+    background-color: #333;
+
+    i {
+      padding-left: 0;
+      padding-right: 10px;
+      color: $user-profile-back-hover;
+    }
+  }
 }

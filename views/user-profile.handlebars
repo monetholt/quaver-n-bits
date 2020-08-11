@@ -1,0 +1,99 @@
+<!--<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />-->
+<!--<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>-->
+<!--<script src="/js/instruments.js"></script>-->
+<script src="/js/user-profile.js"></script>
+
+{{>nav}}
+
+<main>
+    <div class="user-profile-back">
+        <a href="javascript:history.back()"><i class="fas fa-arrow-circle-left"></i> <span class="back-text">Back to Matches</span></a>
+    </div>
+    <div class="main-container main-profile">
+        {{#if message}}
+            <p>{{message}}</p>
+        {{/if}}
+        <div class="profile-header">
+            <div class="profile-header-intro">
+                <img class="profile-header-image" src="/img/profile-img.jpg" />
+                <div class="profile-header-title">
+                    {{#if profile.ArtistName}}
+                        <h1 id="profile-header-title-text">{{profile.ArtistName}}</h1>
+                    {{else}}
+                        <h1 id="profile-header-title-text">{{user.FirstName}} {{user.LastName}}</h1>
+                    {{/if}}
+                    <h6 id="profile-header-title-loc"><i class="fas fa-map-marker-alt"></i>{{profile.ZipCode}}</h6>
+                    <div id="profile-header-joined-date">Joined {{moment profile.CreateDate format="MMMM Do, YYYY" }}</div>
+
+                    <input type="hidden" id="profile-head-title-privacy-value" value="{{profile.LookingForWork}}">
+                </div>
+                <div class="profile-header-status">
+                    <div id="profile-head-title-privacy"></div>
+                    <div id="profile-head-title-privacy-private" class="profile-head-title-privacy {{#if (eq profile.LookingForWork 1)}}hidden{{/if}}">Profile: <strong>Private<i class="fas fa-lock"></i></strong></div>
+                    <div id="profile-head-title-privacy-public" class="profile-head-title-privacy {{#if (eq profile.LookingForWork 0)}}hidden{{/if}}">Profile: <strong>Public<i class="fas fa-lock-open"></i></strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="profile-info grid-x">
+            <div class="cell medium-8 profile-about">
+                <h2>About Me:</h2>
+                <div id="profile-about-text">{{profile.Bio}}</div>
+            </div>
+            <div class="cell medium-4 profile-meta">
+                <div class="profile-instruments">
+                    <h2>What I Play:</h2>
+                    <ul id="instrument-list">
+                        {{#each profileInstruments}}
+                            <li> <span class='inst-list-level' data-val='{{LevelKey}}'>{{Level}}-Level</span> <span class='inst-list-inst' data-val='{{InstrumentKey}}'><strong>{{Instrument}}</strong></span></li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="profile-social">
+                    <h2>Social:</h2>
+                    <div id="profile-social-website-filled" {{#if (eq profile.Website "")}} hidden{{/if}}>
+                        <a id="profile-social-website" href="{{profile.Website}}" target="_blank"><i class="fas fa-globe"></i>{{profile.Website}}</a>
+                    </div>
+                    <div id="profile-social-website-empty" {{#unless (eq profile.Website "")}} hidden{{/unless}}>
+                        <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="profile-media grid-x">
+            <div class="cell medium-6">
+                <h2>Videos:</h2>
+                <div id="profile-video-container" {{#unless workSamples.video}} hidden{{/unless}}>
+                    {{#if workSamples.video}}
+                        {{#each workSamples.video}}
+                            {{#if (eq SampleType "Video")}}
+                                <div id="display-video-{{SampleKey}}" class="display-video-element responsive-embed widescreen">
+                                    <iframe data-id="{{SampleKey}}" id="video-{{SampleKey}}" width="560" height="315" src="{{SampleLocation}}" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            {{/if}}
+                        {{/each}}
+                    {{/if}}
+                </div>
+                <div id="no-videos" {{#if workSamples.video}} hidden{{/if}}>
+                    <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
+                </div>
+            </div>
+            <div class="cell medium-6">
+                <h2>Music:</h2>
+                <div id="profile-music-container" {{#unless workSamples.music}} hidden{{/unless}}>
+                    {{#if workSamples.music}}
+                        {{#each workSamples.music}}
+                            {{#if (eq SampleType "Music")}}
+                                <div id="display-music-{{SampleKey}}" class="display-music-element responsive-embed widescreen">
+                                    <iframe data-id="{{SampleKey}}" id="music-{{SampleKey}}" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="{{SampleLocation}}"></iframe>
+                                </div>
+                            {{/if}}
+                        {{/each}}
+                    {{/if}}
+                </div>
+                <div id="no-music" {{#if workSamples.music}} hidden{{/if}}>
+                    <h6><i class="fas fa-wind"></i> Nothing to see here.</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

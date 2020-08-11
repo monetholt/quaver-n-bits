@@ -1,4 +1,38 @@
- document.addEventListener('DOMContentLoaded', (event) => {
+//update match btn of passed profile ID to show pending btn
+function updateBtn(profileID) {
+    $("#search-result-actions-" + profileID).html('<button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Pending Match</button>');
+}
+
+
+// function to request a match with a searched user's profile
+//adID is the id of this ad, proileID is the profile to match with
+function request2Match(AdID, ProfileID) {
+    $.ajax({
+        type: "POST",
+        url: "/matches/add",
+        data: {
+            "AdID": AdID, //pass ad ID and the profile to match with
+            "MatchedProfileID": ProfileID,
+        },
+        success: function (data, textStatus, jqXHR) {
+            //data - response from server
+            if (data.success == 1) {
+                showAlert("successs", "far fa-check-circle", "Match requested!"); //success! Show message
+                updateBtn(ProfileID); //update the btn for this match request to show pending
+            }
+            else {
+                showAlert("warning", "fa fa-exclamation-triangle", "Error requesting to match."); //something went wrong
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            showAlert("warning", "fa fa-exclamation-triangle", "Error requesting to match.");
+        },
+        dataType: 'json'
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
 
 
      filterByZipCode();
@@ -15,7 +49,7 @@
          let radius = document.getElementById('adlocrad').value;
 
          // Only perform search if radius is greater than 0, since 0 indicates the ad searches any location.
-         if (radius > 0) {
+         if (radius < 99999) {
 
              // API Key (we might want to move this).
              const key = 'js-tdNwFATA32aht796TZoLdODFiay74Fs5Kj4eTsOobne4ZWjs8uDmItN8K1GQKOph';
@@ -70,6 +104,6 @@
              let rand2 = rand1 - variance < 0 ? rand1 - variance + 360 : rand1 - variance;
              result.style.backgroundImage = `linear-gradient(to bottom right, hsl(${rand1}, 70%, 50%), hsl(${rand2}, 70%, 50%))`;
          });
-     };
+     }
  });
 

@@ -44,19 +44,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     req.send(null);
 });
 
-// Show an alert with type (either "success" or "warning"). Pass a template string to display that formatted text.
-function showAlert(type, icon, text) {
-    let alert = document.getElementById('alert-popout');
-    alert.innerHTML = `<i class="${icon}"></i>${text}`;
-    alert.hidden = false;
-    alert.classList.add(type);
-    alert.classList.remove('hidden');
-    setTimeout(
-        function() {
-            alert.classList.add('hidden');
-            alert.classList.remove(type);
-        }, 2500);
-}
 
 // The function that creates & assembles the HTML for the div element containing a new ad.
 // Returns a <div> element (ad).
@@ -79,6 +66,7 @@ function createAd(thisAd) {
                 <div class="cell medium-3 ads-edit-radius">
                     <label for="ads-edit-radius-${thisAd.AdKey}">Search Radius:</label>
                     <select name="ads-edit-radius" id="ads-edit-radius-${thisAd.AdKey}">
+                        <option value="99999">Any</option>
                         <option value="5">5 Miles</option>
                         <option value="10">10 Miles</option>
                         <option value="25">25 Miles</option>
@@ -128,7 +116,7 @@ function createAd(thisAd) {
             </div>
             <div class="cell medium-6 display-ads-ad-loc">
                 <div class="display-ads-ad-loc-display">
-                    ${thisAd.IsActive === 1 ? '<i class="fas fa-broadcast-tower"></i> Within <strong>' + (thisAd.LocationRadius === 0 ? 'Any' : thisAd.LocationRadius) + '</strong> miles of <strong>' + thisAd.ZipCode + '</strong>' : '<i class="fas fa-microphone-alt-slash"></i>This ad is currently <strong>inactive</strong>.'}                            
+                    ${thisAd.IsActive === 1 ? '<i class="fas fa-broadcast-tower"></i> Within <strong>' + (thisAd.LocationRadius == 99999 ? 'Any' : thisAd.LocationRadius) + '</strong> miles of <strong>' + thisAd.ZipCode + '</strong>' : '<i class="fas fa-microphone-alt-slash"></i>This ad is currently <strong>inactive</strong>.'}                            
                 </div>
             </div>
         </div>
@@ -142,6 +130,8 @@ function createAd(thisAd) {
             </div> 
         </div>
         `;
+
+    $(currentAd).find("#ads-edit-radius-" + thisAd.AdKey).val(thisAd.LocationRadius); //set radius value in edit form
 
     return currentAd;
 }
@@ -234,7 +224,7 @@ function updateAd(id) {
 
                     //update data for this ad:
                     allAds[id]['Title'] = newTitle;
-                    allAds[id]['Radius'] = radius;
+                    allAds[id]['LocationRadius'] = radius;
                     allAds[id]['ZipCode'] = zipcode;
                     allAds[id]['Description'] = description;
                     allAds[id]['instruments'] = selectedInstruments;

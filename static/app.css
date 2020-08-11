@@ -6501,8 +6501,8 @@ main {
             font-size: 1rem;
             box-shadow: 0 0 5px 1px #6bffd6;
             margin: 15px;
-            cursor: pointer;
             animation: 3s ease-out 0s infinite glowingButton;
+
             -webkit-transition: 0.3s ease;
             -moz-transition: 0.3s ease;
             -ms-transition: 0.3s ease;

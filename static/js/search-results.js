@@ -1,6 +1,6 @@
 //update match btn of passed profile ID to show pending btn
 function updateBtn(profileID) {
-    $("#earch-result-actions-" + profileID).html('<button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Pending Match</button>');
+    $("#search-result-actions-" + profileID).html('<button class="button dark expanded disabled" disabled><i class="fas fa-bolt"></i>Pending Match</button>');
 }
 
 

@@ -4,9 +4,8 @@ const jp = require("jsonpath");
 
 module.exports = {
     getUserProfile: (req, res, next) => {
-        console.log("req.params.id? ", req.params.id);
         try {
-            mysql.pool.query('CALL GetProfile(?)', [req.params.id], function(err, rows) {
+            mysql.pool.query('CALL GetProfileByProfileKey(?)', [req.body.ProfileID], function(err, rows) {
                 if(err) {
                     throw(err);
                 } else if(rows.length > 0) {
@@ -30,7 +29,7 @@ module.exports = {
                 }
             });
         } catch (err) {
-            res.redirect(utils.errorRedirect('/dashboard', 'An unexpected error occurred retrieving this profile.'));
+            res.redirect(utils.errorRedirect('/dashboard', 'An unexpected error occurred retrieving this user\'s profile.'));
         }
     }
 }

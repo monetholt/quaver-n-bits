@@ -16,6 +16,8 @@
   }
 }
 
+$photo-size: 90px;
+
 .notifications {
   position: relative;
   display: inline-flex;
@@ -51,7 +53,7 @@
         background: #f44336 !important;
       }
 
-      i {
+      .notifications-icon-bell {
         animation: 0.5s ease-out 0s 1 ringADingDingBitches;
       }
     }
@@ -85,15 +87,149 @@
   .notifications-menu {
     position: absolute;
     top: 52px;
-    width: 250px;
+    width: 450px;
     right: -8px;
     z-index: 20;
-    background: $white;
+    background: #eaeaea;
     border: 1px solid #eee;
     @include boxshadow(2px 2px 5px 0 rgba(0,0,0,0.5));
     transition: 0.3s ease-in-out;
     opacity: 0;
     transform: translateX(100%);
     transform-origin: top right;
+
+    @include breakpoint(small only) {
+      width: 250px;
+    }
+
+    .notifications-header {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      width: 100%;
+      background: $dark-gray;
+      color: $secondary-color;
+      border-bottom: 1px solid #ccc;
+      height: 30px;
+      padding: 5px 0;
+      font-size: 14px;
+      box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+
+      &>button {
+        color: $secondary-color;
+        width: 50%;
+        cursor: pointer;
+        @include transition(0.3s ease);
+        @include breakpoint(small only) {
+          width: initial;
+        }
+
+        i {
+          padding-right: 5px;
+        }
+      }
+
+      .clear-all {
+        text-align: left;
+        padding-left: 10px;
+
+        &:hover {
+          color: #f44336;
+        }
+      }
+
+      .mark-read {
+        text-align: right;
+        padding-right: 10px;
+
+        @include breakpoint(small only) {
+          flex-grow: 1;
+        }
+
+        &:hover {
+          color: $primary-color;
+        }
+      }
+
+    }
+
+    .notifications-body {
+      padding-top: 30px;
+      max-height: 750px;
+      overflow: scroll;
+
+      .notif {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background: white;
+        margin: 1px;
+        height: 100px;
+        @include transition(0.3s ease);
+
+        &:hover {
+          background: #fdfce7;
+        }
+
+        &.read {
+          background: #ddd;
+
+          &:hover {
+            background: #eee;
+          }
+        }
+
+        .notif-photo-container {
+          display: inline-flex;
+          margin-left: 5px;
+          align-items: center;
+          justify-content: center;
+          flex: 0 0 $photo-size;
+
+          .notif-photo {
+            border-radius: 50%;
+            border: 3px solid #d4d4d4;
+            width: $photo-size;
+            height: $photo-size;
+            object-fit: cover;
+          }
+        }
+
+        .notif-body {
+          display: inline-flex;
+          flex-direction: column;
+          max-height: 100px;
+          font-size: 1rem;
+          color: #222;
+          margin: 0 10px;
+
+          .notif-date {
+            color: #666;
+            font-style: italic;
+            font-size: 0.8rem;
+            margin-top: 5px;
+          }
+        }
+
+        .notif-controls {
+          display: inline-flex;
+
+          button {
+            background-color: transparent;
+            cursor: pointer;
+            color: #ccc;
+            @include transition(0.3s ease);
+
+            &:hover {
+              color: #999;
+            }
+
+          }
+        }
+
+      }
+
+    }
   }
 }

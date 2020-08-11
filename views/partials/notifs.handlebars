@@ -1,3 +1,5 @@
+<script src="/js/library.js"></script>
+
 <!-- Reference for structure of incoming handlebars data:
 notifs: [
     {
@@ -17,26 +19,44 @@ unread notifications so that we can flip the 'unread' class on this main div. --
 
 <div id="notifications" class="notifications unread">
     <div class="notifications-icon">
-        <i class="far fa-bell"></i>
+        <i class="far fa-bell notifications-icon-bell"></i>
         <span class="badge">&nbsp;</span>
     </div>
     <div class="notifications-menu">
-        {{#each notifs}}
-        <div class="notif" href="/matches">
-            {{#if ReadMsg}}
-            <span class="notif-read read"></span>
-            {{else}}
-            <span class="notif-read unread"></span>
-            {{/if}}
-
-            <span class="notif-msg">{{Msg}}</span>
+        <div class="notifications-header">
+            <button type="button" class="clear-all" onclick="clearAllNotifications()">
+                <i class="fas fa-trash-alt"></i>Clear All
+            </button>
+            <button type="button" class="mark-read" onclick="markReadAllNotifications()">
+                <i class="fas fa-envelope-open-text"></i>Mark All As Read
+            </button>
         </div>
-        {{else}}
-        <span>Nothing to see here</span>
-        {{/each}}
+        <div class="notifications-body">
+            {{#each notifs}}
+                <div class="notif {{#if (eq ReadMsg 1)}}read{{/if}}" href="/matches">
+                    <div class="notif-photo-container">
+                        <img class="notif-photo" src="/img/profile-img.jpg" />
+                    </div>
+                    <div class="notif-body">
+                        <div class="notif-text">{{Msg}}</div>
+                        <div class="notif-date">Sent {{moment CreateDate fromNow="true"}} ago.</div>
+                    </div>
+                    <div class="notif-controls">
+                        {{#if (eq ReadMsg 1)}}
+                            <button class="button" type="button" data-tooltip tabindex="1" title="Mark as unread." data-position="right" data-alignment="center">
+                                <i class="fas fa-circle"></i>
+                            </button>
+                        {{else}}
+                            <button class="button" type="button" data-tooltip tabindex="1" title="Mark as read." data-position="right" data-alignment="center">
+                                <i class="fas fa-dot-circle"></i>
+                            </button>
+                        {{/if}}
+                    </div>
+                </div>
+            {{else}}
+                <span>Nothing to see here</span>
+            {{/each}}
+        </div>
 
-        {{#if notifs.length}}
-        <span class="notifs-bulk-action"><a href="javascript:markReadAllNotifications()">Mark All Read</a> | <a href="javascript:clearAllNotifications()">Clear All</a></span>
-        {{/if}}
     </div>
 </div>

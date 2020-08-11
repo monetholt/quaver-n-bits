@@ -125,6 +125,13 @@ app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
                 ad: adAndIDs[0]
             };
 
+            if (context.ad.LocationRadius < 99999) {
+                context.ad.LocationRadiusDisplay = context.ad.LocationRadius;
+            }
+            else {
+                context.ad.LocationRadiusDisplay = "Any";
+            }
+
             // If there were no matching profileIDs, render the page with profiles set to false..
             if (!profileIDs) {
                 return res.render('search-results', { ...context, profiles: false });

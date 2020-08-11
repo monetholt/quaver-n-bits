@@ -103,7 +103,8 @@ app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
             res.write(JSON.stringify(error));
             res.end();
         }
-        res.render('create-profile', { user: req.user, instruments: rows[0], levels: rows[1] });
+        res.render('create-profile', {
+            user: req.user, notifs: req.session.notifs, instruments: rows[0], levels: rows[1] });
     });
 });
 
@@ -119,6 +120,7 @@ app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
             let profileIDs = adAndIDs.map(p => p.ProfileKey).join();
             let context = {
                 user: req.user,
+                notifs: req.session.notifs,
                 profile: true,
                 ad: adAndIDs[0]
             };
@@ -271,7 +273,7 @@ app.delete('/logout', (req, res) => {
 
 app.get('/matches',utils.checkAuthenticated,(req, res, next) => {
     // Get all matches in the matches table, then:
-    res.render('matches', { profile: true });
+    res.render('matches', { user: req.user, notifs: req.session.notifs, profile: true });
 });
 
 app.get('/matches/pending',utils.checkAuthenticated,(req, res, next) => {

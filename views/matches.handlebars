@@ -6,56 +6,116 @@
 <main>
     <div class="main-container main-active-matches">
         <div class="active-matches-label">
-            <h1>Active Matches:</h1>
-            <!-- This is an example of a "View Profile" button for a matched user.
-            Just plug in their {{ProfileID}} in place of the fixed value in the input below -->
+            <h1>Connections:</h1>
 
-            <div id="PLEASE-DELETE-ME-FOR-I-AM-BUT-A-MERE-TEST!">
+            {{!-- <div id="PLEASE-DELETE-ME-FOR-I-AM-BUT-A-MERE-TEST!">
                 <form method="POST" action="/user-profile">
                     <input name="ProfileID" value="66" type="hidden" />
                     <button type="submit" class="button expanded large">View a profile!</button>
                 </form>
-            </div>
+            </div> --}}
         </div>
         <div class="active-matches-container">
             <div id="no-active-matches" class="active-matches-text">
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
             </div>
-            <!--
-            <div id="active-matches-loading" class="active-matches-loading">
-                <div class="active-matches-text">
-                    <h2>Consulting the Lexicon</h2>
-                </div>
-                <div class="active-matches-loading-spin">
-                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
-                </div>
-            </div>
-            -->
-            <div id="active-matches">
 
+            <div id="active-matches">
+                <div class="active-match-container"> 
+                    <div class="active-match-image">
+                        <img src="/img/profile-img.jpg">
+                    </div>
+                    <div class="active-match-info">
+                        <h4>Jordan Coolbeth</h4> {{! Insert artist name here }}
+                        <h5>01-01-2020</h5> {{! Insert connect date here }}
+                    </div>
+                    <div class="active-match-buttons">
+                        <button class="button success expanded">View Profile</button> {{! Will only be displayed if ad-poster made the request to connect }}
+                        <button class="button active expanded">Disconnect</button> {{! Either user can disconnect the match }}
+                        <button class="button warning expanded">Block</button> {{! Either user can block the other }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="main-container main-inactive-matches">
-        <div class="inactive-matches-label">
-            <h1>Inactive Matches:</h1>
+    <div class="main-container main-incoming-matches">
+        <div class="incoming-matches-label">
+            <h1>Incoming:</h1>
         </div>
-        <div class="inactive-matches-container">
-            <div id="no-inactive-matches" class="inactive-matches-text">
+        <div class="incoming-matches-container">
+            <div id="no-incoming-matches" class="incoming-matches-text">
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
             </div>
-            <!--
-            <div id="inactive-matches-loading" class="inactive-matches-loading">
-                <div class="inactive-matches-text">
-                    <h2>Consulting the Lexicon</h2>
-                </div>
-                <div class="inactive-matches-loading-spin">
-                    <h2><i class="fas fa-spinner fa-pulse"></i><span class="sr-only">Loading...</span></h2>
+
+            <div id="incoming-matches">
+                <div class="incoming-match-container">
+                    <div class="incoming-match-alert">
+                        <h5>Jordan has sent you a request to connect!</h5> {{! Update with ad-posting user name }}
+                    </div>
+                    <div class="incoming-match-image">
+                        <img src="/img/profile-img.jpg">
+                    </div>
+                    <div class="incoming-match-info">
+                        <h4>Ad Title</h4> {{! Insert ad title here }}
+                        <h5>Date</h5> {{! Insert ad-create date here }}
+                        <h5>Description</h5> {{! Insert ad description here }}
+                    </div>
+                    <div>
+                        <h4>Instruments</h4>
+                        <ul>
+                            <li>
+                                Instrument 1!
+                            </li>
+                            <li>
+                                Instrument 2!
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="incoming-match-buttons">
+                        <button class="button success expanded">Accept</button> {{! Will make match's Accepted flag = 1 }}
+                        <button class="button warning expanded">Reject</button> {{! Will make match's Deleted flag = 1}}
+                    </div>
                 </div>
             </div>
-            -->
-            <div id="inactive-matches">
+        </div>
+    </div>
+    <div class="main-container main-outgoing-matches">
+        <div class="outgoing-matches-label">
+            <h1>Outgoing:</h1>
+        </div>
+        <div class="outgoing-matches-container">
+            <div id="no-outgoing-matches" class="outgoing-matches-text">
+                <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
+            </div>
 
+            <div id="outgoing-matches">
+                <div class="outgoing-match-group">
+                    <div class="outgoing-match-group-info">
+                        <h4>My Ad Title</h4>
+                        <h5>01-01-2020</h5>
+                    </div>
+                    {{! container for each person requested to match for this specific ad }}
+                    <div class="outgoing-match-container">
+                        <div class="outgoing-match-image">
+                            <img src="/img/profile-img.jpg">
+                        </div>
+                        <div class="outgoing-match-image">
+                            <h4>Artist Name</h4>
+                            <h6>Date Invite Sent</h6>
+                        </div>
+                        <div class="outgoing-match-instruments">
+                            <h4>Instruments</h4>
+                            <ul>
+                                <li>
+                                    Instrument 1!
+                                </li>
+                                <li>
+                                    Instrument 2!
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -340,7 +340,7 @@ app.post('/matches/add', utils.checkAuthenticated, (req, res, next) => {
 
                                     //now go add the notification record.
                                     conn.query(`INSERT INTO Notifications (UserID, MatchID, Msg, ReadMsg, CreateDate) VALUES (?, ?, ?, ?, NOW()) `,
-                                        [userID, matchKey, "New match request! Please accept or reject.", false],
+                                        [userID, matchKey, "New match request from <strong>" + req.user.FirstName + " " + req.user.LastName +"</strong>! Click to view your matches now.", false],
                                         function (err, rows) {
                                             conn.release();
 

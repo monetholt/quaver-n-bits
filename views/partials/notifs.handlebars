@@ -40,9 +40,9 @@ unread notifications so that we can flip the 'unread' class on this main div. --
                     <img class="notif-photo" src="/img/profile-img.jpg" />
                 </div>
                 <div class="notif-body">
-                    <!-- TODO: We also might need a notification "type" so we know what message to relay, and we probably
-                    can't use the 'msg' property and get the user's name in the notif either. -->
-                    <div class="notif-text">New match request from <strong>{INSERT USER LOL}</strong>! Click to view your matches now.</div>
+                    <!-- TODO: We also might need a notification "type" so we know what message to relay, and we probably can't use the 'msg' property and get the user's name in the notif either. -->
+                    <!--<div class="notif-text">New match request from <strong>{INSERT USER LOL}</strong>! Click to view your matches now.</div>-->
+                    <div class="notif-text">{{{Msg}}}</div>
                     <div class="notif-date">Sent {{moment CreateDate fromNow="true"}} ago.</div>
                 </div>
                 <div class="notif-controls">

@@ -3,9 +3,46 @@ const utils = require('../utils.js');
 
 module.exports = {
     getMatches: (req, res, next) => {
-        // Get all matches in the matches table, then:
-        res.render('matches', {
-            user: req.user, notifs: req.session.notifs, unreadNotifs: req.session.unreadNotifs, profile: true });
+
+        let context = {
+            user: req.user,
+            notifs: req.session.notifs,
+            unreadNotifs: req.session.unreadNotifs,
+            profile: true
+        };
+
+        // Get all matches for this user.
+        mysql.pool.query(`SELECT * FROM Matches WHERE Deleted = 0 AND (MatchedProfileID = 2 
+        OR AdID IN (SELECT AdKey FROM Ads WHERE UserID = 8));`, [req.session.ProfileID, req.user.UserKey], (err, matches) => {
+            if (err) {
+                throw(err);
+            } else {
+                context = {
+                    ...context,
+                    active: false,
+                    outgoing: false,
+                    incoming: false
+                };
+
+                // Sort matches into active, incoming, or outgoing.
+                matches.forEach(match => {
+                    if (match["Accepted"] === 0) {
+                        if (match["MatchedProfileID"] === req.session.ProfileID) {
+                            context.outgoing = { ...context.outgoing, [match["MatchedProfileID"]]: match }
+                        } else {
+                            context.incoming = { ...context.incoming, [match["MatchedProfileID"]]: match }
+                        }
+                    } else {
+                        context.active = { ...context.active, [match["MatchedProfileID"]]: match }
+                    }
+                });
+
+                // TODO: Fetch the data needed for each category (possibly in a separate function for each).
+                // TODO: Format output for display as outlined in matches.handlebars.
+
+                res.render('matches', { context });
+            }
+        });
     },
 
     getPendingMatches: (req, res, next) => {

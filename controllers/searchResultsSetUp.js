@@ -20,16 +20,18 @@ module.exports = {
                     ad: adAndIDs[0]
                 };
 
-                if (context.ad.LocationRadius < 99999) {
-                    context.ad.LocationRadiusDisplay = context.ad.LocationRadius;
-                } else {
-                    context.ad.LocationRadiusDisplay = "Any";
-                }
-
                 // If there were no matching profileIDs, render the page with profiles set to false..
                 if (!profileIDs) {
                     return res.render('search-results', {...context, profiles: false});
                 } else {
+
+                    // This had to be moved here to ensure there were ads in the first place.
+                    if (context.ad.LocationRadius < 99999) {
+                        context.ad.LocationRadiusDisplay = context.ad.LocationRadius;
+                    } else {
+                        context.ad.LocationRadiusDisplay = "Any";
+                    }
+
                     // Step 2: Get the profile data for each of the matching profile keys. Set up profile key/value pairs.
                     mysql.pool.query(`SELECT * FROM Profiles WHERE ProfileKey IN (${profileIDs})`, false, (err, results) => {
                         if (results) {

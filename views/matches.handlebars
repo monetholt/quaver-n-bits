@@ -3,6 +3,48 @@
 {{>nav}}
 {{>alert}}
 
+<!-- This is how info should probably come in to make our lives easier:
+
+active: {
+    matchKey: {
+        ...data from Matches table,
+        profile: {
+            Photo,
+            ArtistName
+        }
+    },
+    ...
+},
+incoming: {
+    matchKey: {
+        ...data from Matches table,
+        ad: {
+            ...ad data for this ad,
+            instruments: {
+                ... instruments for this ad
+            }
+        }
+    },
+    ...tch
+},
+outgoing: {
+    adID: {
+        ...ad data for this ad,
+        matches: {
+            profileID: {
+                ...profile data for this profile,
+                instruments: {
+                    ...instruments for this profile
+                }
+            },
+            ...
+        }
+    },
+    ...
+}
+-->
+
+
 <main>
     <div class="main-container main-active-matches">
         <div class="active-matches-label">

@@ -397,6 +397,25 @@ app.put('/notifications/markRead/:id',utils.checkAuthenticated,(req, res, next) 
 });
 
 
+app.put('/notifications/markUnread/:id', utils.checkAuthenticated, (req, res, next) => {
+
+    try {
+        let sql = 'UPDATE Notifications SET ReadMsg=0 WHERE NotificationKey=?';
+        mysql.pool.query(sql, [req.params.id], function (err, result) {
+            if (err) {
+                throw (err);
+            } else if (result.affectedRows === 1) {
+                res.send(true);
+            } else {
+                throw (new ReferenceError('No such notification or notification already unread'));
+            }
+        });
+    } catch (err) {
+        res.redirect(utils.errorRedirect('/notifications/markUnread', 'An unexpected error occurred marking your notification as unread.'));
+    }
+});
+
+
 //delete all notifications for a user.
 app.delete('/notifications/delete', utils.checkAuthenticated, (req, res, next) => {
     try {

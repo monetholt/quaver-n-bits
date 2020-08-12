@@ -60,7 +60,7 @@ function checkAllRead() {
     {
         $("#notifications").removeClass("unread"); //No notifications. remove 'unread' icon on bell (if it was there)
         $("#notifications").find(".notifications-body").html("<span>Nothing to see here</span>"); //replace html 
-
+        $("#notifications").find(".notifications-header").html(""); //remove delete/clear all action btns
     }
 
     $(document).foundation(); //refresh all tooltips

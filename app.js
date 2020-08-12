@@ -103,7 +103,8 @@ app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
             res.write(JSON.stringify(error));
             res.end();
         }
-        res.render('create-profile', { user: req.user, instruments: rows[0], levels: rows[1] });
+        res.render('create-profile', {
+            user: req.user, notifs: req.session.notifs, instruments: rows[0], levels: rows[1] });
     });
 });
 
@@ -119,6 +120,7 @@ app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
             let profileIDs = adAndIDs.map(p => p.ProfileKey).join();
             let context = {
                 user: req.user,
+                notifs: req.session.notifs,
                 profile: true,
                 ad: adAndIDs[0]
             };
@@ -278,7 +280,7 @@ app.delete('/logout', (req, res) => {
 
 app.get('/matches',utils.checkAuthenticated,(req, res, next) => {
     // Get all matches in the matches table, then:
-    res.render('matches', { profile: true });
+    res.render('matches', { user: req.user, notifs: req.session.notifs, profile: true });
 });
 
 app.get('/matches/pending',utils.checkAuthenticated,(req, res, next) => {
@@ -391,6 +393,43 @@ app.put('/notifications/markRead/:id',utils.checkAuthenticated,(req, res, next) 
         });
     } catch(err) {
         res.redirect(utils.errorRedirect('/notifications/markRead', 'An unexpected error occurred marking your notification read'));
+    }
+});
+
+
+//delete all notifications for a user.
+app.delete('/notifications/delete', utils.checkAuthenticated, (req, res, next) => {
+    try {
+        let sql = 'DELETE FROM Notifications WHERE UserID=?';
+        mysql.pool.query(sql, [req.user.UserKey], function (err, result) {
+            if (err) {
+                throw (err);
+            } else if (result.affectedRows >= 1) {
+                res.send(true);
+            } else {
+                res.send(true); //don't worry about throwing an error. could be that they deleted on one tab and tried to do it again on another
+            }
+        });
+    } catch (err) {
+        res.redirect(utils.errorRedirect('/notifications/delete', 'An unexpected error occurred deleting your notifications.'));
+    }
+});
+
+//delete a single notification for a user.
+app.delete('/notifications/delete/:id', utils.checkAuthenticated, (req, res, next) => {
+    try {
+        let sql = 'DELETE FROM Notifications WHERE UserID=? AND NotificationKey=?';
+        mysql.pool.query(sql, [req.user.UserKey, req.params.id], function (err, result) {
+            if (err) {
+                throw (err);
+            } else if (result.affectedRows === 1) {
+                res.send(true);
+            } else {
+                res.send(true); //don't worry about throwing an error. could be that they deleted on one tab and tried to do it again on another
+            }
+        });
+    } catch (err) {
+        res.redirect(utils.errorRedirect('/notifications/delete', 'An unexpected error occurred deleting a notification.'));
     }
 });
 

@@ -1,0 +1,247 @@
+@keyframes ringADingDingBitches {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  25% {
+    transform: translateY(-4px) rotate(25deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(-25deg);
+  }
+  75% {
+    transform: translateY(-4px) rotate(25deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+$photo-size: 90px;
+
+.notifications {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-right: 20px;
+  padding: 0 10px;
+  font-size: 32px;
+  color: #aaa;
+  cursor: pointer;
+  @include transition(0.2s ease);
+
+  &:hover {
+    color: $white;
+
+    .notifications-menu {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  &.unread {
+    color: #fefefe;
+
+    .badge {
+      display: block !important;
+    }
+
+    &:hover {
+      color: $primary-color;
+
+      .badge {
+        background: #f44336 !important;
+      }
+
+      .notifications-icon-bell {
+        animation: 0.5s ease-out 0s 1 ringADingDingBitches;
+      }
+    }
+  }
+
+  @include breakpoint(small only) {
+    margin-right: 10px;
+  }
+
+  i {
+    cursor: inherit;
+  }
+
+  .notifications-icon {
+    position: relative;
+
+    .badge {
+      position: absolute;
+      display: none;
+      bottom: 12px;
+      right: -3px;
+      width: 10px;
+      min-width: 0;
+      height: 10px;
+      background: #cc4b37;
+      color: #fefefe;
+      @include transition(0.2s ease);
+    }
+  }
+
+  .notifications-menu {
+    position: absolute;
+    top: 52px;
+    width: 450px;
+    right: -8px;
+    z-index: 20;
+    background: #eaeaea;
+    border: 1px solid #eee;
+    @include boxshadow(2px 2px 5px 0 rgba(0,0,0,0.5));
+    transition: 0.3s ease-in-out;
+    opacity: 0;
+    transform: translateX(100%);
+    transform-origin: top right;
+
+    @include breakpoint(small only) {
+      width: 250px;
+    }
+
+    .notifications-header {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      width: 100%;
+      background: $dark-gray;
+      color: $secondary-color;
+      border-bottom: 1px solid #ccc;
+      height: 30px;
+      padding: 5px 0;
+      font-size: 14px;
+      box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+
+      &>button {
+        color: $secondary-color;
+        width: 50%;
+        cursor: pointer;
+        @include transition(0.3s ease);
+        @include breakpoint(small only) {
+          width: initial;
+        }
+
+        i {
+          padding-right: 5px;
+        }
+      }
+
+      .clear-all {
+        text-align: left;
+        padding-left: 10px;
+
+        &:hover {
+          color: #f44336;
+        }
+      }
+
+      .mark-read {
+        text-align: right;
+        padding-right: 10px;
+
+        @include breakpoint(small only) {
+          flex-grow: 1;
+        }
+
+        &:hover {
+          color: $primary-color;
+        }
+      }
+
+    }
+
+    .notifications-body {
+      padding-top: 30px;
+      max-height: 750px;
+      overflow: scroll;
+
+      .notif {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background: white;
+        margin: 1px;
+        height: 100px;
+        @include transition(0.3s ease);
+
+        &:hover {
+          background: #fdfce7;
+
+          .notif-photo-container .notif-photo {
+            border: 3px solid $primary-color;
+          }
+        }
+
+        &.read {
+          background: #ddd;
+
+          &:hover {
+            background: #eee;
+          }
+        }
+
+        .notif-photo-container {
+          display: inline-flex;
+          margin-left: 5px;
+          align-items: center;
+          justify-content: center;
+          flex: 0 0 $photo-size;
+
+          .notif-photo {
+            border-radius: 50%;
+            border: 3px solid #d4d4d4;
+            width: $photo-size;
+            height: $photo-size;
+            object-fit: cover;
+          }
+        }
+
+        .notif-body {
+          display: inline-flex;
+          flex-direction: column;
+          max-height: 100px;
+          font-size: 1rem;
+          color: #222;
+          margin: 0 10px;
+
+          .notif-text {
+            font-size: 0.95rem;
+
+            strong {
+              color: #03a9f4;
+            }
+          }
+
+          .notif-date {
+            color: #666;
+            font-style: italic;
+            font-size: 0.8rem;
+            margin-top: 5px;
+          }
+        }
+
+        .notif-controls {
+          display: inline-flex;
+
+          button {
+            background-color: transparent;
+            cursor: pointer;
+            color: #ccc;
+            @include transition(0.3s ease);
+
+            &:hover {
+              color: #999;
+            }
+
+          }
+        }
+
+      }
+
+    }
+  }
+}

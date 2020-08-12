@@ -16,7 +16,8 @@ module.exports = {
                         workSamples: {
                             music: rows[2].filter(sample => sample.SampleType === "Music"),
                             video: rows[2].filter(sample => sample.SampleType === "Video"),
-                        }
+                        },
+                        notifs: req.session.notifs
                     };
     
                     utils.getInstrumentsAndLevels(req, res, context, complete);

@@ -5,7 +5,8 @@ const jp = require("jsonpath");
 module.exports = {
     loadDashboard: (req, res) => {
         var context = {
-            user: req.user
+            user: req.user,
+            notifs: req.session.notifs
         };
         mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
             try {

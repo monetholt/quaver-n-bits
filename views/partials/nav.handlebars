@@ -1,11 +1,11 @@
 <nav>
     <div class="logo"><h3><a href="/dashboard">Musician Finder</a></h3></div>
     {{#if profile}}
+    {{>notifs}}
     <div class="avatar">
         <div class="avatar-image">
             <i class="fas fa-user-astronaut"></i>
         </div>
-
         <div class="nav-menu">
             <div class="menu-item">
                 <a href="/dashboard">Dashboard</a>
@@ -23,12 +23,12 @@
                 </form>
             </div>
         </div>
-    {{else}}
-        <div class="nav-disabled-logout">
-            <form action="/logout?_method=DELETE" method="POST">
-                <button class="alert button">Log Out</button>
-            </form>
-        </div>
-    {{/if}}
     </div>
+    {{else}}
+    <div class="nav-disabled-logout">
+        <form action="/logout?_method=DELETE" method="POST">
+            <button class="alert button">Log Out</button>
+        </form>
+    </div>
+    {{/if}}
 </nav>

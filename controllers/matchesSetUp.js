@@ -1,6 +1,5 @@
 const mysql = require('../dbcon.js');
 const utils = require('../utils.js');
-const jp = require("jsonpath");
 
 module.exports = {
     getMatches: (req, res, next) => {

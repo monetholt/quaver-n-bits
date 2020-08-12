@@ -33,7 +33,7 @@ unread notifications so that we can flip the 'unread' class on this main div. --
         </div>
         <div class="notifications-body">
             {{#each notifs}}
-                <div class="notif {{#if (eq ReadMsg 1)}}read{{/if}}" href="/matches">
+                <div class="notif {{#if (eq ReadMsg 1)}}read{{/if}}" onclick="window.location.href='/matches'">
                     <div class="notif-photo-container">
                         <img class="notif-photo" src="/img/profile-img.jpg" />
                     </div>
@@ -43,11 +43,13 @@ unread notifications so that we can flip the 'unread' class on this main div. --
                     </div>
                     <div class="notif-controls">
                         {{#if (eq ReadMsg 1)}}
-                            <button class="button" type="button" data-tooltip tabindex="1" title="Mark as unread." data-position="right" data-alignment="center">
+                            <!-- this is a super ghetto way to handle this. you'll probably want an event listener.
+                             but you will still need to stop propagation so clicking this doesn't send the user to the matches page. -->
+                            <button onclick="event.stopPropagation(); console.log('pressed unread for notif.')" class="button" type="button" data-tooltip tabindex="1" title="Mark as unread." data-position="bottom" data-alignment="center">
                                 <i class="fas fa-circle"></i>
                             </button>
                         {{else}}
-                            <button class="button" type="button" data-tooltip tabindex="1" title="Mark as read." data-position="right" data-alignment="center">
+                            <button onclick="event.stopPropagation(); console.log('pressed read for notif.')" class="button" type="button" data-tooltip tabindex="1" title="Mark as read." data-position="bottom" data-alignment="center">
                                 <i class="fas fa-dot-circle"></i>
                             </button>
                         {{/if}}

@@ -14,7 +14,7 @@ notifs: [
 ]
 -->
 
-<!-- We might need some boolean to come in letting us know if there are any
+<!-- TODO: We might need some boolean to come in letting us know if there are any
 unread notifications so that we can flip the 'unread' class on this main div. -->
 
 <div id="notifications" class="notifications unread">
@@ -38,18 +38,20 @@ unread notifications so that we can flip the 'unread' class on this main div. --
                         <img class="notif-photo" src="/img/profile-img.jpg" />
                     </div>
                     <div class="notif-body">
-                        <div class="notif-text">{{Msg}}</div>
+                        <!-- TODO: We also might need a notification "type" so we know what message to relay, and we probably
+                        can't use the 'msg' property and get the user's name in the notif either. -->
+                        <div class="notif-text">New match request from <strong>{INSERT USER LOL}</strong>! Click to view your matches now.</div>
                         <div class="notif-date">Sent {{moment CreateDate fromNow="true"}} ago.</div>
                     </div>
                     <div class="notif-controls">
                         {{#if (eq ReadMsg 1)}}
-                            <!-- this is a super ghetto way to handle this. you'll probably want an event listener.
+                            <!-- TODO: this is a super ghetto way to handle this. you'll probably want an event listener
                              but you will still need to stop propagation so clicking this doesn't send the user to the matches page. -->
-                            <button onclick="event.stopPropagation(); console.log('pressed unread for notif.')" class="button" type="button" data-tooltip tabindex="1" title="Mark as unread." data-position="bottom" data-alignment="center">
+                            <button onclick="event.stopPropagation(); console.log('pressed unread for notif.')" class="button" type="button" data-click-open="false" data-tooltip tabindex="1" title="Mark as unread." data-position="bottom" data-alignment="center">
                                 <i class="fas fa-circle"></i>
                             </button>
                         {{else}}
-                            <button onclick="event.stopPropagation(); console.log('pressed read for notif.')" class="button" type="button" data-tooltip tabindex="1" title="Mark as read." data-position="bottom" data-alignment="center">
+                            <button onclick="event.stopPropagation(); console.log('pressed read for notif.')" class="button" type="button" data-click-open="false" data-tooltip tabindex="1" title="Mark as read." data-position="bottom" data-alignment="center">
                                 <i class="fas fa-dot-circle"></i>
                             </button>
                         {{/if}}

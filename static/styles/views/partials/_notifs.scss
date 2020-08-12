@@ -170,6 +170,10 @@ $photo-size: 90px;
 
         &:hover {
           background: #fdfce7;
+
+          .notif-photo-container .notif-photo {
+            border: 3px solid $primary-color;
+          }
         }
 
         &.read {
@@ -203,6 +207,14 @@ $photo-size: 90px;
           font-size: 1rem;
           color: #222;
           margin: 0 10px;
+
+          .notif-text {
+            font-size: 0.95rem;
+
+            strong {
+              color: #03a9f4;
+            }
+          }
 
           .notif-date {
             color: #666;

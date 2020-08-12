@@ -6933,6 +6933,8 @@ nav {
         transition: 0.3s ease; }
         .notifications .notifications-menu .notifications-body .notif:hover {
           background: #fdfce7; }
+          .notifications .notifications-menu .notifications-body .notif:hover .notif-photo-container .notif-photo {
+            border: 3px solid #6bffd6; }
         .notifications .notifications-menu .notifications-body .notif.read {
           background: #ddd; }
           .notifications .notifications-menu .notifications-body .notif.read:hover {
@@ -6956,6 +6958,10 @@ nav {
           font-size: 1rem;
           color: #222;
           margin: 0 10px; }
+          .notifications .notifications-menu .notifications-body .notif .notif-body .notif-text {
+            font-size: 0.95rem; }
+            .notifications .notifications-menu .notifications-body .notif .notif-body .notif-text strong {
+              color: #03a9f4; }
           .notifications .notifications-menu .notifications-body .notif .notif-body .notif-date {
             color: #666;
             font-style: italic;

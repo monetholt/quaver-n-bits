@@ -6633,6 +6633,261 @@ main {
 .hidden {
   display: none !important; }
 
+.active-matches-container {
+  padding: 20px;
+  background: #eee; }
+  .active-matches-container .active-match {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+    margin: 10px 0;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    -webkit-transition: 0.3s ease;
+    -moz-transition: 0.3s ease;
+    -ms-transition: 0.3s ease;
+    -o-transition: 0.3s ease;
+    transition: 0.3s ease; }
+    .active-matches-container .active-match:hover {
+      background: white; }
+      .active-matches-container .active-match:hover .active-match-image img {
+        border: 5px solid #6bffd6; }
+    .active-matches-container .active-match .active-match-image {
+      display: inline-flex;
+      margin-left: 5px;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 100px; }
+      .active-matches-container .active-match .active-match-image img {
+        border-radius: 50%;
+        border: 5px solid #212121;
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        -webkit-transition: 0.3s ease;
+        -moz-transition: 0.3s ease;
+        -ms-transition: 0.3s ease;
+        -o-transition: 0.3s ease;
+        transition: 0.3s ease; }
+    .active-matches-container .active-match .active-match-info {
+      padding: 0 20px; }
+      .active-matches-container .active-match .active-match-info h4 {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0; }
+      .active-matches-container .active-match .active-match-info h5 {
+        color: #555;
+        font-style: italic; }
+    .active-matches-container .active-match .active-match-buttons {
+      display: inline-flex;
+      flex-direction: row;
+      flex-grow: 1; }
+      .active-matches-container .active-match .active-match-buttons button {
+        margin: 0 10px; }
+        .active-matches-container .active-match .active-match-buttons button i {
+          padding-right: 10px; }
+
+.incoming-matches-container {
+  padding: 20px;
+  background: #eee; }
+  .incoming-matches-container .incoming-match {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    -webkit-transition: 0.3s ease;
+    -moz-transition: 0.3s ease;
+    -ms-transition: 0.3s ease;
+    -o-transition: 0.3s ease;
+    transition: 0.3s ease; }
+    .incoming-matches-container .incoming-match .incoming-match-alert {
+      background: #6bffd6;
+      display: inline-flex;
+      justify-content: center;
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      color: #222;
+      font-weight: bold;
+      padding: 5px 0; }
+      .incoming-matches-container .incoming-match .incoming-match-alert h5 {
+        font-weight: bold;
+        font-family: "Maven Pro", sans-serif;
+        margin: 0; }
+    .incoming-matches-container .incoming-match:hover {
+      background: white; }
+      .incoming-matches-container .incoming-match:hover .incoming-match-content .incoming-match-image img {
+        border: 5px solid #6bffd6; }
+    .incoming-matches-container .incoming-match .incoming-match-content {
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      padding: 10px 20px; }
+      .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-image {
+        display: inline-flex;
+        margin-left: 5px;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 100px; }
+        .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-image img {
+          border-radius: 50%;
+          border: 5px solid #212121;
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          -webkit-transition: 0.3s ease;
+          -moz-transition: 0.3s ease;
+          -ms-transition: 0.3s ease;
+          -o-transition: 0.3s ease;
+          transition: 0.3s ease; }
+      .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-info {
+        display: inline-flex;
+        flex-direction: column;
+        flex-grow: 2;
+        padding: 0 20px; }
+        .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-info h4 {
+          font-size: 2rem;
+          font-weight: bold;
+          color: #333;
+          margin: 0; }
+        .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-info h5 {
+          color: #555;
+          font-style: italic; }
+      .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-instruments {
+        padding: 0 20px;
+        display: inline-flex;
+        flex-direction: column;
+        border-left: 1px solid #ddd;
+        flex-grow: 1; }
+        .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-instruments h4 {
+          font-size: 2rem;
+          font-weight: bold;
+          color: #333;
+          margin: 0; }
+      .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-buttons {
+        display: inline-flex;
+        align-items: center;
+        flex-direction: row;
+        flex-grow: 1; }
+        .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-buttons button {
+          margin: 0 10px;
+          height: min-content; }
+          .incoming-matches-container .incoming-match .incoming-match-content .incoming-match-buttons button i {
+            padding-right: 10px; }
+
+.outgoing-matches-container {
+  padding: 20px;
+  background: #eee; }
+  .outgoing-matches-container .outgoing-match-ad-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    -webkit-transition: 0.3s ease;
+    -moz-transition: 0.3s ease;
+    -ms-transition: 0.3s ease;
+    -o-transition: 0.3s ease;
+    transition: 0.3s ease; }
+    .outgoing-matches-container .outgoing-match-ad-group:hover {
+      background: white; }
+      .outgoing-matches-container .outgoing-match-ad-group:hover .outgoing-match-ad-group-info {
+        background: #5a5a5a; }
+    .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-ad-group-info {
+      display: inline-flex;
+      flex-direction: column;
+      width: 100%;
+      background: #4a4a4a;
+      border-radius: 20px 20px 0 0;
+      padding: 10px 30px;
+      -webkit-transition: 0.3s ease;
+      -moz-transition: 0.3s ease;
+      -ms-transition: 0.3s ease;
+      -o-transition: 0.3s ease;
+      transition: 0.3s ease; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-ad-group-info h4 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #fefefe;
+        margin: 0; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-ad-group-info h5 {
+        color: #e6e6e6;
+        font-style: italic; }
+    .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-container {
+      display: flex;
+      width: calc(100% - 20px);
+      flex-direction: row;
+      margin: 10px;
+      border: 1px solid #999;
+      border-radius: 10px;
+      padding: 10px 20px;
+      background: #f1f1f1;
+      -webkit-transition: 0.3s ease;
+      -moz-transition: 0.3s ease;
+      -ms-transition: 0.3s ease;
+      -o-transition: 0.3s ease;
+      transition: 0.3s ease; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-container:hover {
+        background: white; }
+        .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-container:hover .outgoing-match-image img {
+          border: 5px solid #6bffd6; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-container .outgoing-match-image {
+        display: inline-flex;
+        margin-left: 5px;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 100px; }
+        .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-container .outgoing-match-image img {
+          border-radius: 50%;
+          border: 5px solid #212121;
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          -webkit-transition: 0.3s ease;
+          -moz-transition: 0.3s ease;
+          -ms-transition: 0.3s ease;
+          -o-transition: 0.3s ease;
+          transition: 0.3s ease; }
+    .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-info {
+      display: inline-flex;
+      flex-direction: column;
+      flex-grow: 1;
+      padding: 0 20px; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-info h4 {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-info h6 {
+        color: #555;
+        font-style: italic; }
+    .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-instruments {
+      display: inline-flex;
+      flex-direction: column;
+      flex-grow: 1;
+      padding: 0 20px; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-instruments h4 {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0; }
+    .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-pending {
+      display: inline-flex;
+      flex-direction: column;
+      align-self: center;
+      padding: 0 20px; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-pending button {
+        cursor: default;
+        margin: 0; }
+      .outgoing-matches-container .outgoing-match-ad-group .outgoing-match-pending i {
+        padding-right: 10px; }
+
 nav {
   position: fixed;
   display: flex;

@@ -16,12 +16,12 @@
             </div> --}}
         </div>
         <div class="active-matches-container">
-            <div id="no-active-matches" class="active-matches-text">
+            <div id="no-active-matches" class="active-matches-text" hidden>
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
             </div>
 
             <div id="active-matches">
-                <div class="active-match-container"> 
+                <div class="active-match">
                     <div class="active-match-image">
                         <img src="/img/profile-img.jpg">
                     </div>
@@ -30,9 +30,9 @@
                         <h5>01-01-2020</h5> {{! Insert connect date here }}
                     </div>
                     <div class="active-match-buttons">
-                        <button class="button success expanded">View Profile</button> {{! Will only be displayed if ad-poster made the request to connect }}
-                        <button class="button active expanded">Disconnect</button> {{! Either user can disconnect the match }}
-                        <button class="button warning expanded">Block</button> {{! Either user can block the other }}
+                        <button class="button success expanded" onclick="gotoPage(66)"><i class="far fa-eye"></i>View Profile</button> {{! Will only be displayed if ad-poster made the request to connect }}
+                        <button class="button active expanded"><i class="fas fa-microphone-alt-slash"></i>Disconnect</button> {{! Either user can disconnect the match }}
+                        <button class="button warning expanded"><i class="fas fa-hand-middle-finger"></i>Block</button> {{! Either user can block the other }}
                     </div>
                 </div>
             </div>
@@ -43,37 +43,39 @@
             <h1>Incoming:</h1>
         </div>
         <div class="incoming-matches-container">
-            <div id="no-incoming-matches" class="incoming-matches-text">
+            <div id="no-incoming-matches" class="incoming-matches-text" hidden>
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
             </div>
 
             <div id="incoming-matches">
-                <div class="incoming-match-container">
+                <div class="incoming-match">
                     <div class="incoming-match-alert">
                         <h5>Jordan has sent you a request to connect!</h5> {{! Update with ad-posting user name }}
                     </div>
-                    <div class="incoming-match-image">
-                        <img src="/img/profile-img.jpg">
-                    </div>
-                    <div class="incoming-match-info">
-                        <h4>Ad Title</h4> {{! Insert ad title here }}
-                        <h5>Date</h5> {{! Insert ad-create date here }}
-                        <h5>Description</h5> {{! Insert ad description here }}
-                    </div>
-                    <div>
-                        <h4>Instruments</h4>
-                        <ul>
-                            <li>
-                                Instrument 1!
-                            </li>
-                            <li>
-                                Instrument 2!
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="incoming-match-buttons">
-                        <button class="button success expanded">Accept</button> {{! Will make match's Accepted flag = 1 }}
-                        <button class="button warning expanded">Reject</button> {{! Will make match's Deleted flag = 1}}
+                    <div class="incoming-match-content">
+                        <div class="incoming-match-image">
+                            <img src="/img/profile-img.jpg">
+                        </div>
+                        <div class="incoming-match-info">
+                            <h4>Ad Title</h4> {{! Insert ad title here }}
+                            <h5>Date</h5> {{! Insert ad-create date here }}
+                            <p>Description</p> {{! Insert ad description here }}
+                        </div>
+                        <div class="incoming-match-instruments">
+                            <h4>Instruments</h4>
+                            <ul>
+                                <li>
+                                    Instrument 1!
+                                </li>
+                                <li>
+                                    Instrument 2!
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="incoming-match-buttons">
+                            <button class="button success expanded"><i class="fas fa-user-check"></i>Accept</button> {{! Will make match's Accepted flag = 1 }}
+                            <button class="button warning expanded"><i class="fas fa-not-equal"></i>Reject</button> {{! Will make match's Deleted flag = 1}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,13 +86,13 @@
             <h1>Outgoing:</h1>
         </div>
         <div class="outgoing-matches-container">
-            <div id="no-outgoing-matches" class="outgoing-matches-text">
+            <div id="no-outgoing-matches" class="outgoing-matches-text" hidden>
                 <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
             </div>
 
             <div id="outgoing-matches">
-                <div class="outgoing-match-group">
-                    <div class="outgoing-match-group-info">
+                <div class="outgoing-match-ad-group">
+                    <div class="outgoing-match-ad-group-info">
                         <h4>My Ad Title</h4>
                         <h5>01-01-2020</h5>
                     </div>
@@ -99,7 +101,7 @@
                         <div class="outgoing-match-image">
                             <img src="/img/profile-img.jpg">
                         </div>
-                        <div class="outgoing-match-image">
+                        <div class="outgoing-match-info">
                             <h4>Artist Name</h4>
                             <h6>Date Invite Sent</h6>
                         </div>
@@ -113,6 +115,108 @@
                                     Instrument 2!
                                 </li>
                             </ul>
+                        </div>
+                        <div class="outgoing-match-pending">
+                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="outgoing-match-ad-group">
+                    <div class="outgoing-match-ad-group-info">
+                        <h4>My Ad Title</h4>
+                        <h5>01-01-2020</h5>
+                    </div>
+                    {{! container for each person requested to match for this specific ad }}
+                    <div class="outgoing-match-container">
+                        <div class="outgoing-match-image">
+                            <img src="/img/profile-img.jpg">
+                        </div>
+                        <div class="outgoing-match-info">
+                            <h4>Artist Name</h4>
+                            <h6>Date Invite Sent</h6>
+                        </div>
+                        <div class="outgoing-match-instruments">
+                            <h4>Instruments</h4>
+                            <ul>
+                                <li>
+                                    Instrument 1!
+                                </li>
+                                <li>
+                                    Instrument 2!
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="outgoing-match-pending">
+                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
+                        </div>
+                    </div>
+                    <div class="outgoing-match-container">
+                        <div class="outgoing-match-image">
+                            <img src="/img/profile-img.jpg">
+                        </div>
+                        <div class="outgoing-match-info">
+                            <h4>Artist Name</h4>
+                            <h6>Date Invite Sent</h6>
+                        </div>
+                        <div class="outgoing-match-instruments">
+                            <h4>Instruments</h4>
+                            <ul>
+                                <li>
+                                    Instrument 1!
+                                </li>
+                                <li>
+                                    Instrument 2!
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="outgoing-match-pending">
+                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
+                        </div>
+                    </div>
+                    <div class="outgoing-match-container">
+                        <div class="outgoing-match-image">
+                            <img src="/img/profile-img.jpg">
+                        </div>
+                        <div class="outgoing-match-info">
+                            <h4>Artist Name</h4>
+                            <h6>Date Invite Sent</h6>
+                        </div>
+                        <div class="outgoing-match-instruments">
+                            <h4>Instruments</h4>
+                            <ul>
+                                <li>
+                                    Instrument 1!
+                                </li>
+                                <li>
+                                    Instrument 2!
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="outgoing-match-pending">
+                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
+                        </div>
+                    </div>
+                    <div class="outgoing-match-container">
+                        <div class="outgoing-match-image">
+                            <img src="/img/profile-img.jpg">
+                        </div>
+                        <div class="outgoing-match-info">
+                            <h4>Artist Name</h4>
+                            <h6>Date Invite Sent</h6>
+                        </div>
+                        <div class="outgoing-match-instruments">
+                            <h4>Instruments</h4>
+                            <ul>
+                                <li>
+                                    Instrument 1!
+                                </li>
+                                <li>
+                                    Instrument 2!
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="outgoing-match-pending">
+                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
                         </div>
                     </div>
                 </div>

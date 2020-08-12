@@ -46,7 +46,7 @@ function checkAllRead() {
 
     var notificationCount = $("#notifications").find(".notif").length; //total number of notifications
 
-    if (notificationCount > 1) //first check to see if we even have any notifs here
+    if (notificationCount > 0) //first check to see if we even have any notifs here
     {
         if ($("#notifications").find(".read").length == notificationCount) //if all notifs are read, go ahead an remove the unread icon
         {

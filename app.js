@@ -104,7 +104,7 @@ app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
             res.end();
         }
         res.render('create-profile', {
-            user: req.user, notifs: req.session.notifs, instruments: rows[0], levels: rows[1] });
+            user: req.user, notifs: req.session.notifs, unreadNotifs: req.session.unreadNotifs, instruments: rows[0], levels: rows[1] });
     });
 });
 
@@ -121,6 +121,7 @@ app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
             let context = {
                 user: req.user,
                 notifs: req.session.notifs,
+                unreadNotifs: req.session.unreadNotifs,
                 profile: true,
                 ad: adAndIDs[0]
             };
@@ -280,7 +281,8 @@ app.delete('/logout', (req, res) => {
 
 app.get('/matches',utils.checkAuthenticated,(req, res, next) => {
     // Get all matches in the matches table, then:
-    res.render('matches', { user: req.user, notifs: req.session.notifs, profile: true });
+    res.render('matches', {
+        user: req.user, notifs: req.session.notifs, unreadNotifs: req.session.unreadNotifs, profile: true });
 });
 
 app.get('/matches/pending',utils.checkAuthenticated,(req, res, next) => {

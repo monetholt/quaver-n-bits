@@ -11,6 +11,8 @@ module.exports = {
                 } else if(rows.length > 0) {
                     let context = {
                         user: req.user,
+                        notifs: req.session.notifs,
+                        unreadNotifs: req.session.unreadNotifs,
                         profile: rows[0][0],
                         profileInstruments: rows[1],
                         workSamples: {

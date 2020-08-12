@@ -104,7 +104,7 @@ app.get('/create-profile',utils.checkAuthenticated,(req,res) => {
             res.end();
         }
         res.render('create-profile', {
-            user: req.user, notifs: req.session.notifs, instruments: rows[0], levels: rows[1] });
+            user: req.user, notifs: req.session.notifs, unreadNotifs: req.session.unreadNotifs, instruments: rows[0], levels: rows[1] });
     });
 });
 
@@ -121,6 +121,7 @@ app.get('/search-results/:id', utils.checkAuthenticated, (req, res, next) => {
             let context = {
                 user: req.user,
                 notifs: req.session.notifs,
+                unreadNotifs: req.session.unreadNotifs,
                 profile: true,
                 ad: adAndIDs[0]
             };
@@ -280,7 +281,8 @@ app.delete('/logout', (req, res) => {
 
 app.get('/matches',utils.checkAuthenticated,(req, res, next) => {
     // Get all matches in the matches table, then:
-    res.render('matches', { user: req.user, notifs: req.session.notifs, profile: true });
+    res.render('matches', {
+        user: req.user, notifs: req.session.notifs, unreadNotifs: req.session.unreadNotifs, profile: true });
 });
 
 app.get('/matches/pending',utils.checkAuthenticated,(req, res, next) => {
@@ -338,7 +340,7 @@ app.post('/matches/add', utils.checkAuthenticated, (req, res, next) => {
 
                                     //now go add the notification record.
                                     conn.query(`INSERT INTO Notifications (UserID, MatchID, Msg, ReadMsg, CreateDate) VALUES (?, ?, ?, ?, NOW()) `,
-                                        [userID, matchKey, "New match request! Please accept or reject.", false],
+                                        [userID, matchKey, "New match request from <strong>" + req.user.FirstName + " " + req.user.LastName +"</strong>! Click to view your matches now.", false],
                                         function (err, rows) {
                                             conn.release();
 
@@ -393,6 +395,25 @@ app.put('/notifications/markRead/:id',utils.checkAuthenticated,(req, res, next) 
         });
     } catch(err) {
         res.redirect(utils.errorRedirect('/notifications/markRead', 'An unexpected error occurred marking your notification read'));
+    }
+});
+
+
+app.put('/notifications/markUnread/:id', utils.checkAuthenticated, (req, res, next) => {
+
+    try {
+        let sql = 'UPDATE Notifications SET ReadMsg=0 WHERE NotificationKey=?';
+        mysql.pool.query(sql, [req.params.id], function (err, result) {
+            if (err) {
+                throw (err);
+            } else if (result.affectedRows === 1) {
+                res.send(true);
+            } else {
+                throw (new ReferenceError('No such notification or notification already unread'));
+            }
+        });
+    } catch (err) {
+        res.redirect(utils.errorRedirect('/notifications/markUnread', 'An unexpected error occurred marking your notification as unread.'));
     }
 });
 

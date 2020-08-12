@@ -25,10 +25,20 @@ exports.getNotifications = (req, next) =>
         {
             //not going to throw an error. just not going to send anything back
             req.session.notifs = [];
+            req.session.unreadNotifs = false;
         }
         else
         {
             req.session.notifs = rows; //put notifications in session
+            req.session.unreadNotifs = false;
+
+            //check to see if we have any unread messages so we can put the unread icon on nav bar bell
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].ReadMsg === 0) { //found an unread! Set the flag and bounce
+                    req.session.unreadNotifs = true;
+                    break;
+                }
+            }
         }
 
         return next();

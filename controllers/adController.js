@@ -6,7 +6,8 @@ module.exports = {
     loadDashboard: (req, res) => {
         var context = {
             user: req.user,
-            notifs: req.session.notifs
+            notifs: req.session.notifs,
+            unreadNotifs: req.session.unreadNotifs,
         };
         mysql.pool.query("SELECT * FROM Profiles WHERE userID = ?;", [req.user.UserKey], (error, results) => {
             try {

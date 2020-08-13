@@ -176,7 +176,7 @@ module.exports = {
         }
     },
 
-    reject: (req, res, next) => {
+    rejectMatch: (req, res, next) => {
         //sets deleted flag to true on a match.
         try {
             let sql = 'UPDATE Matches SET Deleted=1 WHERE MatchKey=?';
@@ -194,7 +194,7 @@ module.exports = {
         }
     },
 
-    disconnect: (req, res, next) => {
+    disconnectMatch: (req, res, next) => {
         //deletes match
         try {
             let sql = 'DELETE FROM Matches WHERE MatchKey=?';

@@ -47,7 +47,7 @@ module.exports = {
                         context.active = context.active ? [...context.active, match] : [match];
                     }
                 });
-            
+
 
                 //TODO: need to deal with when outgoingKeys/incomingKeys are empty (sql query fails because it is incomplete)
                 if (outgoingKeys.length != 0) {
@@ -96,29 +96,26 @@ module.exports = {
                     });
                 }
 
-       // Group outgoing matches by ad:
+                // Group outgoing matches by ad:
                 let outgoingByAds = {};
-              if (context.outgoing.length != 0) {
+                if (context.outgoing.length != undefined) {
 
-                context.outgoing.forEach(match => {
-                    if (match["AdID"] in outgoingByAds) {
-                        outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
-                    } else {
-                        outgoingByAds[match["AdID"]] = {
-                            AdID: match.AdID,
-                            Title: match.Title,
-                            DatePosted: match.DatePosted,
-                            matches: [match]
+                    context.outgoing.forEach(match => {
+                        if (match["AdID"] in outgoingByAds) {
+                            outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
+                        } else {
+                            outgoingByAds[match["AdID"]] = {
+                                AdID: match.AdID,
+                                Title: match.Title,
+                                DatePosted: match.DatePosted,
+                                matches: [match]
+                            }
                         }
-                    }
-                });
-              }
-
+                    });
+                }
 
                 context.outgoing = Object.values(outgoingByAds);
 
-
-                console.log(context);
                 res.render('matches', context);
             }
         });
@@ -129,13 +126,13 @@ module.exports = {
         try {
             let sql = 'SELECT * FROM Matches WHERE Accepted = 0 AND MatchedProfileID = ?';
             mysql.pool.query(sql, [req.session.ProfileID], function (err, result) {
-                if(err) {
-                    throw(err);
+                if (err) {
+                    throw (err);
                 } else {
                     res.send(JSON.stringify(result));
                 }
             });
-        } catch(err) {
+        } catch (err) {
             res.redirect(utils.errorRedirect('/matches/pending', 'An unexpected error occurred retrieving your matches'));
         }
     },
@@ -179,7 +176,7 @@ module.exports = {
 
                                         //now go add the notification record.
                                         conn.query(`INSERT INTO Notifications (UserID, MatchID, Msg, ReadMsg, CreateDate) VALUES (?, ?, ?, ?, NOW()) `,
-                                            [userID, matchKey, "New match request from <strong>" + req.user.FirstName + " " + req.user.LastName +"</strong>! Click to view your matches now.", false],
+                                            [userID, matchKey, "New match request from <strong>" + req.user.FirstName + " " + req.user.LastName + "</strong>! Click to view your matches now.", false],
                                             function (err, rows) {
                                                 conn.release();
 

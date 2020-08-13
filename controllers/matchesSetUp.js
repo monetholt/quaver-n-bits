@@ -2,7 +2,7 @@ const mysql = require('../dbcon.js');
 const utils = require('../utils.js');
 
 module.exports = {
-    getMatches: (req, res, next) => {
+    getMatches: (req, res) => {
 
         let context = {
             user: req.user,
@@ -12,8 +12,12 @@ module.exports = {
         };
 
         // Get all matches for this user.
-        mysql.pool.query(`SELECT * FROM Matches WHERE Deleted = 0 AND (MatchedProfileID = 2 
-        OR AdID IN (SELECT AdKey FROM Ads WHERE UserID = 8));`, [req.session.ProfileID, req.user.UserKey], (err, matches) => {
+        mysql.pool.query(`SELECT m.*, a.*, p.*, au.FirstName, au.LastName FROM Matches m
+            JOIN Ads a ON m.AdID = a.AdKey
+            JOIN Users au on a.UserID = au.UserKey
+            JOIN Profiles p on m.MatchedProfileID = p.ProfileKey
+            JOIN Users pu on p.UserID = pu.UserKey
+            WHERE m.Deleted = 0 AND (pu.UserKey = ? OR au.UserKey = ?);`, [req.user.UserKey, req.user.UserKey], (err, matches) => {
             if (err) {
                 throw(err);
             } else {
@@ -24,28 +28,89 @@ module.exports = {
                     incoming: false
                 };
 
+                // Grab outgoing keys & ad keys for instrument lookup
+                let outgoingKeys = [];
+                let incomingKeys = [];
+
                 // Sort matches into active, incoming, or outgoing.
-                matches.forEach(match => {
+                matches.forEach((match) => {
+                    match.instruments = [];
                     if (match["Accepted"] === 0) {
                         if (match["MatchedProfileID"] === req.session.ProfileID) {
-                            context.outgoing = { ...context.outgoing, [match["MatchedProfileID"]]: match }
+                            context.incoming = context.incoming ? [...context.incoming, match ] : [match];
+                            incomingKeys.push(match["AdID"])
                         } else {
-                            context.incoming = { ...context.incoming, [match["MatchedProfileID"]]: match }
+                            context.outgoing = context.outgoing ? [ ...context.outgoing, match ] : [match];
+                            outgoingKeys.push(match["MatchedProfileID"]);
                         }
                     } else {
-                        context.active = { ...context.active, [match["MatchedProfileID"]]: match }
+                        context.active = context.active ? [ ...context.active, match ] : [match];
                     }
                 });
 
-                // TODO: Fetch the data needed for each category (possibly in a separate function for each).
-                // TODO: Format output for display as outlined in matches.handlebars.
+                // Get the instruments for each outgoing match.
+                mysql.pool.query(`SELECT ProfileID, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
+                    LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
+                    LEFT JOIN Users u ON p.UserID = UserKey
+                    LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
+                    LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
+                    WHERE ProfileID IN (${outgoingKeys.join()});`, false, (err, outInsts) => {
+                    if (err) {
+                        throw(err);
+                    } else {
+                        outInsts.forEach((inst) => {
+                            context.outgoing.forEach(match => {
+                                if (match.MatchedProfileID === inst.ProfileID) {
+                                    match.instruments.push(inst);
+                                }
+                            });
+                        });
 
-                res.render('matches', { context });
+                        // Get the instruments for each incoming match.
+                        mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
+                            LEFT JOIN Ads a ON AdID = a.AdKey
+                            LEFT JOIN Users u ON UserID = u.UserKey
+                            LEFT JOIN InstrumentLookup il on ai.InstrumentID = InstrumentKey
+                            LEFT JOIN LevelLookup ll on ai.LevelID = LevelKey
+                            WHERE AdKey IN (${incomingKeys.join()});`, false, (err, incInsts) => {
+                            if (err) {
+                                throw (err)
+                            } else {
+                                incInsts.forEach((inst) => {
+                                    context.incoming.forEach(match => {
+                                        if (match.AdID === inst.AdKey) {
+                                            match.instruments.push(inst);
+                                        }
+                                    });
+                                });
+
+                                // Group outgoing matches by ad:
+                                let outgoingByAds = {};
+
+                                context.outgoing.forEach(match => {
+                                    if(match["AdID"] in outgoingByAds) {
+                                        outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
+                                    } else {
+                                        outgoingByAds[match["AdID"]] = {
+                                            AdID: match.AdID,
+                                            Title: match.Title,
+                                            DatePosted: match.DatePosted,
+                                            matches: [match]
+                                        }
+                                    }
+                                });
+
+                                context.outgoing = Object.values(outgoingByAds);
+                                res.render('matches', context);
+                            }
+                        });
+                    }
+                });
             }
         });
     },
 
-    getPendingMatches: (req, res, next) => {
+    getPendingMatches: (req, res) => {
         try {
             let sql = 'SELECT * FROM Matches WHERE Accepted = 0 AND MatchedProfileID = ?';
             mysql.pool.query(sql, [req.session.ProfileID], function (err, result) {

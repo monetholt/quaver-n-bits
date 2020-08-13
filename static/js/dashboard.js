@@ -220,7 +220,7 @@ function updateAd(id) {
             success: function (data, textStatus, jqXHR) {
                 //data - response from server
                 if (data.success == 1) {
-                    showAlert("successs", "far fa-check-circle", "Ad saved!");
+                    showAlert("success", "far fa-check-circle", "Ad saved!");
 
                     //update data for this ad:
                     allAds[id]['Title'] = newTitle;

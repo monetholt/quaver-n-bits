@@ -38,19 +38,13 @@ outgoing: [{
     <div class="main-container main-active-matches">
         <div class="active-matches-label">
             <h1>Connections:</h1>
-
-            {{!-- <div id="PLEASE-DELETE-ME-FOR-I-AM-BUT-A-MERE-TEST!">
-                <form method="POST" action="/user-profile">
-                    <input name="ProfileID" value="66" type="hidden" />
-                    <button type="submit" class="button expanded large">View a profile!</button>
-                </form>
-            </div> --}}
         </div>
         <div class="active-matches-container">
             {{#if active}}
             <div id="active-matches">
                 {{#each active}}
-                <div class="active-match">
+                <div id="match-{{@key}}"class="active-match">
+
                     <div class="active-match-image">
                         {{#if Photo}}
                             <img src="{{Photo}}">
@@ -63,11 +57,12 @@ outgoing: [{
                         <h5>Connected {{moment DateAccepted fromNow="true"}} ago</h5> {{! Insert connect date here }}
                     </div>
                     <div class="active-match-buttons">
-                        {{#unless (eq UserID ../user.UserKey)}}
-                            <button class="button success expanded" onclick="gotoPage({{UserID}})"><i class="far fa-eye"></i>View Profile</button> {{! Will only be displayed if ad-poster made the request to connect }}
-                        {{/unless}}
-                        <button class="button active expanded"><i class="fas fa-microphone-alt-slash"></i>Disconnect</button> {{! Either user can disconnect the match }}
-                        <button class="button warning expanded"><i class="fas fa-hand-middle-finger"></i>Block</button> {{! Either user can block the other }}
+                        {{#if (eq this.MatchedProfileID ../profile.ProfileKey)}}
+                        {{else}}
+                        <button class="button success expanded" onclick="window.location='user-profile?ProfileID={{this.MatchedProfileID}}'"><i class="far fa-eye"></i>View Profile</button> {{! Will only be displayed if ad-poster made the request to connect }}
+                        {{/if}}
+                        <button class="button active expanded" onclick="disconnectMatch({{@key}})"><i class="fas fa-microphone-alt-slash"></i>Disconnect</button> {{! Either user can disconnect the match }}
+                        <button class="button warning expanded" onclick="blockMatch({{@key}})"><i class="fas fa-hand-middle-finger"></i>Block</button> {{! Either user can block the other }}
                     </div>
                 </div>
                 {{/each}}
@@ -87,7 +82,7 @@ outgoing: [{
             {{#if incoming}}
             <div id="incoming-matches">
                 {{#each incoming}}
-                <div class="incoming-match">
+                <div id="incoming-match-{{@key}}" class="incoming-match">
                     <div class="incoming-match-alert">
                         <h5><strong>{{FirstName}} {{LastName}}</strong> has sent you a request to connect!</h5>
                     </div>
@@ -115,8 +110,8 @@ outgoing: [{
                             </ul>
                         </div>
                         <div class="incoming-match-buttons">
-                            <button class="button success expanded"><i class="fas fa-user-check"></i>Accept</button> {{! Will make match's Accepted flag = 1 }}
-                            <button class="button warning expanded"><i class="fas fa-not-equal"></i>Reject</button> {{! Will make match's Deleted flag = 1}}
+                            <button class="button success expanded" onclick="acceptMatch({{ProfileKey}}, {{@key}})" ><i class="fas fa-user-check"></i>Accept</button> {{! Will make match's Accepted flag = 1 }}
+                            <button class="button warning expanded" onclick="rejectMatch({{Profilekey}}, {{@key}})"><i class="fas fa-not-equal"></i>Reject</button> {{! Will make match's Deleted flag = 1}}
                         </div>
                     </div>
                 </div>
@@ -137,7 +132,7 @@ outgoing: [{
         <div class="outgoing-matches-container">
             <div id="outgoing-matches">
                 {{#each outgoing}}
-                <div class="outgoing-match-ad-group">
+                <div id="outgoing-match-{{@key}}" class="outgoing-match-ad-group">
                     <div class="outgoing-match-ad-group-info">
                         <h4>{{Title}}</h4>
                         <h5>Posted {{moment DatePosted format="MMMM Do, YYYY" }}</h5>

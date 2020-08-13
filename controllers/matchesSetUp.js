@@ -8,7 +8,7 @@ module.exports = {
             user: req.user,
             notifs: req.session.notifs,
             unreadNotifs: req.session.unreadNotifs,
-            profile: true
+            profile: req.session.Profile
         };
 
         // Get all matches for this user.
@@ -48,6 +48,8 @@ module.exports = {
                     }
                 });
 
+		//TODO: need to deal with when outgoingKeys/incomingKeys are empty (sql query fails because it is incomplete)
+
                 // Get the instruments for each outgoing match.
                 mysql.pool.query(`SELECT ProfileID, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
                     LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
@@ -72,7 +74,7 @@ module.exports = {
                             LEFT JOIN Users u ON UserID = u.UserKey
                             LEFT JOIN InstrumentLookup il on ai.InstrumentID = InstrumentKey
                             LEFT JOIN LevelLookup ll on ai.LevelID = LevelKey
-                            WHERE AdKey IN (${incomingKeys.join()});`, false, (err, incInsts) => {
+                            WHERE a.AdKey IN (${incomingKeys.join()});`, false, (err, incInsts) => {
                             if (err) {
                                 throw (err)
                             } else {
@@ -101,6 +103,7 @@ module.exports = {
                                 });
 
                                 context.outgoing = Object.values(outgoingByAds);
+                                console.log(context);
                                 res.render('matches', context);
                             }
                         });
@@ -183,5 +186,98 @@ module.exports = {
             res.write(JSON.stringify(err));
             res.end();
         }
-    }
+    },
+
+    acceptMatch: (req, res, next) => {
+        //accepts pending match by setting accepted to 1. On success also writes a notification record to send to matched requestor
+        try {
+            mysql.pool.getConnection(function (err, conn) {
+                if (err) throw (err);
+
+                //update the match record
+                conn.query('UPDATE Matches SET Accepted=1, DateAccepted = NOW() WHERE MatchedProfileID=?',
+                    [req.params.id],
+                    function (err, rows) {
+                        if (err) { //something went wrong so send an error
+                            conn.release();
+                            res.write({ success: 0, message: 'An error occurred when accepting to match: '.JSON.stringify(err) });
+                            res.end();
+                        } else {
+                            //now need to add the notification record for the person who owns the ad for this match
+
+                            //get the userID from the ad tied to this match
+                            conn.query(`SELECT u.UserKey FROM Matches m LEFT JOIN Ads a ON m.AdID = a.AdKey LEFT JOIN Users u ON a.UserID = u.UserKey WHERE m.MatchedProfileID = ? LIMIT 1`,
+                                [req.params.id],
+                                function (err, rows) {
+
+                                    if (err) {
+                                        conn.release();
+                                        res.write({ success: 0, message: 'An error occurred fetching matched user: '.JSON.stringify(err) });
+                                        res.end();
+                                    } else if (rows.length === 0) {
+                                        conn.release();
+                                        res.write({ success: 0, message: 'Matched user does not exist. ' }); //no user found! This shouldn't happen
+                                        res.end();
+                                    }
+                                    else {
+                                        var userID = rows[0]["UserKey"];
+
+                                        //now go add the notification record to send to ad poster
+                                        conn.query(`INSERT INTO Notifications (UserID, MatchID, Msg, ReadMsg, CreateDate) VALUES (?, ?, ?, ?, NOW()) `,
+                                            [userID, req.params.id, "You have connected with <strong>" + req.user.FirstName + " " + req.user.LastName + "</strong>!", false],
+                                            function (err, rows) {
+                                                conn.release();
+
+                                                if (err) {
+                                                    res.write({ success: 1, message: 'An error occurred adding notification for match accept: '.JSON.stringify(err) });
+                                                    res.end();
+                                                } else res.send({ success: 1, message: 'Successfully matched.' });
+                                            });
+                                    }
+                                });
+                        }
+                    });
+            });
+        } catch (err) {
+            res.write(JSON.stringify(err));
+            res.end();
+        }
+    },
+
+    rejectMatch: (req, res, next) => {
+        //sets deleted flag to true on a match.
+        try {
+            let sql = 'UPDATE Matches SET Deleted=1 WHERE MatchedProfileID=?';
+            mysql.pool.query(sql, [req.params.id], function (err, result) {
+                if (err) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw (new ReferenceError('No such match'));
+                }
+            });
+        } catch (err) {
+            res.redirect(utils.errorRedirect('/matches/reject', 'An unexpected error occurred rejecting match request.'));
+        }
+    },
+
+    disconnectMatch: (req, res, next) => {
+        //deletes match
+        try {
+            let sql = 'DELETE FROM Matches WHERE MatchedProfileID=?';
+            mysql.pool.query(sql, [req.params.id], function (err, result) {
+                if (err) {
+                    throw (err);
+                } else if (result.affectedRows === 1) {
+                    res.send(true);
+                } else {
+                    throw (new ReferenceError('No such match'));
+                }
+            });
+        } catch (err) {
+            res.redirect(utils.errorRedirect('/matches/disconnect', 'An unexpected error occurred disconnecting match.'));
+        }
+    },
 }
+

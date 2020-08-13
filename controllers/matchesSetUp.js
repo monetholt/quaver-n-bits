@@ -19,7 +19,7 @@ module.exports = {
             JOIN Users pu on p.UserID = pu.UserKey
             WHERE m.Deleted = 0 AND (pu.UserKey = ? OR au.UserKey = ?);`, [req.user.UserKey, req.user.UserKey], (err, matches) => {
             if (err) {
-                throw(err);
+                throw (err);
             } else {
                 context = {
                     ...context,
@@ -37,80 +37,92 @@ module.exports = {
                     match.instruments = [];
                     if (match["Accepted"] === 0) {
                         if (match["MatchedProfileID"] === req.session.ProfileID) {
-                            context.incoming = context.incoming ? [...context.incoming, match ] : [match];
+                            context.incoming = context.incoming ? [...context.incoming, match] : [match];
                             incomingKeys.push(match["AdID"])
                         } else {
-                            context.outgoing = context.outgoing ? [ ...context.outgoing, match ] : [match];
+                            context.outgoing = context.outgoing ? [...context.outgoing, match] : [match];
                             outgoingKeys.push(match["MatchedProfileID"]);
                         }
                     } else {
-                        context.active = context.active ? [ ...context.active, match ] : [match];
+                        context.active = context.active ? [...context.active, match] : [match];
                     }
                 });
+            
 
-		//TODO: need to deal with when outgoingKeys/incomingKeys are empty (sql query fails because it is incomplete)
+                //TODO: need to deal with when outgoingKeys/incomingKeys are empty (sql query fails because it is incomplete)
+                if (outgoingKeys.length != 0) {
+                    let sql = `SELECT ProfileID, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
+                LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
+                LEFT JOIN Users u ON p.UserID = UserKey
+                LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
+                LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
+                WHERE ProfileID IN (${outgoingKeys.join()});`;
 
-                // Get the instruments for each outgoing match.
-                mysql.pool.query(`SELECT ProfileID, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
-                    LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
-                    LEFT JOIN Users u ON p.UserID = UserKey
-                    LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
-                    LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
-                    WHERE ProfileID IN (${outgoingKeys.join()});`, false, (err, outInsts) => {
-                    if (err) {
-                        throw(err);
-                    } else {
-                        outInsts.forEach((inst) => {
-                            context.outgoing.forEach(match => {
-                                if (match.MatchedProfileID === inst.ProfileID) {
-                                    match.instruments.push(inst);
-                                }
+                    // Get the instruments for each outgoing match.
+                    mysql.pool.query(sql, false, (err, outInsts) => {
+                        if (err) {
+                            throw (err);
+                        } else {
+                            outInsts.forEach((inst) => {
+                                context.outgoing.forEach(match => {
+                                    if (match.MatchedProfileID === inst.ProfileID) {
+                                        match.instruments.push(inst);
+                                    }
+                                });
                             });
-                        });
+                        }
+                    });
+                }
 
-                        // Get the instruments for each incoming match.
-                        mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
+                if (incomingKeys.length != 0) {
+                    // Get the instruments for each incoming match.
+                    mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
                             LEFT JOIN Ads a ON AdID = a.AdKey
                             LEFT JOIN Users u ON UserID = u.UserKey
                             LEFT JOIN InstrumentLookup il on ai.InstrumentID = InstrumentKey
                             LEFT JOIN LevelLookup ll on ai.LevelID = LevelKey
                             WHERE a.AdKey IN (${incomingKeys.join()});`, false, (err, incInsts) => {
-                            if (err) {
-                                throw (err)
-                            } else {
-                                incInsts.forEach((inst) => {
-                                    context.incoming.forEach(match => {
-                                        if (match.AdID === inst.AdKey) {
-                                            match.instruments.push(inst);
-                                        }
-                                    });
-                                });
-
-                                // Group outgoing matches by ad:
-                                let outgoingByAds = {};
-
-                                context.outgoing.forEach(match => {
-                                    if(match["AdID"] in outgoingByAds) {
-                                        outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
-                                    } else {
-                                        outgoingByAds[match["AdID"]] = {
-                                            AdID: match.AdID,
-                                            Title: match.Title,
-                                            DatePosted: match.DatePosted,
-                                            matches: [match]
-                                        }
+                        if (err) {
+                            throw (err)
+                        } else {
+                            incInsts.forEach((inst) => {
+                                context.incoming.forEach(match => {
+                                    if (match.AdID === inst.AdKey) {
+                                        match.instruments.push(inst);
                                     }
                                 });
+                            });
+                        }
+                    });
+                }
 
-                                context.outgoing = Object.values(outgoingByAds);
-                                console.log(context);
-                                res.render('matches', context);
-                            }
-                        });
+       // Group outgoing matches by ad:
+                let outgoingByAds = {};
+              if (context.outgoing.length != 0) {
+
+                context.outgoing.forEach(match => {
+                    if (match["AdID"] in outgoingByAds) {
+                        outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
+                    } else {
+                        outgoingByAds[match["AdID"]] = {
+                            AdID: match.AdID,
+                            Title: match.Title,
+                            DatePosted: match.DatePosted,
+                            matches: [match]
+                        }
                     }
                 });
+              }
+
+
+                context.outgoing = Object.values(outgoingByAds);
+
+
+                console.log(context);
+                res.render('matches', context);
             }
         });
+
     },
 
     getPendingMatches: (req, res) => {

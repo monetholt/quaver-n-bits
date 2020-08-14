@@ -23,7 +23,7 @@ function addMatch2Connections(id) {
 
     //grab the photo and name
     var photoUrl = currentMatch.find(".incoming-match-image").find("img").attr("src");
-    var matchName = currentMatch.find(".incoming-match-info").find("h4").html();
+    var matchName = currentMatch.find(".incoming-match-alert").find(".incoming-match-name").html();
 
     removeMatchUI(id); // go and remove that old match now that we got the info we need
 

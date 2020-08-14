@@ -159,6 +159,18 @@ $photo-size: 90px;
       max-height: 750px;
       overflow: scroll;
 
+      .no-notifs {
+        font-weight: bold;
+        display: block;
+        padding: 10px 0;
+        color: #555;
+        text-align: center;
+        font-size: 1rem;
+
+        i {
+          padding-right: 10px;
+        }
+      }
       .notif {
         display: flex;
         flex-direction: row;
@@ -236,12 +248,9 @@ $photo-size: 90px;
             &:hover {
               color: #999;
             }
-
           }
         }
-
       }
-
     }
   }
 }

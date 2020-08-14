@@ -1,11 +1,10 @@
 const mysql = require('../dbcon.js');
 const utils = require('../utils.js');
-const jp = require("jsonpath");
 
 module.exports = {
     getUserProfile: (req, res, next) => {
         try {
-            mysql.pool.query('CALL GetProfileByProfileKey(?)', [req.body.ProfileID], function(err, rows) {
+            mysql.pool.query('CALL GetProfileByProfileKey(?)', [req.query.ProfileID], function(err, rows) {
                 if(err) {
                     throw(err);
                 } else if(rows.length > 0) {

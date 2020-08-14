@@ -4877,6 +4877,14 @@ main {
   border: 1px solid #19fff4;
   box-shadow: 0 0 10px 2px inset #19fff399; }
 
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(30px); }
+  100% {
+    opacity: 1;
+    transform: translateX(0); } }
+
 .full-page {
   width: 100vw;
   height: 100vh; }
@@ -5109,6 +5117,21 @@ main {
           #discover .discover-body .orbit .orbit-slide-container blockquote .stars, #discover .discover-body .orbit .orbit-slide-container cite .stars {
             color: #ffeb3b;
             padding: 7px 0; }
+
+.response-to-user {
+  background: #4f4f4f;
+  color: #f1f8e9;
+  padding: 10px;
+  text-indent: 10px;
+  border-radius: 20px;
+  margin: 10px 0;
+  animation: 0.5s ease-out 0s 1 slideInFromLeft; }
+  .response-to-user.success {
+    background: rgba(139, 195, 74, 0.91); }
+  .response-to-user.fail {
+    background: rgba(244, 67, 54, 0.91); }
+  .response-to-user i {
+    padding-right: 10px; }
 
 .reveal {
   outline: none; }

@@ -1,3 +1,14 @@
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 $title-font-color: white;
 $title-font-size: 8vw;
 $subtitle-font-color: #e8e8e8;
@@ -217,6 +228,24 @@ $star-yellow: #ffeb3b;
   }
 }
 
-#about {
+.response-to-user {
+  background: #4f4f4f;
+  color: #f1f8e9;
+  padding: 10px;
+  text-indent: 10px;
+  border-radius: 20px;
+  margin: 10px 0;
+  animation: 0.5s ease-out 0s 1 slideInFromLeft;
 
+  &.success {
+    background: rgba(139, 195, 74, 0.91);
+  }
+
+  &.fail {
+    background: rgba(244, 67, 54, 0.91);
+  }
+
+  i {
+    padding-right: 10px;
+  }
 }

@@ -149,7 +149,7 @@
                     <form action="/register" method="POST">
                         <div class="login-box-form-section">
                             {{#if successRegistration}}
-                            <div style="color: green">{{successRegistration}}</div>
+                            <div class="response-to-user success"><i class="far fa-check-circle"></i>{{successRegistration}}</div>
                             {{/if}}
                             <h1 class="login-box-title">Sign up</h1>
                             <input class="login-box-input" type="text" name="firstname" placeholder="First Name" />
@@ -159,7 +159,7 @@
                             <input class="login-box-input" type="password" name="password2" placeholder="Retype password" />
                             <input class="login-box-submit-button" type="submit" name="signup_submit" value="Sign me up" />
                             {{#if errorRegistration}}
-                            <div style="color: red">{{errorRegistration}}</div>
+                            <div class="response-to-user fail"><i class="far fa-times-circle"></i>{{errorRegistration}}</div>
                             {{/if}}
                         </div>
                     </form>
@@ -177,7 +177,7 @@
                                 <input class="login-box-input" type="password" name="password" placeholder="Password" />
                                 <input class="login-box-submit-button" type="submit" name="signin_submit" value="Sign in" />
                                 {{#if messages.error}}
-                                <div style="color: red">{{messages.error}}</div>
+                                <div class="response-to-user fail"><i class="far fa-times-circle"></i>{{messages.error}}</div>
                                 {{/if}}
                             </div>
                         </form>

@@ -53,29 +53,29 @@ function addMatch2Connections(id) {
 
 //accepts match w/passedID
 function acceptMatch(id) {
-    //$.ajax({
-    //    type: "POST",
-    //    url: "/matches/accept/" + id,
-    //    data: {},
-    //    success: function (success, textStatus, jqXHR) {
-    //        //data - response from server
-    //        if (success && success.success > 0) { //successfull update
+    $.ajax({
+        type: "POST",
+        url: "/matches/accept/" + id,
+        data: {},
+        success: function (success, textStatus, jqXHR) {
+            //data - response from server
+            if (success && success.success > 0) { //successfull update
 
-    //            showAlert("success", "far fa-check-circle", "You are now connected!");
-    //            addMatch2Connections(id);
-    //        }
-    //        else {
-    //            showAlert("warning", "fa fa-exclamation-triangle", "Error accepting match request."); //something went wrong
-    //        }
-    //    },
-    //    error: function (jqXHR, textStatus, errorThrown) {
-    //        showAlert("warning", "fa fa-exclamation-triangle", "Error accepting match request."); //something went wrong
-    //    },
-    //    dataType: 'json'
-    //});
+                showAlert("success", "far fa-check-circle", "You are now connected!");
+                addMatch2Connections(id);
+            }
+            else {
+                showAlert("warning", "fa fa-exclamation-triangle", "Error accepting match request."); //something went wrong
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            showAlert("warning", "fa fa-exclamation-triangle", "Error accepting match request."); //something went wrong
+        },
+        dataType: 'json'
+    });
 
-    showAlert("success", "far fa-check-circle", "You are now connected!");
-    addMatch2Connections(id);
+    //showAlert("success", "far fa-check-circle", "You are now connected!");
+    //addMatch2Connections(id);
 
 }
 

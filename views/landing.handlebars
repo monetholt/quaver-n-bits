@@ -141,7 +141,7 @@
 </section>
 
 {{! This div handles the modal for registration/login }}
-<div class="reveal large" id="registrationModal" data-reveal>
+<div class="reveal large" id="registrationModal" data-reveal data-animation-in="fade-in" data-animation-out="fade-out">
     <div class="row">
         <div class="login-box">
             <div class="grid-x collapse expanded">
@@ -166,10 +166,10 @@
                 </div>
                 <div class="small-12 medium-6 column small-order-1 medium-order-2 login-box-social-section">
                     <div class="login-box-social-section-inner">
-                        <span class="login-box-social-headline">Sign in with your social network</span>
-                        <a class="login-box-social-button-facebook">Log in with facebook</a>
-                        <a class="login-box-social-button-twitter">Log in with Twitter</a>
-                        <a class="login-box-social-button-google">Log in with Google+</a>
+                        <span class="login-box-social-headline">Sign in</span>
+<!--                        <a class="login-box-social-button-facebook">Log in with facebook</a>-->
+<!--                        <a class="login-box-social-button-twitter">Log in with Twitter</a>-->
+<!--                        <a class="login-box-social-button-google">Log in with Google+</a>-->
                         <form action="/login" method="POST">
                             <div class="login-box-form-section">
                                 <span class="or">OR</span>

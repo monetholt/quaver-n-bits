@@ -403,14 +403,13 @@ function bindActions() {
     }
 
     function openRequest(endpoint, payload) {
-        console.log('values sent to openRequest: ', endpoint, payload);
         let req = new XMLHttpRequest();
         req.open('PUT', `/profile/${endpoint}`, true);
         req.addEventListener('load', () => {
             if (req.status < 400) {
-                console.log("DONE!");
+                showAlert("success", "far fa-check-circle", `Your profile was successfully updated!`);
             } else {
-                console.log("BAD." + req.statusText);
+                showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to update your profile. Please try again later.`)
             }
         });
         req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
@@ -680,9 +679,9 @@ window.addEventListener('DOMContentLoaded', () => {
     req.open('GET', `/profile/worksamples`, true);
     req.addEventListener('load', () => {
         if (req.status < 400) {
-            console.log(req.responseText);
+            // Things went well.
         } else {
-            console.log("BAD." + req.statusText);
+            showAlert("alert", "fas fa-exclamation-triangle", `Something went wrong trying to get work samples. Please try again later.`)
         }
     });
     req.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')

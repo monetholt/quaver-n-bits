@@ -11,6 +11,7 @@ module.exports = {
             profile: req.session.Profile
         };
 
+        console.log("Getting matches");
         // Get all matches for this user.
         mysql.pool.query(`SELECT m.*, a.*, p.*, au.FirstName, au.LastName FROM Matches m
             JOIN Ads a ON m.AdID = a.AdKey
@@ -48,6 +49,7 @@ module.exports = {
                     }
                 });
 
+                console.log("Step 1 done. Moving to step 2.");
 
                 //TODO: need to deal with when outgoingKeys/incomingKeys are empty (sql query fails because it is incomplete)
                 if (outgoingKeys.length != 0) {
@@ -71,6 +73,8 @@ module.exports = {
                                 });
                             });
 
+                            console.log("Step 2 done. Moving to step 3.");
+
                             if (incomingKeys.length != 0) {
                                 // Get the instruments for each incoming match.
                                 mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
@@ -90,6 +94,7 @@ module.exports = {
                                             });
                                         });
 
+                                        console.log("Step 3 done. Sorting ads..");
 
                                         // Group outgoing matches by ad:
                                         let outgoingByAds = {};
@@ -109,9 +114,9 @@ module.exports = {
                                             });
                                         }
 
-                                        context.outgoing = Object.values(outgoingByAds);
+                                        console.log("Rendering.");
 
-                                        console.log(context);
+                                        context.outgoing = Object.values(outgoingByAds);
                                         res.render('matches', context);
                                     }
                                 });
@@ -121,7 +126,6 @@ module.exports = {
                 }
             }
         });
-
     },
 
     getPendingMatches: (req, res) => {

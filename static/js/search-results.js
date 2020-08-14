@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                          document.getElementById('search-results').classList.remove('hidden');
                      }
                  } else {
-                     console.log("Something bad happened." + req.statusText);
+                     showAlert("caution", "fas fa-exclamation-triangle", `Something went wrong trying to search in your zip code radius. Please try again later.`)
                  }
              });
 

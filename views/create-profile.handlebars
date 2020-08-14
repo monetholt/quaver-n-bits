@@ -40,9 +40,7 @@
         if (url != undefined || url != '' || !youTubeLinkWasConverted) {
             var regExp = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
             var match = url.match(regExp);
-            console.log(match[1]);
             if (match && match[1].length == 11) {
-                console.log("This is a youtube link");
                 document.getElementById('worksample-soundcloud-converted').hidden = false;
                 document.getElementById('worksample-entered').value = 'https://www.youtube.com/embed/' + match[1] + '?autoplay=0';
                 document.getElementById('sampletype').value = "Video";

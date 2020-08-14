@@ -42,8 +42,6 @@ function addMatch2Connections(id) {
                     </div>
                 </div>`;
 
-    console.log(newHtml);
-
     //get ready to add new match to connections
     $(".active-matches-container").find(".no-matches-div").remove(); //but first remove no matches message if its there
     $(".active-matches-container").append(newHtml); //add the new match to the connections

@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         let res = JSON.parse(req.responseText);
         if (req.status < 400) {
             $("[name='sortOrder']").val(res.sort);
-            console.log(res);
             if (res.has_current_ads) {
                 document.getElementById('current-ads-loading').hidden = true;
                 let currentAds = document.getElementById('current-ads');
@@ -34,7 +33,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 document.getElementById('no-previous-ads').hidden = false;
             }
         } else {
-            console.log("WHOOPS!");
+            showAlert("alert", "fa-exclamation-triangle", `Something went wrong trying to fetch the ads. Please try again later.`)
         }
     });
     document.getElementById('current-ads-loading').hidden = false;

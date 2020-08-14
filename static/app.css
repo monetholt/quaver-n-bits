@@ -7194,6 +7194,15 @@ nav {
       padding-top: 30px;
       max-height: 750px;
       overflow: scroll; }
+      .notifications .notifications-menu .notifications-body .no-notifs {
+        font-weight: bold;
+        display: block;
+        padding: 10px 0;
+        color: #555;
+        text-align: center;
+        font-size: 1rem; }
+        .notifications .notifications-menu .notifications-body .no-notifs i {
+          padding-right: 10px; }
       .notifications .notifications-menu .notifications-body .notif {
         display: flex;
         flex-direction: row;

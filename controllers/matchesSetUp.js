@@ -1,6 +1,66 @@
 const mysql = require('../dbcon.js');
 const utils = require('../utils.js');
 
+
+//gets outgoing match instruments to add to context for match view
+function getOutgoingMatchInstruments(req, res, context, outgoingKeys, complete) {
+    if (outgoingKeys.length > 0) {
+
+        let sql = `SELECT ProfileID, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
+                LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
+                LEFT JOIN Users u ON p.UserID = UserKey
+                LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
+                LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
+                WHERE ProfileID IN (${outgoingKeys.join()});`;
+
+        // Get the instruments for each outgoing match.
+        mysql.pool.query(sql, false, (err, outInsts) => {
+            if (err) {
+                throw (err);
+            } else {
+                outInsts.forEach((inst) => {
+                    context.outgoing.forEach(match => {
+                        if (match.MatchedProfileID === inst.ProfileID) {
+                            match.instruments.push(inst);
+                        }
+                    });
+                });
+
+                complete(); //done!
+            }
+        });
+    }
+    else complete(); //done!
+}
+
+//gets incoming match instruments to add to context for match view
+function getIncomingMatchInstruments(req, res, context, incomingKeys, complete) {
+     //Get the instruments for each incoming match.
+    if (incomingKeys.length > 0) {
+        mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
+                            LEFT JOIN Ads a ON AdID = a.AdKey
+                            LEFT JOIN Users u ON UserID = u.UserKey
+                            LEFT JOIN InstrumentLookup il on ai.InstrumentID = InstrumentKey
+                            LEFT JOIN LevelLookup ll on ai.LevelID = LevelKey
+                            WHERE a.AdKey IN (${incomingKeys.join()});`, false, (err, incInsts) => {
+            if (err) {
+                throw (err)
+            } else {
+                incInsts.forEach((inst) => {
+                    context.incoming.forEach(match => {
+                        if (match.AdID === inst.AdKey) {
+                            match.instruments.push(inst);
+                        }
+                    });
+                });
+
+                complete();
+            }
+        });
+    }
+    else complete();
+}
+
 module.exports = {
     getMatches: (req, res) => {
 
@@ -11,7 +71,6 @@ module.exports = {
             profile: req.session.Profile
         };
 
-        console.log("Getting matches");
         // Get all matches for this user.
         mysql.pool.query(`SELECT m.*, a.*, p.*, au.FirstName, au.LastName FROM Matches m
             JOIN Ads a ON m.AdID = a.AdKey
@@ -49,81 +108,42 @@ module.exports = {
                     }
                 });
 
-                console.log("Step 1 done. Moving to step 2.");
+                //call back for actually rending the view after we get instruments
+                let callbackCount = 0;
+                function complete() {
+                    callbackCount++;
 
-                //TODO: need to deal with when outgoingKeys/incomingKeys are empty (sql query fails because it is incomplete)
-                if (outgoingKeys.length != 0) {
-                    let sql = `SELECT ProfileID, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
-                LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
-                LEFT JOIN Users u ON p.UserID = UserKey
-                LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
-                LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
-                WHERE ProfileID IN (${outgoingKeys.join()});`;
+                    if (callbackCount >= 2) { //if we are done w/ getting instruments time to get ready to render view
 
-                    // Get the instruments for each outgoing match.
-                    mysql.pool.query(sql, false, (err, outInsts) => {
-                        if (err) {
-                            throw (err);
-                        } else {
-                            outInsts.forEach((inst) => {
-                                context.outgoing.forEach(match => {
-                                    if (match.MatchedProfileID === inst.ProfileID) {
-                                        match.instruments.push(inst);
+                        // Group outgoing matches by ad:
+                        let outgoingByAds = {};
+                        if (context.outgoing.length != undefined) {
+
+                            context.outgoing.forEach(match => {
+                                if (match["AdID"] in outgoingByAds) {
+                                    outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
+                                } else {
+                                    outgoingByAds[match["AdID"]] = {
+                                        AdID: match.AdID,
+                                        Title: match.Title,
+                                        DatePosted: match.DatePosted,
+                                        matches: [match]
                                     }
-                                });
+                                }
                             });
 
-                            console.log("Step 2 done. Moving to step 3.");
-
-                            if (incomingKeys.length != 0) {
-                                // Get the instruments for each incoming match.
-                                mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
-                            LEFT JOIN Ads a ON AdID = a.AdKey
-                            LEFT JOIN Users u ON UserID = u.UserKey
-                            LEFT JOIN InstrumentLookup il on ai.InstrumentID = InstrumentKey
-                            LEFT JOIN LevelLookup ll on ai.LevelID = LevelKey
-                            WHERE a.AdKey IN (${incomingKeys.join()});`, false, (err, incInsts) => {
-                                    if (err) {
-                                        throw (err)
-                                    } else {
-                                        incInsts.forEach((inst) => {
-                                            context.incoming.forEach(match => {
-                                                if (match.AdID === inst.AdKey) {
-                                                    match.instruments.push(inst);
-                                                }
-                                            });
-                                        });
-
-                                        console.log("Step 3 done. Sorting ads..");
-
-                                        // Group outgoing matches by ad:
-                                        let outgoingByAds = {};
-                                        if (context.outgoing.length != undefined) {
-
-                                            context.outgoing.forEach(match => {
-                                                if (match["AdID"] in outgoingByAds) {
-                                                    outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
-                                                } else {
-                                                    outgoingByAds[match["AdID"]] = {
-                                                        AdID: match.AdID,
-                                                        Title: match.Title,
-                                                        DatePosted: match.DatePosted,
-                                                        matches: [match]
-                                                    }
-                                                }
-                                            });
-                                        }
-
-                                        console.log("Rendering.");
-
-                                        context.outgoing = Object.values(outgoingByAds);
-                                        res.render('matches', context);
-                                    }
-                                });
-                            }
+                            context.outgoing = Object.values(outgoingByAds); //add outgoing to context
                         }
-                    });
+
+                        res.render('matches', context); //time to render!
+                    }
                 }
+
+                //get the instruments for outgoing matches
+                getOutgoingMatchInstruments(req, res, context, outgoingKeys, complete);
+
+                //get the instruments for incoming matches
+                getIncomingMatchInstruments(req, res, context, incomingKeys, complete);
             }
         });
     },

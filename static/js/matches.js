@@ -1,10 +1,19 @@
-
-
-
-//TODO
 //removes match from the UI after a reject/block
 function removeMatchUI(id) {
 
+    var thisMatch = $("#match-" + id);  //get this match div
+    var parentContainer = thisMatch.parent(); //grab the parent container holding matches
+
+    $("#match-" + id).remove(); //remove this match from the list
+
+    if (parentContainer.children().length === 0) { //if we removed all matches from this container
+        //show the 'Nothing to see here' msg
+
+        //does it matter if we have incoming-matches-text class on the active empty list?
+        parentContainer.append('<div class="incoming-matches-text">'+
+            '<h3> Nothing to see here. <i class="fas fa-wind"></i></h3>'+
+            '</div>');
+    }
 }
 
 
@@ -17,28 +26,30 @@ function addMatch2Connections(id) {
 
 
 //accepts match w/passedID
-function acceptMatch(id, matchIDinList) {
-    $.ajax({
-        type: "POST",
-        url: "/matches/accept/" + id,
-        data: {},
-        success: function (success, textStatus, jqXHR) {
-            //data - response from server
-            if (success && success.success > 0) { //successfull update
+function acceptMatch(id) {
+    //$.ajax({
+    //    type: "POST",
+    //    url: "/matches/accept/" + id,
+    //    data: {},
+    //    success: function (success, textStatus, jqXHR) {
+    //        //data - response from server
+    //        if (success && success.success > 0) { //successfull update
 
-                showAlert("success", "far fa-check-circle", "You are now connected!");
-                addMatch2Connections(matchIDinList);
+    //            showAlert("success", "far fa-check-circle", "You are now connected!");
+    //            addMatch2Connections(id);
+    //        }
+    //        else {
+    //            showAlert("warning", "fa fa-exclamation-triangle", "Error accepting match request."); //something went wrong
+    //        }
+    //    },
+    //    error: function (jqXHR, textStatus, errorThrown) {
+    //        showAlert("warning", "fa fa-exclamation-triangle", "Error accepting match request."); //something went wrong
+    //    },
+    //    dataType: 'json'
+    //});
 
-            }
-            else {
-                showAlert("warning", "fa fa-exclamation-triangle", "Error accepting match request."); //something went wrong
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            showAlert("warning", "fa fa-exclamation-triangle", "Error accepting match request."); //something went wrong
-        },
-        dataType: 'json'
-    });
+    showAlert("success", "far fa-check-circle", "You are now connected!");
+    addMatch2Connections(id);
 
 }
 
@@ -65,6 +76,10 @@ function rejectMatch(id) {
         },
         dataType: 'json'
     });
+
+    ////TESTING UI ON SUCCESS COMMENT OUT
+    //showAlert("success", "far fa-check-circle", "Match request successfully rejected.");
+    //removeMatchUI(id); //remove Match from UI
 }
 
 
@@ -91,6 +106,10 @@ function blockMatch(id) {
         },
         dataType: 'json'
     });
+
+    ////TESTING UI ON SUCCESS COMMENT OUT
+    //showAlert("success", "far fa-check-circle", "User successfully blocked.");
+    //removeMatchUI(id); //remove Match from UI
 }
 
 
@@ -102,7 +121,7 @@ function disconnectMatch(id) {
         data: {},
         success: function (success, textStatus, jqXHR) {
             //data - response from server
-            if (success && success.success > 0) { //successfull update
+            if (success) { //successfull update
 
                 showAlert("success", "far fa-check-circle", "Connection successfully removed.");
                 removeMatchUI(id); //remove Match from UI
@@ -117,4 +136,9 @@ function disconnectMatch(id) {
         },
         dataType: 'json'
     });
+
+
+    ////TESTING UI ON SUCCESS COMMENT OUT
+    //showAlert("success", "far fa-check-circle", "Connection successfully removed.");
+    //removeMatchUI(id); //remove Match from UI
 }

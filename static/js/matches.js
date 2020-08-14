@@ -10,17 +10,43 @@ function removeMatchUI(id) {
         //show the 'Nothing to see here' msg
 
         //does it matter if we have incoming-matches-text class on the active empty list?
-        parentContainer.append('<div class="incoming-matches-text">'+
+        parentContainer.append('<div class="incoming-matches-text no-matches-div">'+
             '<h3> Nothing to see here. <i class="fas fa-wind"></i></h3>'+
             '</div>');
     }
 }
 
 
-//TODO
 //Adds match to the connections section after a match accept.
 function addMatch2Connections(id) {
+    var currentMatch = $("#match-" + id); //get current match element from incoming section
 
+    //grab the photo and name
+    var photoUrl = currentMatch.find(".incoming-match-image").find("img").attr("src");
+    var matchName = currentMatch.find(".incoming-match-info").find("h4").html();
+
+    removeMatchUI(id); // go and remove that old match now that we got the info we need
+
+    //create our new match html w/action buttons to disconnect or block
+    var newHtml = `<div id="match-` + id + `" class="active-match">
+                <div class="active-match-image">
+                    <img src="`+ photoUrl +`">
+                </div>
+                <div class="active-match-info">
+                        <h4>`+ matchName+`</h4>
+                        <h5>Connected just now</h5>
+                    </div>
+                <div class="active-match-buttons">
+                        <button class="button active expanded" onclick="disconnectMatch(`+id+`)"><i class="fas fa-microphone-alt-slash"></i>Disconnect</button>
+                        <button class="button warning expanded" onclick="blockMatch(`+ id+`)"><i class="fas fa-hand-middle-finger"></i>Block</button>
+                    </div>
+                </div>`;
+
+    console.log(newHtml);
+
+    //get ready to add new match to connections
+    $(".active-matches-container").find(".no-matches-div").remove(); //but first remove no matches message if its there
+    $(".active-matches-container").append(newHtml); //add the new match to the connections
 }
 
 

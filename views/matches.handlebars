@@ -43,7 +43,7 @@ outgoing: [{
             {{#if active}}
             <div id="active-matches">
                 {{#each active}}
-                <div id="match-{{@key}}"class="active-match">
+                <div id="match-{{MatchKey}}"class="active-match">
 
                     <div class="active-match-image">
                         {{#if Photo}}
@@ -53,16 +53,20 @@ outgoing: [{
                         {{/if}}
                     </div>
                     <div class="active-match-info">
-                        <h4>{{#if ArtistName}}{{ArtistName}}{{else}}No Name{{/if}}</h4> {{! Insert artist name here }}
+                        {{#if (eq this.MatchedProfileID ../profile.ProfileKey)}}
+                        <h4>{{FirstName}} {{LastName}}</h4> {{!if we are matchee, show ad poster name}}
+                        {{else}}
+                        <h4>{{#if ArtistName}}{{ArtistName}}{{else}}No Name{{/if}}</h4> {{!if we are ad poster, show artistname }}
+                        {{/if}}
                         <h5>Connected {{moment DateAccepted fromNow="true"}} ago</h5> {{! Insert connect date here }}
                     </div>
                     <div class="active-match-buttons">
-                        {{#if (eq this.MatchedProfileID ../profile.ProfileKey)}}
+                        {{#if (eq this.MatchedProfileID ../profile.ProfileKey)}} {{! if we are matchee, cant see ad poster profile }}
                         {{else}}
                         <button class="button success expanded" onclick="window.location='user-profile?ProfileID={{this.MatchedProfileID}}'"><i class="far fa-eye"></i>View Profile</button> {{! Will only be displayed if ad-poster made the request to connect }}
                         {{/if}}
-                        <button class="button active expanded" onclick="disconnectMatch({{@key}})"><i class="fas fa-microphone-alt-slash"></i>Disconnect</button> {{! Either user can disconnect the match }}
-                        <button class="button warning expanded" onclick="blockMatch({{@key}})"><i class="fas fa-hand-middle-finger"></i>Block</button> {{! Either user can block the other }}
+                        <button class="button active expanded" onclick="disconnectMatch({{MatchKey}})"><i class="fas fa-microphone-alt-slash"></i>Disconnect</button> {{! Either user can disconnect the match }}
+                        <button class="button warning expanded" onclick="blockMatch({{MatchKey}})"><i class="fas fa-hand-middle-finger"></i>Block</button> {{! Either user can block the other }}
                     </div>
                 </div>
                 {{/each}}
@@ -82,7 +86,7 @@ outgoing: [{
             {{#if incoming}}
             <div id="incoming-matches">
                 {{#each incoming}}
-                <div id="incoming-match-{{@key}}" class="incoming-match">
+                <div id="match-{{MatchKey}}" class="incoming-match">
                     <div class="incoming-match-alert">
                         <h5><strong>{{FirstName}} {{LastName}}</strong> has sent you a request to connect!</h5>
                     </div>
@@ -110,8 +114,8 @@ outgoing: [{
                             </ul>
                         </div>
                         <div class="incoming-match-buttons">
-                            <button class="button success expanded" onclick="acceptMatch({{ProfileKey}}, {{@key}})" ><i class="fas fa-user-check"></i>Accept</button> {{! Will make match's Accepted flag = 1 }}
-                            <button class="button warning expanded" onclick="rejectMatch({{Profilekey}})"><i class="fas fa-not-equal"></i>Reject</button> {{! Will make match's Deleted flag = 1}}
+                            <button class="button success expanded" onclick="acceptMatch({{MatchKey}})" ><i class="fas fa-user-check"></i>Accept</button> {{! Will make match's Accepted flag = 1 }}
+                            <button class="button warning expanded" onclick="rejectMatch({{MatchKey}})"><i class="fas fa-not-equal"></i>Reject</button> {{! Will make match's Deleted flag = 1}}
                         </div>
                     </div>
                 </div>

@@ -2,7 +2,7 @@ const mysql = require('../dbcon.js');
 const utils = require('../utils.js');
 
 module.exports = {
-    getMatches: (req, res, next) => {
+    getMatches: (req, res) => {
 
         let context = {
             user: req.user,
@@ -12,10 +12,14 @@ module.exports = {
         };
 
         // Get all matches for this user.
-        mysql.pool.query(`SELECT * FROM Matches WHERE Deleted = 0 AND (MatchedProfileID = 49
-        OR AdID IN (SELECT AdKey FROM Ads WHERE UserID = 47));`, [req.session.ProfileID, req.user.UserKey], (err, matches) => {
+        mysql.pool.query(`SELECT m.*, a.*, p.*, au.FirstName, au.LastName FROM Matches m
+            JOIN Ads a ON m.AdID = a.AdKey
+            JOIN Users au on a.UserID = au.UserKey
+            JOIN Profiles p on m.MatchedProfileID = p.ProfileKey
+            JOIN Users pu on p.UserID = pu.UserKey
+            WHERE m.Deleted = 0 AND (pu.UserKey = ? OR au.UserKey = ?);`, [req.user.UserKey, req.user.UserKey], (err, matches) => {
             if (err) {
-                throw(err);
+                throw (err);
             } else {
                 context = {
                     ...context,
@@ -24,38 +28,111 @@ module.exports = {
                     incoming: false
                 };
 
+                // Grab outgoing keys & ad keys for instrument lookup
+                let outgoingKeys = [];
+                let incomingKeys = [];
+
                 // Sort matches into active, incoming, or outgoing.
-                matches.forEach(match => {
+                matches.forEach((match) => {
+                    match.instruments = [];
                     if (match["Accepted"] === 0) {
                         if (match["MatchedProfileID"] === req.session.ProfileID) {
-                            context.outgoing = { ...context.outgoing, [match["MatchedProfileID"]]: match }
+                            context.incoming = context.incoming ? [...context.incoming, match] : [match];
+                            incomingKeys.push(match["AdID"])
                         } else {
-                            context.incoming = { ...context.incoming, [match["MatchKey"]]: match }
+                            context.outgoing = context.outgoing ? [...context.outgoing, match] : [match];
+                            outgoingKeys.push(match["MatchedProfileID"]);
                         }
                     } else {
-                        context.active = { ...context.active, [match["MatchKey"]]: match }
+                        context.active = context.active ? [...context.active, match] : [match];
                     }
                 });
 
-                // TODO: Fetch the data needed for each category (possibly in a separate function for each).
-                // TODO: Format output for display as outlined in matches.handlebars.
-                console.log(context);
-                res.render('matches', context );
+
+                //TODO: need to deal with when outgoingKeys/incomingKeys are empty (sql query fails because it is incomplete)
+                if (outgoingKeys.length != 0) {
+                    let sql = `SELECT ProfileID, il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM ProfileInstruments pi
+                LEFT JOIN Profiles p ON ProfileID = p.ProfileKey
+                LEFT JOIN Users u ON p.UserID = UserKey
+                LEFT JOIN InstrumentLookup il on pi.InstrumentID = InstrumentKey
+                LEFT JOIN LevelLookup ll on pi.LevelID = LevelKey
+                WHERE ProfileID IN (${outgoingKeys.join()});`;
+
+                    // Get the instruments for each outgoing match.
+                    mysql.pool.query(sql, false, (err, outInsts) => {
+                        if (err) {
+                            throw (err);
+                        } else {
+                            outInsts.forEach((inst) => {
+                                context.outgoing.forEach(match => {
+                                    if (match.MatchedProfileID === inst.ProfileID) {
+                                        match.instruments.push(inst);
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
+
+                if (incomingKeys.length != 0) {
+                    // Get the instruments for each incoming match.
+                    mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
+                            LEFT JOIN Ads a ON AdID = a.AdKey
+                            LEFT JOIN Users u ON UserID = u.UserKey
+                            LEFT JOIN InstrumentLookup il on ai.InstrumentID = InstrumentKey
+                            LEFT JOIN LevelLookup ll on ai.LevelID = LevelKey
+                            WHERE a.AdKey IN (${incomingKeys.join()});`, false, (err, incInsts) => {
+                        if (err) {
+                            throw (err)
+                        } else {
+                            incInsts.forEach((inst) => {
+                                context.incoming.forEach(match => {
+                                    if (match.AdID === inst.AdKey) {
+                                        match.instruments.push(inst);
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
+
+                // Group outgoing matches by ad:
+                let outgoingByAds = {};
+                if (context.outgoing.length != undefined) {
+
+                    context.outgoing.forEach(match => {
+                        if (match["AdID"] in outgoingByAds) {
+                            outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
+                        } else {
+                            outgoingByAds[match["AdID"]] = {
+                                AdID: match.AdID,
+                                Title: match.Title,
+                                DatePosted: match.DatePosted,
+                                matches: [match]
+                            }
+                        }
+                    });
+                }
+
+                context.outgoing = Object.values(outgoingByAds);
+
+                res.render('matches', context);
             }
         });
+
     },
 
-    getPendingMatches: (req, res, next) => {
+    getPendingMatches: (req, res) => {
         try {
             let sql = 'SELECT * FROM Matches WHERE Accepted = 0 AND MatchedProfileID = ?';
             mysql.pool.query(sql, [req.session.ProfileID], function (err, result) {
-                if(err) {
-                    throw(err);
+                if (err) {
+                    throw (err);
                 } else {
                     res.send(JSON.stringify(result));
                 }
             });
-        } catch(err) {
+        } catch (err) {
             res.redirect(utils.errorRedirect('/matches/pending', 'An unexpected error occurred retrieving your matches'));
         }
     },
@@ -99,7 +176,7 @@ module.exports = {
 
                                         //now go add the notification record.
                                         conn.query(`INSERT INTO Notifications (UserID, MatchID, Msg, ReadMsg, CreateDate) VALUES (?, ?, ?, ?, NOW()) `,
-                                            [userID, matchKey, "New match request from <strong>" + req.user.FirstName + " " + req.user.LastName +"</strong>! Click to view your matches now.", false],
+                                            [userID, matchKey, "New match request from <strong>" + req.user.FirstName + " " + req.user.LastName + "</strong>! Click to view your matches now.", false],
                                             function (err, rows) {
                                                 conn.release();
 
@@ -112,6 +189,53 @@ module.exports = {
                                 });
                         }
                     });
+
+            });
+        } catch (err) {
+            res.write(JSON.stringify(err));
+            res.end();
+        }
+    },
+
+    acceptMatch: (req, res, next) => {
+        //accepts pending match by setting accepted to 1. On success also writes a notification record to send to matched requestor
+        try {
+            mysql.pool.getConnection(function (err, conn) {
+                if (err) throw (err);
+
+                //update the match record
+                conn.query('UPDATE Matches SET Accepted=1, DateAccepted = NOW() WHERE MatchedProfileID=?',
+                    [req.params.id],
+                    function (err, rows) {
+                        if (err) { //something went wrong so send an error
+                            conn.release();
+                            res.write({ success: 0, message: 'An error occurred when accepting to match: '.JSON.stringify(err) });
+                            res.end();
+                        } else {
+                            //now need to add the notification record for the person who owns the ad for this match
+
+                            //get the userID from the ad tied to this match
+                            conn.query(`SELECT u.UserKey FROM Matches m LEFT JOIN Ads a ON m.AdID = a.AdKey LEFT JOIN Users u ON a.UserID = u.UserKey WHERE m.MatchedProfileID = ? LIMIT 1`,
+                                [req.params.id],
+                                function (err, rows) {
+
+                                    if (err) {
+                                        conn.release();
+                                        res.write({ success: 0, message: 'An error occurred fetching matched user: '.JSON.stringify(err) });
+                                        res.end();
+                                    } else if (rows.length === 0) {
+                                        conn.release();
+                                        res.write({ success: 0, message: 'Matched user does not exist. ' }); //no user found! This shouldn't happen
+                                        res.end();
+                                    }
+                                    else {
+                                        var userID = rows[0]["UserKey"];
+
+                                        //now go add the notification record to send to ad poster
+                                        conn.query(`INSERT INTO Notifications (UserID, MatchID, Msg, ReadMsg, CreateDate) VALUES (?, ?, ?, ?, NOW()) `,
+                                            [userID, req.params.id, "You have connected with <strong>" + req.user.FirstName + " " + req.user.LastName + "</strong>!", false],
+                                            function (err, rows) {
+                                                conn.release();
 
             });
         } catch (err) {
@@ -212,3 +336,4 @@ module.exports = {
         }
     },
 }
+

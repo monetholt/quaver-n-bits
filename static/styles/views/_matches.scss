@@ -1,3 +1,8 @@
+h1 {
+    font: $header-font;
+    font-weight: bold;
+}
+
 .active-matches-container {
         padding: 20px;
         background: #eee;
@@ -39,6 +44,10 @@
         }
 
         .active-match-info {
+            display: inline-flex;
+            flex-direction: column;
+            flex-basis: 0;
+            flex-grow: 2;
             padding: 0 20px;
 
             h4 {
@@ -79,22 +88,22 @@
         flex-direction: column;
         align-items: center;
         background: #f5f5f5;
-        border: 1px solid #ccc;
+        border: 1px solid #00000026;
         border-radius: 20px;
+        margin-bottom: 20px;
         @include transition(0.3s ease);
 
         .incoming-match-alert {
-            background: $primary-color;
+            background: #444;
             display: inline-flex;
             justify-content: center;
             width: 100%;
             border-radius: 20px 20px 0 0;
-            color: #222;
+            color: $primary-color;
             font-weight: bold;
-            padding: 5px 0;
+            padding: 10px 0;
 
             h5 {
-                font-weight: bold;
                 font-family: $header-font;
                 margin: 0;
             }
@@ -137,6 +146,7 @@
             .incoming-match-info {
                 display: inline-flex;
                 flex-direction: column;
+                flex-basis: 0;
                 flex-grow: 2;
                 padding: 0 20px;
 
@@ -148,12 +158,18 @@
                 }
 
                 h5 {
+                    font-size: 1rem;
+                    margin: 0;
                     color: #555;
                     font-style: italic;
                 }
 
                 p {
-
+                    padding: 10px;
+                    border: 1px solid #eee;
+                    border-radius: 20px;
+                    background: #ededed;
+                    margin-top: 10px;
                 }
             }
 
@@ -162,6 +178,7 @@
                 display: inline-flex;
                 flex-direction: column;
                 border-left: 1px solid #ddd;
+                flex-basis: 0;
                 flex-grow: 1;
 
                 h4 {
@@ -277,6 +294,7 @@
             display: inline-flex;
             flex-direction: column;
             flex-grow: 1;
+            flex-basis: 0;
             padding: 0 20px;
 
             h4 {
@@ -295,6 +313,7 @@
         .outgoing-match-instruments {
             display: inline-flex;
             flex-direction: column;
+            flex-basis: 0;
             flex-grow: 1;
             padding: 0 20px;
 

@@ -15,33 +15,22 @@ active: {
     },
     ...
 },
-incoming: {
-    matchKey: {
-        ...data from Matches table,
-        ad: {
-            ...ad data for this ad,
-            instruments: {
-                ... instruments for this ad
-            }
-        }
-    },
-    ...tch
-},
-outgoing: {
-    adID: {
-        ...ad data for this ad,
-        matches: {
-            profileID: {
-                ...profile data for this profile,
-                instruments: {
-                    ...instruments for this profile
-                }
-            },
-            ...
-        }
-    },
-    ...
-}
+incoming: [{
+   match data
+},...],
+
+outgoing: [{
+    AdID,
+    Title,
+    DateInviteSent,
+    matches: [{
+        ... match data,
+        instruments: [{
+            Instrument,
+            Level
+        }, ...]
+    }, ...]
+}, ...]
 -->
 
 
@@ -51,20 +40,21 @@ outgoing: {
             <h1>Connections:</h1>
         </div>
         <div class="active-matches-container">
-            <div id="no-active-matches" class="active-matches-text" hidden>
-                <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
-            </div>
-
+            {{#if active}}
             <div id="active-matches">
                 {{#each active}}
-
                 <div id="match-{{@key}}"class="active-match">
+
                     <div class="active-match-image">
-                        <img src="/img/profile-img.jpg">
+                        {{#if Photo}}
+                            <img src="{{Photo}}">
+                        {{else}}
+                            <img src="/img/profile-img.jpg">
+                        {{/if}}
                     </div>
                     <div class="active-match-info">
-                        <h4>{{this.Profile.ArtistName}}</h4> {{! Insert artist name here }}
-                        <h5>Connected on {{moment this.DateAccepted format="MM/DD/YY"}}</h5> {{! Insert connect date here }}
+                        <h4>{{#if ArtistName}}{{ArtistName}}{{else}}No Name{{/if}}</h4> {{! Insert artist name here }}
+                        <h5>Connected {{moment DateAccepted fromNow="true"}} ago</h5> {{! Insert connect date here }}
                     </div>
                     <div class="active-match-buttons">
                         {{#if (eq this.MatchedProfileID ../profile.ProfileKey)}}
@@ -77,6 +67,11 @@ outgoing: {
                 </div>
                 {{/each}}
             </div>
+            {{else}}
+            <div id="no-active-matches" class="active-matches-text">
+                <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
+            </div>
+            {{/if}}
         </div>
     </div>
     <div class="main-container main-incoming-matches">
@@ -84,184 +79,100 @@ outgoing: {
             <h1>Incoming:</h1>
         </div>
         <div class="incoming-matches-container">
-            <div id="no-incoming-matches" class="incoming-matches-text" hidden>
-                <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
-            </div>
-
+            {{#if incoming}}
             <div id="incoming-matches">
-                <div class="incoming-match">
+                {{#each incoming}}
+                <div id="incoming-match-{{@key}}" class="incoming-match">
                     <div class="incoming-match-alert">
-                        <h5>Jordan has sent you a request to connect!</h5> {{! Update with ad-posting user name }}
+                        <h5><strong>{{FirstName}} {{LastName}}</strong> has sent you a request to connect!</h5>
                     </div>
                     <div class="incoming-match-content">
                         <div class="incoming-match-image">
-                            <img src="/img/profile-img.jpg">
+                            {{#if Photo}}
+                                <img src="{{Photo}}">
+                            {{else}}
+                                <img src="/img/profile-img.jpg">
+                            {{/if}}
                         </div>
                         <div class="incoming-match-info">
-                            <h4>Ad Title</h4> {{! Insert ad title here }}
-                            <h5>Date</h5> {{! Insert ad-create date here }}
-                            <p>Description</p> {{! Insert ad description here }}
+                            <h4>{{Title}}</h4>
+                            <h5>Posted {{moment DatePosted format="MMMM Do, YYYY"}}</h5>
+                            <p>{{Description}}</p>
                         </div>
                         <div class="incoming-match-instruments">
-                            <h4>Instruments</h4>
+                            <h4>Instruments:</h4>
                             <ul>
-                                <li>
-                                    Instrument 1!
-                                </li>
-                                <li>
-                                    Instrument 2!
-                                </li>
+                                {{#each instruments}}
+                                    <li>
+                                        {{Level}}-Level {{Instrument}}
+                                    </li>
+                                {{/each}}
                             </ul>
                         </div>
                         <div class="incoming-match-buttons">
-                            <button class="button success expanded"><i class="fas fa-user-check"></i>Accept</button> {{! Will make match's Accepted flag = 1 }}
-                            <button class="button warning expanded"><i class="fas fa-not-equal"></i>Reject</button> {{! Will make match's Deleted flag = 1}}
+                            <button class="button success expanded" onclick="acceptMatch({{ProfileKey}}, {{@key}})" ><i class="fas fa-user-check"></i>Accept</button> {{! Will make match's Accepted flag = 1 }}
+                            <button class="button warning expanded" onclick="rejectMatch({{Profilekey}})"><i class="fas fa-not-equal"></i>Reject</button> {{! Will make match's Deleted flag = 1}}
                         </div>
                     </div>
                 </div>
+                {{/each}}
             </div>
+            {{else}}
+            <div id="no-incoming-matches" class="incoming-matches-text">
+                <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
+            </div>
+            {{/if}}
         </div>
     </div>
     <div class="main-container main-outgoing-matches">
         <div class="outgoing-matches-label">
             <h1>Outgoing:</h1>
         </div>
+        {{#if outgoing}}
         <div class="outgoing-matches-container">
-            <div id="no-outgoing-matches" class="outgoing-matches-text" hidden>
-                <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
-            </div>
-
             <div id="outgoing-matches">
-                <div class="outgoing-match-ad-group">
+                {{#each outgoing}}
+                <div id="outgoing-match-{{@key}}" class="outgoing-match-ad-group">
                     <div class="outgoing-match-ad-group-info">
-                        <h4>My Ad Title</h4>
-                        <h5>01-01-2020</h5>
+                        <h4>{{Title}}</h4>
+                        <h5>Posted {{moment DatePosted format="MMMM Do, YYYY" }}</h5>
                     </div>
-                    {{! container for each person requested to match for this specific ad }}
+                    {{#each matches}}
                     <div class="outgoing-match-container">
                         <div class="outgoing-match-image">
-                            <img src="/img/profile-img.jpg">
+                            {{#if Photo}}
+                                <img src="{{Photo}}">
+                            {{else}}
+                                <img src="/img/profile-img.jpg">
+                            {{/if}}
                         </div>
                         <div class="outgoing-match-info">
-                            <h4>Artist Name</h4>
-                            <h6>Date Invite Sent</h6>
+                            <h4>{{#if ArtistName}}{{ArtistName}}{{else}}No Name{{/if}}</h4>
+                            <h6>Sent {{moment DateInviteSent fromNow="true" }} ago</h6>
                         </div>
                         <div class="outgoing-match-instruments">
                             <h4>Instruments</h4>
                             <ul>
-                                <li>
-                                    Instrument 1!
-                                </li>
-                                <li>
-                                    Instrument 2!
-                                </li>
+                                {{#each instruments}}
+                                    <li>
+                                        {{Level}}-Level {{Instrument}}
+                                    </li>
+                                {{/each}}
                             </ul>
                         </div>
                         <div class="outgoing-match-pending">
                             <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
                         </div>
                     </div>
+                    {{/each}}
                 </div>
-                <div class="outgoing-match-ad-group">
-                    <div class="outgoing-match-ad-group-info">
-                        <h4>My Ad Title</h4>
-                        <h5>01-01-2020</h5>
-                    </div>
-                    {{! container for each person requested to match for this specific ad }}
-                    <div class="outgoing-match-container">
-                        <div class="outgoing-match-image">
-                            <img src="/img/profile-img.jpg">
-                        </div>
-                        <div class="outgoing-match-info">
-                            <h4>Artist Name</h4>
-                            <h6>Date Invite Sent</h6>
-                        </div>
-                        <div class="outgoing-match-instruments">
-                            <h4>Instruments</h4>
-                            <ul>
-                                <li>
-                                    Instrument 1!
-                                </li>
-                                <li>
-                                    Instrument 2!
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="outgoing-match-pending">
-                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
-                        </div>
-                    </div>
-                    <div class="outgoing-match-container">
-                        <div class="outgoing-match-image">
-                            <img src="/img/profile-img.jpg">
-                        </div>
-                        <div class="outgoing-match-info">
-                            <h4>Artist Name</h4>
-                            <h6>Date Invite Sent</h6>
-                        </div>
-                        <div class="outgoing-match-instruments">
-                            <h4>Instruments</h4>
-                            <ul>
-                                <li>
-                                    Instrument 1!
-                                </li>
-                                <li>
-                                    Instrument 2!
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="outgoing-match-pending">
-                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
-                        </div>
-                    </div>
-                    <div class="outgoing-match-container">
-                        <div class="outgoing-match-image">
-                            <img src="/img/profile-img.jpg">
-                        </div>
-                        <div class="outgoing-match-info">
-                            <h4>Artist Name</h4>
-                            <h6>Date Invite Sent</h6>
-                        </div>
-                        <div class="outgoing-match-instruments">
-                            <h4>Instruments</h4>
-                            <ul>
-                                <li>
-                                    Instrument 1!
-                                </li>
-                                <li>
-                                    Instrument 2!
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="outgoing-match-pending">
-                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
-                        </div>
-                    </div>
-                    <div class="outgoing-match-container">
-                        <div class="outgoing-match-image">
-                            <img src="/img/profile-img.jpg">
-                        </div>
-                        <div class="outgoing-match-info">
-                            <h4>Artist Name</h4>
-                            <h6>Date Invite Sent</h6>
-                        </div>
-                        <div class="outgoing-match-instruments">
-                            <h4>Instruments</h4>
-                            <ul>
-                                <li>
-                                    Instrument 1!
-                                </li>
-                                <li>
-                                    Instrument 2!
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="outgoing-match-pending">
-                            <button type="button" class="button light disabled expanded"><i class="fas fa-user-clock"></i>Pending...</button>
-                        </div>
-                    </div>
-                </div>
+                {{/each}}
             </div>
         </div>
+        {{else}}
+        <div id="no-outgoing-matches" class="outgoing-matches-text">
+            <h3>Nothing to see here. <i class="fas fa-wind"></i></h3>
+        </div>
+        {{/if}}
     </div>
 </main>

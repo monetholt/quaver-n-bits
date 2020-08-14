@@ -1,8 +1,4 @@
-window.addEventListener('DOMContentLoaded', () => {
-    function gotoPage(num) {
-        // TODO: Go to page.
-    }
-});
+
 
 
 //TODO
@@ -18,8 +14,10 @@ function addMatch2Connections(id) {
 
 }
 
+
+
 //accepts match w/passedID
-function acceptMatch(id) {
+function acceptMatch(id, matchIDinList) {
     $.ajax({
         type: "POST",
         url: "/matches/accept/" + id,
@@ -29,7 +27,7 @@ function acceptMatch(id) {
             if (success && success.success > 0) { //successfull update
 
                 showAlert("success", "far fa-check-circle", "You are now connected!");
-                addMatch2Connections(id);
+                addMatch2Connections(matchIDinList);
 
             }
             else {
@@ -41,6 +39,7 @@ function acceptMatch(id) {
         },
         dataType: 'json'
     });
+
 }
 
 //rejects match w/passedID

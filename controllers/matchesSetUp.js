@@ -70,53 +70,55 @@ module.exports = {
                                     }
                                 });
                             });
-                        }
-                    });
-                }
 
-                if (incomingKeys.length != 0) {
-                    // Get the instruments for each incoming match.
-                    mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
+                            if (incomingKeys.length != 0) {
+                                // Get the instruments for each incoming match.
+                                mysql.pool.query(`SELECT a.AdKey,il.InstrumentKey, il.Instrument, ll.LevelKey, ll.Level FROM AdInstruments ai
                             LEFT JOIN Ads a ON AdID = a.AdKey
                             LEFT JOIN Users u ON UserID = u.UserKey
                             LEFT JOIN InstrumentLookup il on ai.InstrumentID = InstrumentKey
                             LEFT JOIN LevelLookup ll on ai.LevelID = LevelKey
                             WHERE a.AdKey IN (${incomingKeys.join()});`, false, (err, incInsts) => {
-                        if (err) {
-                            throw (err)
-                        } else {
-                            incInsts.forEach((inst) => {
-                                context.incoming.forEach(match => {
-                                    if (match.AdID === inst.AdKey) {
-                                        match.instruments.push(inst);
+                                    if (err) {
+                                        throw (err)
+                                    } else {
+                                        incInsts.forEach((inst) => {
+                                            context.incoming.forEach(match => {
+                                                if (match.AdID === inst.AdKey) {
+                                                    match.instruments.push(inst);
+                                                }
+                                            });
+                                        });
+
+
+                                        // Group outgoing matches by ad:
+                                        let outgoingByAds = {};
+                                        if (context.outgoing.length != undefined) {
+
+                                            context.outgoing.forEach(match => {
+                                                if (match["AdID"] in outgoingByAds) {
+                                                    outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
+                                                } else {
+                                                    outgoingByAds[match["AdID"]] = {
+                                                        AdID: match.AdID,
+                                                        Title: match.Title,
+                                                        DatePosted: match.DatePosted,
+                                                        matches: [match]
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                        context.outgoing = Object.values(outgoingByAds);
+
+                                        console.log(context);
+                                        res.render('matches', context);
                                     }
                                 });
-                            });
-                        }
-                    });
-                }
-
-                // Group outgoing matches by ad:
-                let outgoingByAds = {};
-                if (context.outgoing.length != undefined) {
-
-                    context.outgoing.forEach(match => {
-                        if (match["AdID"] in outgoingByAds) {
-                            outgoingByAds[match["AdID"]].matches = [...outgoingByAds[match["AdID"]].matches, match];
-                        } else {
-                            outgoingByAds[match["AdID"]] = {
-                                AdID: match.AdID,
-                                Title: match.Title,
-                                DatePosted: match.DatePosted,
-                                matches: [match]
                             }
                         }
                     });
                 }
-
-                context.outgoing = Object.values(outgoingByAds);
-
-                res.render('matches', context);
             }
         });
 
